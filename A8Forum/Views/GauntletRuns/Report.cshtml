@@ -1,0 +1,29 @@
+﻿@model Shared.Dto.GauntletReportDTO
+
+@{
+    ViewData["Title"] = "Report";
+}
+
+<h4>Gauntlet Report</h4>
+
+<h3>@Html.DisplayNameFor(model => model.TotalLeaderBoard)</h3>
+<textarea rows="20" readonly="readonly" style="width: 100%">@Html.DisplayFor(model => model.TotalLeaderBoard)</textarea>
+
+<h3>@Html.DisplayNameFor(model => model.LeaderBoardByTrack)</h3>
+<textarea rows="20" readonly="readonly" style="width: 100%">@Html.DisplayFor(model => model.LeaderBoardByTrack)</textarea>
+
+<h3>@Html.DisplayNameFor(model => model.LeaderBoardByMember)</h3>
+<textarea rows="20" readonly="readonly" style="width: 100%">@Html.DisplayFor(model => model.LeaderBoardByMember)</textarea>
+
+<h3>@Html.DisplayNameFor(model => model.TotalLeaderBoardHtml)</h3>
+@Html.Raw(Model.TotalLeaderBoardHtml)
+
+<h3>@Html.DisplayNameFor(model => model.LeaderBoardByTrackHtml)</h3>
+@Html.Raw(Model.LeaderBoardByTrackHtml)
+
+<h3>@Html.DisplayNameFor(model => model.LeaderBoardByMemberHtml)</h3>
+@Html.Raw(Model.LeaderBoardByMemberHtml)
+
+<h3>@Html.DisplayNameFor(model => model.LeaderBoardJson)</h3>
+<textarea rows="20" readonly="readonly" style="width: 100%">@Html.DisplayFor(model => model.LeaderBoardJson)</textarea>
+

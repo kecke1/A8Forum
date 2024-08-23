@@ -1,0 +1,100 @@
+﻿@model IEnumerable<A8Forum.ViewModels.ForumChallengeViewModel>
+
+@{
+    ViewData["Title"] = "Forum Challenges";
+}
+
+<h1>Forum Challenges</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm col-md-6">
+        <label id="trackSelector">Track</label>
+        <select for="trackSelector" name="TrackId" id="trackDropdown" class="form-control" asp-items="ViewBag.TrackId" onchange='this.form.submit();'>
+                <option value="-1">-- Select Track --</option>
+            </select>
+            </div>
+            </div>
+        <div class="row">
+            <div class="col-md-2 col-sm-4">
+                <label id="dateFromSelector">Insert date from</label>
+                <input type="date" name="InsertDateFrom" value='@(((DateTime?)ViewData["InsertDateFrom"])?.ToString("yyyy-MM-dd"))' class="form-control" onchange='this.form.submit();' />
+
+            </div>
+            <div class="col-md-2 col-sm-4">
+                <label id="dateToSelector">Insert date to</label>
+                <input type="date" name="InsertDateTo" value='@(((DateTime?)ViewData["InsertDateTo"])?.ToString("yyyy-MM-dd"))' class="form-control" onchange='this.form.submit();' />
+            </div>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Season.SeasonName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Track.TrackName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Post)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxRank)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td class="text-nowrap">
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                <td class="text-nowrap">
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Season.SeasonName)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Track.TrackName)
+                    </td>
+                    <td>
+                        <a href="@item.Post" target="_blank">@item.Post</a>
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.MaxRank)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ForumChallengeId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ForumChallengeId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ForumChallengeId">Delete</a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+                <script type="text/javascript">
+                    $(document).ready(function () { $("#trackDropdown").select2(); });
+                </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

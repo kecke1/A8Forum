@@ -1,0 +1,79 @@
+﻿@model IEnumerable<A8Forum.ViewModels.VehicleViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <a asp-action="Import">Import</a>
+</p>
+
+<input type="text" id="filterInput" onkeyup="applyFilter()" placeholder="Search for vehicles..">
+
+<table class="table" id="vehicleTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Url)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxRank)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Url)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxRank)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.VehicleId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.VehicleId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function applyFilter() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("filterInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("vehicleTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+}
+
+

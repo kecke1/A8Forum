@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "A8Forum", "A8Forum\A8Forum.csproj", "{0C3B410F-BA3F-4B02-B4BC-E8FEDA6485C6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{CEA3F182-779F-488A-BF51-330B3973EA34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C3B410F-BA3F-4B02-B4BC-E8FEDA6485C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C3B410F-BA3F-4B02-B4BC-E8FEDA6485C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C3B410F-BA3F-4B02-B4BC-E8FEDA6485C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C3B410F-BA3F-4B02-B4BC-E8FEDA6485C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEA3F182-779F-488A-BF51-330B3973EA34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEA3F182-779F-488A-BF51-330B3973EA34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEA3F182-779F-488A-BF51-330B3973EA34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEA3F182-779F-488A-BF51-330B3973EA34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {255E8A3A-F1D5-4779-AEC2-E01D38464E8B}
+	EndGlobalSection
+EndGlobal

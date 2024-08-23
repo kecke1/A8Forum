@@ -1,0 +1,43 @@
+﻿@model A8Forum.ViewModels.RankBracketViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Track</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MinRank)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MinRank)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MaxRank)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MaxRank)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Class)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Class)
+        </dd>
+    </dl>
+
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.RankBracketId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

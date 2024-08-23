@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "Gauntlet Leaderboard";
+}
+
+@section Css {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet" />
+}
+
+<form>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Filter on one or many names</label>
+                <select class="form-select form-select-lg" asp-items="ViewBag.Names" id="namesDropdown" name="names[]" multiple="multiple">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Filter on one or many tracks</label>
+                <select class="form-select form-select-lg" asp-items="ViewBag.Tracks" id="tracksDropdown" name="tracks[]" multiple="multiple">
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<div class="position-relative">
+    @Html.Raw(ViewBag.Table)
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#namesDropdown").select2();
+            $("#tracksDropdown").select2();
+
+            $('#leaderboardTable').DataTable({
+                ordering: false,
+                paging: false,
+                scrollY: '300px',
+                layout: {
+                    topEnd: null
+                },
+                columnDefs: [
+                    {
+                        title: '✅',
+                        targets: 0
+                    },
+                    {
+                        title: 'Pos.',
+                        targets: 2
+                    },
+                    {
+                        title: 'Vehicle 1',
+                        targets: 7
+                    },
+                    {
+                        title: 'Vehicle 2',
+                        targets: 8
+                    },
+                    {
+                        title: 'Vehicle 3',
+                        targets: 9
+                    },
+                    {
+                        title: 'Vehicle 4',
+                        targets: 10
+                    },
+                    {
+                        title: 'Vehicle 5',
+                        targets: 11
+                    }
+                ]
+            });
+
+            $('#namesDropdown').on('change.select2', function (e) {
+                applyFilters();
+            });
+            $('#tracksDropdown').on('change.select2', function (e) {
+                applyFilters();
+            });
+        });
+    </script>
+
+    <script>
+        function applyFilters() {
+
+            var table = $('#leaderboardTable').DataTable();
+            var nameData = $("#namesDropdown").select2('data');
+            var trackData = $("#tracksDropdown").select2('data');
+
+            var tracks = jQuery.map(trackData, function (x) {
+                return '^' + x.id + '$';
+            }).join('|');
+
+            table.column(1).search(tracks, true, false, false).draw(false);
+
+            var names = jQuery.map(nameData, function (x) {
+                return '^' + x.id + '$';
+            }).join('|');
+
+            table.column(3).search(names, true, false, false).draw(false);
+        }
+
+    </script>
+
+}

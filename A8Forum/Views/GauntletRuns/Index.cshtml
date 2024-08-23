@@ -1,0 +1,150 @@
+﻿@model IEnumerable<A8Forum.ViewModels.GauntletRunViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<p>
+    <a asp-action="Report">Report</a>
+</p>
+
+<p>
+    <a asp-action="Import">Import</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm col-md-6">
+                <label id="trackSelector">Track</label>
+                <select for="trackSelector" name="TrackId" id="trackDropdown" class="form-control" asp-items="ViewBag.TrackId" onchange='this.form.submit();'>
+                    <option value="-1">-- Select Track --</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm col-md-6">
+                <label id="memberSelector">Member</label>
+                <select for="memberSelector" name="MemberId" id="memberDropdown" class="form-control" asp-items="ViewBag.MemberId" onchange='this.form.submit();'>
+                    <option value="-1">-- Select Member --</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 col-sm-4">
+                <label id="dateFromSelector">Insert date from</label>
+                <input type="date" name="InsertDateFrom" value='@(((DateTime?)ViewData["InsertDateFrom"])?.ToString("yyyy-MM-dd"))' class="form-control" onchange='this.form.submit();' />
+            </div>
+
+            <div class="col-md-2 col-sm-4">
+                <label id="dateToSelector">Insert date to</label>
+                <input type="date" name="InsertDateTo" value='@(((DateTime?)ViewData["InsertDateTo"])?.ToString("yyyy-MM-dd"))' class="form-control" onchange='this.form.submit();' />
+            </div>
+        </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LapTimeVerified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member.MemberDisplayName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeString)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Idate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Track)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle1)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle2)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle3)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle4)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle5)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="@(item.Deleted ? "deleted" : "" )">
+                <td>
+                    @(item.LapTimeVerified ? "✅" : "")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Member.MemberDisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeString)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Idate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Track.TrackName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle1.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle2.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle3.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle4.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle5.Name)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.GauntletRunId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.GauntletRunId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.GauntletRunId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () { $("#trackDropdown").select2(); });
+        $(document).ready(function () { $("#memberDropdown").select2(); });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

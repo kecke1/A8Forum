@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - A8Forum.azurewebsites.net</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/A8Forum.azurewebsites.net.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Css", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Index"><img src="~/A8.png" class="img-mobile"/></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+
+                        @if(User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="forumChallengeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Forum Challenge</a>
+                                <ul class="dropdown-menu" aria-labelledby="forumChallengeDropdown">
+                                    <li> <a class="dropdown-item text-dark" asp-area="" asp-controller="ForumChallenges" asp-action="Index">Forum Challenges</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="ForumChallengeRuns" asp-action="Index">Runs</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Series" asp-action="Index">Series</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="gantletFcDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gauntlet FC</a>
+                                <ul class="dropdown-menu" aria-labelledby="forumChallengeDropdown">
+                                    <li> <a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletRuns" asp-action="Index">Gauntlet Runs</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletRuns" asp-action="Report">Leaderboard BBCode</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Index">Leaderboard table</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="giftLinkDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gift Link</a>
+                                <ul class="dropdown-menu" aria-labelledby="giftLinkDropdown">
+                                    <li> <a class="dropdown-item text-dark" asp-area="" asp-controller="GiftLinks" asp-action="Index">Gift Links</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="GiftLinkProviders" asp-action="Index">Gift Link Providers</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="masterDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Master Data</a>
+                                <ul class="dropdown-menu" aria-labelledby="masterDataDropdown">
+                                    <li> <a class="dropdown-item text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="RankBrackets" asp-action="Index">Rank Brackets</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Seasons" asp-action="Index">Seasons</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Tracks" asp-action="Index">Tracks</a></li>
+                                    <li> <a class="dropdown-item text-dark" asp-area="" asp-controller="CareerRaces" asp-action="Index">Career Races</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Vehicles" asp-action="Index">Vehicles</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="DataManagement" asp-action="Export">Export Data</a></li>
+                                </ul>
+                            </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="manageUsersDropdown" role="button" data-bs-toggle ="dropdown" aria-expanded="false">Manage users</a>
+                            <ul class="dropdown-menu" aria-labelledby="manageUsersDropdown">
+                                <li> <a class="dropdown-item text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
+                                    <li><a class="dropdown-item text-dark" asp-area="" asp-controller="RoleManager" asp-action="Index">Roles</a></li>
+                            </ul>
+                        </li>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023, 2024 - Kecke
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

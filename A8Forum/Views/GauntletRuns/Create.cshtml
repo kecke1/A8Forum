@@ -1,0 +1,126 @@
+﻿@model A8Forum.ViewModels.GauntletRunViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Gauntket Run</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TimeString" class="control-label"></label>
+                <input asp-for="TimeString" class="form-control" />
+                <span asp-validation-for="TimeString" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostUrl" class="control-label"></label>
+                <input asp-for="PostUrl" class="form-control" />
+                <span asp-validation-for="PostUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MediaLink" class="control-label"></label>
+                <input asp-for="MediaLink" class="form-control" />
+                <span asp-validation-for="MediaLink" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RunDate" class="control-label"></label>
+                <input asp-for="RunDate" class="form-control" />
+                <span asp-validation-for="RunDate" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Deleted" /> @Html.DisplayNameFor(model => model.Deleted)
+                </label>
+            </div>
+
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="LapTimeVerified" /> @Html.DisplayNameFor(model => model.LapTimeVerified)
+                </label>
+            </div>
+
+            @if (ViewBag.IsAdmin)
+            {
+                <div class="form-group">
+                    <label asp-for="Member.MemberId" class="control-label"></label>
+                <select asp-for="Member.MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
+                    <option value="">-- Select Member --</option>
+                </select>
+                <span asp-validation-for="Member.MemberId" class="text-danger" />
+            </div>
+            }
+            <div class="form-group">
+                <label asp-for="Track" class="control-label"></label>
+                <select asp-for="Track.TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
+                    <option value="">-- Select Track --</option>
+                </select>
+                <span asp-validation-for="Track.TrackId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Vehicle1" class="control-label"></label>
+                <select asp-for="Vehicle1.VehicleId" class="form-control" asp-items="ViewBag.Vehicle1Id" id="vehicles1Dropdown">
+                    <option value="">-- Select Vehicle --</option>
+                </select>
+                <span asp-validation-for="Vehicle1.VehicleId" class="text-danger" />
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="Vehicle2" class="control-label"></label>
+                <select asp-for="Vehicle2.VehicleId" class="form-control" asp-items="ViewBag.Vehicle2Id" id="vehicles2Dropdown">
+                    <option value="">-- Select Vehicle --</option>
+                </select>
+                <span asp-validation-for="Vehicle2.VehicleId" class="text-danger" />
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="Vehicle3" class="control-label"></label>
+                <select asp-for="Vehicle3.VehicleId" class="form-control" asp-items="ViewBag.Vehicle3Id" id="vehicles3Dropdown">
+                    <option value="">-- Select Vehicle --</option>
+                </select>
+                <span asp-validation-for="Vehicle3.VehicleId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Vehicle4" class="control-label"></label>
+                <select asp-for="Vehicle4.VehicleId" class="form-control" asp-items="ViewBag.Vehicle4Id" id="vehicles4Dropdown">
+                    <option value="">-- Select Vehicle --</option>
+                </select>
+                <span asp-validation-for="Vehicle4.VehicleId" class="text-danger" />
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Vehicle5" class="control-label"></label>
+                <select asp-for="Vehicle5.VehicleId" class="form-control" asp-items="ViewBag.Vehicle5Id" id="vehicles5Dropdown">
+                    <option value="">-- Select Vehicle --</option>
+                </select>
+                <span asp-validation-for="Vehicle5.VehicleId" class="text-danger" />
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#membersDropdown").select2();
+        $("#tracksDropdown").select2();
+        $(document).ready(function () { $("#vehicles1Dropdown").select2(); });
+        $(document).ready(function () { $("#vehicles2Dropdown").select2(); });
+        $(document).ready(function () { $("#vehicles3Dropdown").select2(); });
+        $(document).ready(function () { $("#vehicles4Dropdown").select2(); });
+        $(document).ready(function () { $("#vehicles5Dropdown").select2(); });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

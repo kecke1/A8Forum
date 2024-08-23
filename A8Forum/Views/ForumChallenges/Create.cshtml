@@ -1,0 +1,67 @@
+﻿@model A8Forum.ViewModels.ForumChallengeViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Forum Challenge</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>d
+            </div>
+            <div class="form-group">
+                <label asp-for="Season" class="control-label"></label>
+                <select asp-for="Season.SeasonId" class="form-control" asp-items="ViewBag.SeasonId">
+                    <option value="">-- Select Season --</option>
+                   </select>
+                <span asp-validation-for="Season.SeasonId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Track" class="control-label"></label>
+                <select asp-for="Track.TrackId" class="form-control" asp-items="ViewBag.TrackId">
+                    <option value="">-- Select Track --</option>
+                </select>
+                <span asp-validation-for="Track.TrackId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Post" class="control-label"></label>
+                <input asp-for="Post" class="form-control" />
+                <span asp-validation-for="Post" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomTitle" class="control-label"></label>
+                <input asp-for="CustomTitle" class="form-control" />
+                <span asp-validation-for="CustomTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaxRank" class="control-label"></label>
+                <input asp-for="MaxRank" class="form-control" />
+                <span asp-validation-for="MaxRank" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

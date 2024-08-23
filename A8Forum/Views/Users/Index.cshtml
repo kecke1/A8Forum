@@ -1,0 +1,38 @@
+﻿@using A8Forum.ViewModels
+@model List<UsersViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>User Roles</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Locked</th>
+            <th>Roles</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@Html.DisplayFor(model => user.Locked)</td>
+                <td>@string.Join(" , ", user.Roles.ToList())</td>
+                <td>
+                    <a asp-action="ManageRoles" asp-route-userId="@user.UserId">Manage Roles</a> |
+                    <a asp-action="ChangePassword" asp-route-userId="@user.UserId">Change Password</a> |
+                    <a asp-action="DeleteUser" asp-route-userId="@user.UserId">Delete User</a> |
+                    <a asp-action="ToggleLockout" asp-route-userId="@user.UserId">Toggle Lockout</a> |
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

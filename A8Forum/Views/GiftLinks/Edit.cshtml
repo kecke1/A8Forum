@@ -1,0 +1,64 @@
+﻿@model A8Forum.ViewModels.GiftLinkViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>GiftLink</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="GiftLinkId" />
+            <div class="form-group">
+                <label asp-for="Url" class="control-label"></label>
+                <input asp-for="Url" class="form-control" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GiftLinkProvider" class="control-label"></label>
+                <select asp-for="GiftLinkProvider.GiftLinkProviderId" class="form-control" asp-items="ViewBag.GiftLinkProviderId"></select>
+                <span asp-validation-for="GiftLinkProvider" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubmitedBy" class="control-label"></label>
+                <select asp-for="SubmitedBy.MemberId" class="form-control" asp-items="ViewBag.MemberId"></select>
+                <span asp-validation-for="SubmitedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Deleted" /> @Html.DisplayNameFor(model => model.Deleted)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Idate" class="control-label"></label>
+                <input asp-for="Idate" class="form-control" />
+                <span asp-validation-for="Idate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Month" class="control-label"></label>
+                <input asp-for="Month" class="form-control" />
+                <span asp-validation-for="Month" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
