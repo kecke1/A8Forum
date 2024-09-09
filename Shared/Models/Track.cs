@@ -4,5 +4,5 @@ namespace Shared.Models;
 
 public class Track : Item
 {
-    public string TrackName { get; set; }
+    public required string TrackName { get; set; }
 }

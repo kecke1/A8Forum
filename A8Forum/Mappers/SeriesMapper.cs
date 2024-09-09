@@ -1,24 +1,25 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 using Shared.Extensions;
 
 namespace A8Forum.Mappers;
 
 internal static class SeriesMapper
 {
-    public static SeriesDTO ToDto(this ViewModels.SeriesViewModel r)
+    public static SeriesDTO ToDto(this SeriesViewModel r)
     {
         return new SeriesDTO
         {
             Id = r.SeriesId,
             EndDate = r.EndDate,
-            StartDate = r.StartDate,
+            StartDate = r.StartDate
         };
     }
 
-    public static ViewModels.SeriesViewModel ToSeriesViewModel(this SeriesDTO model,
+    public static SeriesViewModel ToSeriesViewModel(this SeriesDTO model,
         string leaderboard, string leaderboardHtml)
     {
-        return new ViewModels.SeriesViewModel
+        return new SeriesViewModel
         {
             SeriesId = model.Id,
             EndDate = model.EndDate,

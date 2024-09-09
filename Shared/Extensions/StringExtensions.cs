@@ -26,17 +26,14 @@ public static class StringExtensions
         throw new Exception("Unable to parse time string");
     }
 
-    public static string GetTdCell(this string text, string style = "", bool spanText = true, bool emptyCellIfMissing = true)
+    public static string GetTdCell(this string text, string style = "", bool spanText = true,
+        bool emptyCellIfMissing = true)
     {
         if (string.IsNullOrEmpty(text) && !emptyCellIfMissing)
-        {
             return "";
-        }
 
         if (spanText)
-        {
             return $"[td style=\"white-space: nowrap;{style}\"]{text}[/td]";
-        }
         return $"[td style=\"{style}\"]{text}[/td]";
     }
 
@@ -45,9 +42,7 @@ public static class StringExtensions
         style += ";border: 1px solid";
 
         if (spanText)
-        {
             return $"[th style=\"padding:1px;white-space: nowrap;{style}\"]{text}[/th]";
-        }
         return $"[th style=\"padding:1px;{style}\"]{text}[/th]";
     }
 

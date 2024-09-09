@@ -5,19 +5,12 @@ using Shared.Services;
 namespace A8Forum.Controllers;
 
 [Authorize(Policy = "AdminRole")]
-public class DataManagementController : Controller
+public class DataManagementController(IDataManagementService dataManagementService) : Controller
 {
-    private readonly IDataManagementService _dataManagementService;
-
-    public DataManagementController(IDataManagementService dataManagementService)
-    {
-        _dataManagementService = dataManagementService;
-    }
-
     [HttpGet]
     public async Task<JsonResult> Export()
     {
-        var export = await _dataManagementService.ExportData();
+        var export = await dataManagementService.ExportData();
 
         return Json(export);
     }

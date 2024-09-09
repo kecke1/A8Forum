@@ -1,10 +1,11 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class CareerRaceMapper
 {
-    public static CareerRaceDTO ToDto(this ViewModels.CareerRaceViewModel r)
+    public static CareerRaceDTO ToDto(this CareerRaceViewModel r)
     {
         return new CareerRaceDTO
         {
@@ -20,9 +21,9 @@ internal static class CareerRaceMapper
         };
     }
 
-    public static ViewModels.CareerRaceViewModel ToCareerRaceViewModel(this CareerRaceDTO model)
+    public static CareerRaceViewModel ToCareerRaceViewModel(this CareerRaceDTO model)
     {
-        return new ViewModels.CareerRaceViewModel
+        return new CareerRaceViewModel
         {
             CareerRaceId = model.Id,
             CareerRaceType = model.CareerRaceType,

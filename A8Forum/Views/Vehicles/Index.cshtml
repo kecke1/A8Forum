@@ -1,4 +1,4 @@
-﻿@model IEnumerable<A8Forum.ViewModels.VehicleViewModel>
+﻿@model IEnumerable<VehicleViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -15,21 +15,22 @@
 
 <table class="table" id="vehicleTable">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Url)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaxRank)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Url)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaxRank)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -41,12 +42,12 @@
                 @Html.DisplayFor(modelItem => item.MaxRank)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.VehicleId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.VehicleId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.VehicleId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.VehicleId">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
 
@@ -75,5 +76,3 @@
         }
     </script>
 }
-
-

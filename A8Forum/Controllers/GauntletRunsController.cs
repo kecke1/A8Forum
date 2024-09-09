@@ -1,35 +1,26 @@
 ﻿using A8Forum.Areas.Identity.Data;
 using A8Forum.Extensions;
 using A8Forum.Mappers;
+using A8Forum.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dto;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
 
 [Authorize]
-public class GauntletRunsController : Controller
-{
-    private readonly IGauntletService _gauntletService;
-    private readonly IMasterDataService _masterDataService;
-    private readonly IAuthorizationService _authorizationService;
-    private readonly UserManager<A8ForumazurewebsitesnetUser> _userManager;
-
-    public GauntletRunsController(IMasterDataService masterDataService,
+public class GauntletRunsController(IMasterDataService masterDataService,
         IGauntletService gauntletService, IAuthorizationService authorizationService,
         UserManager<A8ForumazurewebsitesnetUser> userManager)
-    {
-        _gauntletService = gauntletService;
-        _masterDataService = masterDataService;
-        _authorizationService = authorizationService;
-        _userManager = userManager;
-    }
-
-    private async Task PopulateVehiclesDropDownListAsync(string? vehicle1Id = null, string? vehicle2Id = null, string? vehicle3Id = null, string? vehicle4Id = null,
+    : Controller
+{
+    private async Task PopulateVehiclesDropDownListAsync(string? vehicle1Id = null, string? vehicle2Id = null,
+        string? vehicle3Id = null, string? vehicle4Id = null,
         string? vehicle5Id = null)
     {
-        var q = (await _masterDataService.GetVehiclesAsync())
+        var q = (await masterDataService.GetVehiclesAsync())
             .Select(x => x.ToVehicleViewModel())
             .OrderBy(x => x.MaxRank)
             .ToList();
@@ -42,8 +33,8 @@ public class GauntletRunsController : Controller
 
     private async Task PopulateTracksDropDownListAsync(string? trackId = null)
     {
-        var q = (await _masterDataService
-            .GetTracksAsync())
+        var q = (await masterDataService
+                .GetTracksAsync())
             .Select(y => y.ToTrackViewModel()).OrderBy(x => x.TrackName)
             .ToList();
 
@@ -52,7 +43,7 @@ public class GauntletRunsController : Controller
 
     private async Task PopulateMembersDropDownListAsync(string? memberId = null)
     {
-        var q = await _masterDataService.GetMembersAsync();
+        var q = await masterDataService.GetMembersAsync();
 
         ViewBag.MemberId = q.Select(x => x.ToMemberViewModel()).OrderBy(y => y.MemberDisplayName)
             .OrderBy(x => x.MemberDisplayName)
@@ -60,37 +51,36 @@ public class GauntletRunsController : Controller
             .ToSelectList(memberId);
     }
 
-    public async Task<IActionResult> Index(string? trackId = null, string? memberId = null, DateTime? InsertDateFrom = null, DateTime? InsertDateTo = null)
+    public async Task<IActionResult> Index(string? trackId = null, string? memberId = null,
+        DateTime? InsertDateFrom = null, DateTime? InsertDateTo = null)
     {
         await PopulateTracksDropDownListAsync(trackId);
         await PopulateMembersDropDownListAsync(memberId);
         ViewData["InsertDateFrom"] = InsertDateFrom ?? DateTime.Now.AddYears(-1);
         ViewData["InsertDateTo"] = InsertDateTo ?? DateTime.Now;
 
-        var query = (await _gauntletService.GetGauntletRunsAsync()).ToList();
+        var query = (await gauntletService.GetGauntletRunsAsync()).ToList();
 
         if (!string.IsNullOrEmpty(trackId) && trackId != "-1")
-        {
             query = query.Where(x => x.Track.Id == trackId).ToList();
-        }
 
         if (!string.IsNullOrEmpty(memberId) && memberId != "-1")
-        {
             query = query.Where(x => x.Member.Id == memberId).ToList();
-        }
 
-        query = query.Where(x => x.Idate >= ((DateTime)ViewData["InsertDateFrom"]) && x.Idate <= ((DateTime)ViewData["InsertDateTo"]).AddDays(1)).ToList();
+        query = query.Where(x =>
+            x.Idate >= (DateTime)ViewData["InsertDateFrom"] &&
+            x.Idate <= ((DateTime)ViewData["InsertDateTo"]).AddDays(1)).ToList();
 
         var runs = query.Select(x => x.ToGauntletRunViewModel())
-             .OrderByDescending(x => x.Idate)
-             .ToList();
+            .OrderByDescending(x => x.Idate)
+            .ToList();
 
         return View(runs);
     }
 
     public async Task<IActionResult> Report()
     {
-        return View(await _gauntletService.GetGauntletReportAsync());
+        return View(await gauntletService.GetGauntletReportAsync());
     }
 
     public async Task<IActionResult> Details(string? id)
@@ -98,7 +88,7 @@ public class GauntletRunsController : Controller
         if (id == null)
             return NotFound();
 
-        var gauntletDefence = await _gauntletService.GetGauntletRunAsync(id);
+        var gauntletDefence = await gauntletService.GetGauntletRunAsync(id);
         if (gauntletDefence == null)
             return NotFound();
 
@@ -115,11 +105,11 @@ public class GauntletRunsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Import(
-        Shared.Dto.GauntletImportDTO gauntletDefences)
+        GauntletImportDTO gauntletDefences)
     {
         if (ModelState.IsValid)
         {
-            await _gauntletService.ImportGauntletRunsAsync(gauntletDefences);
+            await gauntletService.ImportGauntletRunsAsync(gauntletDefences);
             return RedirectToAction(nameof(Index));
         }
 
@@ -134,7 +124,7 @@ public class GauntletRunsController : Controller
         await PopulateMembersDropDownListAsync();
         await PopulateTracksDropDownListAsync();
 
-        var isAdmin = await _authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
         ViewBag.IsAdmin = isAdmin.Succeeded;
 
         return View();
@@ -146,18 +136,20 @@ public class GauntletRunsController : Controller
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> Create(
-        [Bind("GauntletRunId,TimeString,Deleted, LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
-        ViewModels.GauntletRunViewModel gauntletRun)
+        [Bind(
+            "GauntletRunId,TimeString,Deleted, LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
+        GauntletRunViewModel gauntletRun)
     {
         if (ModelState.IsValid)
         {
-            var isAdmin = await _authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
+            var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
             if (!isAdmin.Succeeded)
             {
-                var user = await _userManager.GetUserAsync(User);
-                gauntletRun.Member = (await _masterDataService.GetMemberAsync(user.MemberId)).ToMemberViewModel();
+                var user = await userManager.GetUserAsync(User);
+                gauntletRun.Member = (await masterDataService.GetMemberAsync(user.MemberId)).ToMemberViewModel();
             }
-            await _gauntletService.AddGauntletRunAsync(gauntletRun.ToDto());
+
+            await gauntletService.AddGauntletRunAsync(gauntletRun.ToDto());
             return RedirectToAction(nameof(Index));
         }
 
@@ -174,11 +166,12 @@ public class GauntletRunsController : Controller
         if (id == null)
             return NotFound();
 
-        var d = await _gauntletService.GetGauntletRunAsync(id);
+        var d = await gauntletService.GetGauntletRunAsync(id);
         if (d == null)
             return NotFound();
 
-        await PopulateVehiclesDropDownListAsync(d.Vehicle1.Id, d.Vehicle2.Id, d.Vehicle3.Id, d.Vehicle4?.Id, d.Vehicle5?.Id);
+        await PopulateVehiclesDropDownListAsync(d.Vehicle1.Id, d.Vehicle2.Id, d.Vehicle3.Id, d.Vehicle4?.Id,
+            d.Vehicle5?.Id);
         await PopulateTracksDropDownListAsync(d.Track.Id);
         await PopulateMembersDropDownListAsync(d.Member.Id);
 
@@ -193,7 +186,7 @@ public class GauntletRunsController : Controller
     public async Task<IActionResult> Edit(string id,
         [Bind(
             "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
-        ViewModels.GauntletRunViewModel d)
+        GauntletRunViewModel d)
     {
         if (id != d.GauntletRunId)
             return NotFound();
@@ -202,7 +195,7 @@ public class GauntletRunsController : Controller
         {
             try
             {
-                await _gauntletService.UpdateGauntletRunAsync(d.ToDto());
+                await gauntletService.UpdateGauntletRunAsync(d.ToDto());
             }
             catch (Exception)
             {
@@ -212,7 +205,8 @@ public class GauntletRunsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        await PopulateVehiclesDropDownListAsync(d.Vehicle1.VehicleId, d.Vehicle2.VehicleId, d.Vehicle3.VehicleId, d.Vehicle4?.VehicleId, d.Vehicle5?.VehicleId);
+        await PopulateVehiclesDropDownListAsync(d.Vehicle1.VehicleId, d.Vehicle2.VehicleId, d.Vehicle3.VehicleId,
+            d.Vehicle4?.VehicleId, d.Vehicle5?.VehicleId);
         await PopulateTracksDropDownListAsync(d.Track.TrackId);
         await PopulateMembersDropDownListAsync(d.Member.MemberId);
         return View(d);
@@ -223,7 +217,7 @@ public class GauntletRunsController : Controller
         if (id == null)
             return NotFound();
 
-        var gauntletRun = await _gauntletService.GetGauntletRunAsync(id);
+        var gauntletRun = await gauntletService.GetGauntletRunAsync(id);
         if (gauntletRun == null)
             return NotFound();
 
@@ -236,7 +230,7 @@ public class GauntletRunsController : Controller
     [Authorize(Policy = "GauntletAdminRole")]
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
-        await _gauntletService.DeleteGauntletRunAsync(id);
+        await gauntletService.DeleteGauntletRunAsync(id);
         return RedirectToAction(nameof(Index));
     }
 }

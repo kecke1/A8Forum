@@ -1,25 +1,24 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using A8Forum.Areas.Identity.Data
-
+﻿@using A8Forum.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<A8ForumazurewebsitesnetUser> SignInManager
 @inject UserManager<A8ForumazurewebsitesnetUser> UserManager
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <div class="nav-link text-dark"> Hello @UserManager.GetUserName(User)!</div>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "GauntletLeaderboard", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <div class="nav-link text-dark"> Hello @UserManager.GetUserName(User)!</div>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "GauntletLeaderboard", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
 </ul>

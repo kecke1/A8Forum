@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Shared.Enums;
 
 namespace A8Forum.ViewModels;
 
@@ -7,15 +8,15 @@ public class CareerRaceViewModel
     [Display(Name = "Id")]
     public string? CareerRaceId { get; set; }
 
-    public Shared.Enums.CareerRaceTypeEnum CareerRaceType { get; set; } = Shared.Enums.CareerRaceTypeEnum.Classic;
+    public CareerRaceTypeEnum CareerRaceType { get; set; } = CareerRaceTypeEnum.Classic;
 
     [Required]
-    public TrackViewModel Track { get; set; }
+    public required TrackViewModel Track { get; set; }
 
-    public Shared.Enums.ClassEnum? Class { get; set; }
+    public ClassEnum? Class { get; set; }
 
     [Required]
-    public SeasonViewModel Season { get; set; }
+    public required SeasonViewModel Season { get; set; }
 
     [Required]
     public bool Limitations { get; set; } = false;

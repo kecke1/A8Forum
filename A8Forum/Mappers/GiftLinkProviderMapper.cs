@@ -1,10 +1,11 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class GiftLinkProviderMapper
 {
-    public static GiftLinkProviderDTO ToDto(this ViewModels.GiftLinkProvider g)
+    public static GiftLinkProviderDTO ToDto(this GiftLinkProvider g)
     {
         return new GiftLinkProviderDTO
         {
@@ -16,9 +17,9 @@ internal static class GiftLinkProviderMapper
         };
     }
 
-    public static ViewModels.GiftLinkProvider ToGiftLinkProviderViewModel(this GiftLinkProviderDTO model)
+    public static GiftLinkProvider ToGiftLinkProviderViewModel(this GiftLinkProviderDTO model)
     {
-        return new ViewModels.GiftLinkProvider
+        return new GiftLinkProvider
         {
             GiftLinkProviderId = model.Id,
             Deleted = model.Deleted,

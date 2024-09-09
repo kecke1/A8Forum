@@ -11,6 +11,6 @@ public class ForumChallenge : Item
     public string? CustomTitle { get; set; } = "";
     public bool Deleted { get; set; }
     public string MaxRank { get; set; } = "";
-    public string TrackId { get; set; }
-    public string SeasonId { get; set; }
+    public required string TrackId { get; set; }
+    public required string SeasonId { get; set; }
 }

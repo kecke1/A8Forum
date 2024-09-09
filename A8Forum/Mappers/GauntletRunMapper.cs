@@ -1,11 +1,12 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 using Shared.Extensions;
 
 namespace A8Forum.Mappers;
 
 internal static class GauntletRunMapper
 {
-    public static GauntletRunDTO ToDto(this ViewModels.GauntletRunViewModel r)
+    public static GauntletRunDTO ToDto(this GauntletRunViewModel r)
     {
         return new GauntletRunDTO
         {
@@ -27,9 +28,9 @@ internal static class GauntletRunMapper
         };
     }
 
-    public static ViewModels.GauntletRunViewModel ToGauntletRunViewModel(this GauntletRunDTO model)
+    public static GauntletRunViewModel ToGauntletRunViewModel(this GauntletRunDTO model)
     {
-        return new ViewModels.GauntletRunViewModel
+        return new GauntletRunViewModel
         {
             GauntletRunId = model.Id,
             Track = model.Track.ToTrackViewModel(),

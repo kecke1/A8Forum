@@ -1,10 +1,11 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class TrackMapper
 {
-    public static TrackDTO ToDto(this ViewModels.TrackViewModel track)
+    public static TrackDTO ToDto(this TrackViewModel track)
     {
         return new TrackDTO
         {
@@ -13,9 +14,9 @@ internal static class TrackMapper
         };
     }
 
-    public static ViewModels.TrackViewModel ToTrackViewModel(this TrackDTO model)
+    public static TrackViewModel ToTrackViewModel(this TrackDTO model)
     {
-        return new ViewModels.TrackViewModel
+        return new TrackViewModel
         {
             TrackId = model.Id,
             TrackName = model.TrackName

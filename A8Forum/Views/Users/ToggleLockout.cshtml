@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.ToggleLockoutViewModel
+﻿@model ToggleLockoutViewModel
 
 @{
     ViewData["Title"] = "Lock Out";
@@ -12,14 +12,13 @@
 else
 {
     <h1>Lockout</h1>
-<h3>Are you sure you want to lockout this user?</h3>
+    <h3>Are you sure you want to lockout this user?</h3>
 }
-
 
 
 <div>
     <h4>User</h4>
-    <hr />
+    <hr/>
     <dl class="row">
         <dt class="col-sm-2">
             User
@@ -30,8 +29,8 @@ else
     </dl>
 
     <form asp-action="ToggleLockout">
-        <input type="hidden" asp-for="UserId" />
-        <input type="submit" value="DeleteUser" class="btn btn-danger" /> |
+        <input type="hidden" asp-for="UserId"/>
+        <input type="submit" value="DeleteUser" class="btn btn-danger"/> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>

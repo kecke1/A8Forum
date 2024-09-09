@@ -11,26 +11,16 @@ using Shared.Services;
 namespace A8Forum.Controllers;
 
 [Authorize(Policy = "AdminRole")]
-public class UsersController : Controller
-{
-    private readonly UserManager<A8ForumazurewebsitesnetUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IMasterDataService _masterDataService;
-
-    public UsersController(UserManager<A8ForumazurewebsitesnetUser> userManager,
+public class UsersController(UserManager<A8ForumazurewebsitesnetUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IMasterDataService masterDataService)
-    {
-        _roleManager = roleManager;
-        _userManager = userManager;
-        _masterDataService = masterDataService;
-    }
-
+    : Controller
+{
     public async Task<IActionResult> Index()
     {
-        var users = await _userManager.Users.ToListAsync();
+        var users = await userManager.Users.ToListAsync();
         var userRolesViewModel = new List<UsersViewModel>();
-        foreach (A8ForumazurewebsitesnetUser user in users)
+        foreach (var user in users)
         {
             var thisViewModel = new UsersViewModel
             {
@@ -41,6 +31,7 @@ public class UsersController : Controller
             };
             userRolesViewModel.Add(thisViewModel);
         }
+
         return View(userRolesViewModel);
     }
 
@@ -53,7 +44,8 @@ public class UsersController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Member, UserName, Password, ConfirmPassword")] CreateUserViewModel input)
+    public async Task<IActionResult> Create(
+        [Bind("Member, UserName, Password, ConfirmPassword")] CreateUserViewModel input)
     {
         if (ModelState.IsValid)
         {
@@ -66,91 +58,75 @@ public class UsersController : Controller
                 MemberId = input.Member.MemberId
             };
 
-            var result = await _userManager.CreateAsync(user, input.Password);
+            var result = await userManager.CreateAsync(user, input.Password);
 
             if (result.Succeeded)
-            {
                 return RedirectToAction(nameof(Index));
-            }
 
             foreach (var error in result.Errors)
-            {
                 ModelState.AddModelError(string.Empty, error.Description);
-            }
         }
+
         return View(input);
     }
 
     public async Task<IActionResult> DeleteUser(string? userId)
     {
         if (userId == null)
-        {
             return NotFound();
-        }
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user == null)
-        {
             return NotFound();
-        }
 
         return View(new DeleteUserViewModel { UserName = user.UserName, UserId = userId });
     }
 
-    [HttpPost, ActionName("DeleteUser")]
+    [HttpPost]
+    [ActionName("DeleteUser")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user != null)
-        {
-            await _userManager.DeleteAsync(user);
-        }
+            await userManager.DeleteAsync(user);
         return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> ToggleLockout(string? userId)
     {
         if (userId == null)
-        {
             return NotFound();
-        }
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user == null)
-        {
             return NotFound();
-        }
 
-        return View(new ToggleLockoutViewModel { UserName = user.UserName, UserId = userId, IsLockedOut = user.LockoutEnd.HasValue });
+        return View(new ToggleLockoutViewModel
+            { UserName = user.UserName, UserId = userId, IsLockedOut = user.LockoutEnd.HasValue });
     }
 
-    [HttpPost, ActionName("ToggleLockout")]
+    [HttpPost]
+    [ActionName("ToggleLockout")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleLockoutConfirmed(string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user != null)
-        {
-            await _userManager.SetLockoutEndDateAsync(user, user.LockoutEnd.HasValue ? null : DateTimeOffset.MaxValue);
-        }
+            await userManager.SetLockoutEndDateAsync(user, user.LockoutEnd.HasValue ? null : DateTimeOffset.MaxValue);
         return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> ChangePassword(string? userId)
     {
         if (userId == null)
-        {
             return NotFound();
-        }
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user == null)
-        {
             return NotFound();
-        }
 
-        return View(new ChangePasswordViewModel { UserName = user.UserName, UserId = userId });
+        return View(new ChangePasswordViewModel { UserName = user.UserName, UserId = userId, Password = "", ConfirmPassword = ""});
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -158,110 +134,103 @@ public class UsersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangePassword(string userId,
-        [Bind("UserId, Password, ConfirmPassword, UserName")] ChangePasswordViewModel model)
+        [Bind("UserId, Password, ConfirmPassword, UserName")]
+        ChangePasswordViewModel model)
     {
         if (userId != model.UserId)
-        {
             return NotFound();
-        }
 
         if (ModelState.IsValid)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await userManager.FindByIdAsync(userId);
                 if (user == null)
-                {
                     return NotFound($"Unable to load user with ID '{userId}'.");
-                }
 
-                var result = await _userManager.RemovePasswordAsync(user);
+                var result = await userManager.RemovePasswordAsync(user);
                 if (result.Succeeded)
-                {
-                    result = await _userManager.AddPasswordAsync(user, model.Password);
-                }
+                    result = await userManager.AddPasswordAsync(user, model.Password);
 
                 if (!result.Succeeded)
                 {
                     foreach (var error in result.Errors)
-                    {
                         ModelState.AddModelError(string.Empty, error.Description);
-                    }
                     return View(model);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return NotFound();
             }
+
             return RedirectToAction(nameof(Index));
         }
+
         return View(model);
     }
 
     public async Task<IActionResult> ManageRoles(string userId)
     {
         ViewBag.userId = userId;
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user == null)
         {
             ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
             return View("NotFound");
         }
+
         ViewBag.UserName = user.UserName;
         var model = new List<ManageUserRolesViewModel>();
-        foreach (var role in _roleManager.Roles)
+        foreach (var role in roleManager.Roles)
         {
             var userRolesViewModel = new ManageUserRolesViewModel
             {
                 RoleId = role.Id,
                 RoleName = role.Name
             };
-            if (await _userManager.IsInRoleAsync(user, role.Name))
-            {
+            if (await userManager.IsInRoleAsync(user, role.Name))
                 userRolesViewModel.Selected = true;
-            }
             else
-            {
                 userRolesViewModel.Selected = false;
-            }
             model.Add(userRolesViewModel);
         }
+
         return View(model);
     }
 
     [HttpPost]
     public async Task<IActionResult> ManageRoles(List<ManageUserRolesViewModel> model, string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId);
         if (user == null)
-        {
             return View();
-        }
-        var roles = await _userManager.GetRolesAsync(user);
-        var result = await _userManager.RemoveFromRolesAsync(user, roles);
+        var roles = await userManager.GetRolesAsync(user);
+        var result = await userManager.RemoveFromRolesAsync(user, roles);
         if (!result.Succeeded)
         {
             ModelState.AddModelError("", "Cannot remove user existing roles");
             return View(model);
         }
-        result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName));
+
+        result = await userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName));
         if (!result.Succeeded)
         {
             ModelState.AddModelError("", "Cannot add selected roles to user");
             return View(model);
         }
+
         return RedirectToAction("Index");
     }
 
     private async Task<List<string>> GetUserRoles(A8ForumazurewebsitesnetUser user)
     {
-        return new List<string>(await _userManager.GetRolesAsync(user));
+        return new List<string>(await userManager.GetRolesAsync(user));
     }
 
     private async Task PopulateMembersDropDownListAsync(string? memberId = null)
     {
-        var q = (await _masterDataService.GetMembersAsync()).Select(x => x.ToMemberViewModel());
+        var q = (await masterDataService.GetMembersAsync()).Select(x => x.ToMemberViewModel());
         ViewBag.MemberId = q.ToSelectList(memberId);
     }
 }

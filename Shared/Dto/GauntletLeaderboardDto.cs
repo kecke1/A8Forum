@@ -2,7 +2,7 @@
 
 public class GauntletLeaderboardDto
 {
-    public string id { get; set; }
+    public required string id { get; set; }
     public DateTime CreatedDate { get; set; }
-    public IList<GauntletLeaderboardRowDto> Leaderboard { get; set; }
+    public required IList<GauntletLeaderboardRowDto> Leaderboard { get; set; }
 }

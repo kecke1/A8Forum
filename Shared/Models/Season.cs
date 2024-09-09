@@ -4,5 +4,5 @@ namespace Shared.Models;
 
 public class Season : Item
 {
-    public string SeasonName { get; set; }
+    public required string SeasonName { get; set; }
 }

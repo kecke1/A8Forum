@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.VehicleViewModel
+﻿@model VehicleViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,12 +8,12 @@
 
 <div>
     <h4>Vehicle</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
@@ -28,16 +28,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Keyword)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Url)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Url)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MaxRank)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.MaxRank)
         </dd>
     </dl>

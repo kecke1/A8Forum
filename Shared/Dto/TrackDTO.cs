@@ -1,8 +1,7 @@
-namespace Shared.Dto
+namespace Shared.Dto;
+
+public class TrackDTO
 {
-    public class TrackDTO
-    {
-        public string Id { get; set; }
-        public string TrackName { get; set; }
-    }
+    public required string Id { get; set; }
+    public required string TrackName { get; set; }
 }

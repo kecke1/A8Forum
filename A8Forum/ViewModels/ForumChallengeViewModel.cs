@@ -54,8 +54,8 @@ public class ForumChallengeViewModel
     public string MaxRank { get; set; } = "";
 
     [Display(Name = "Track")]
-    public TrackViewModel? Track { get; set; } = new TrackViewModel();
+    public TrackViewModel? Track { get; set; } = new();
 
     [Display(Name = "Season")]
-    public SeasonViewModel? Season { get; set; } = new SeasonViewModel();
+    public SeasonViewModel? Season { get; set; } = new();
 }

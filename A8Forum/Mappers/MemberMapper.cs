@@ -1,10 +1,11 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class MemberMapper
 {
-    public static MemberDTO ToDto(this ViewModels.MemberViewModel member)
+    public static MemberDTO ToDto(this MemberViewModel member)
     {
         return new MemberDTO
         {
@@ -15,9 +16,9 @@ internal static class MemberMapper
         };
     }
 
-    public static ViewModels.MemberViewModel ToMemberViewModel(this MemberDTO model)
+    public static MemberViewModel ToMemberViewModel(this MemberDTO model)
     {
-        var v = new ViewModels.MemberViewModel
+        var v = new MemberViewModel
         {
             Guest = model.Guest,
             MemberDisplayName = model.MemberDisplayName,
@@ -25,9 +26,7 @@ internal static class MemberMapper
         };
 
         if (model.Id != null)
-        {
             v.MemberId = model.Id;
-        }
 
         return v;
     }

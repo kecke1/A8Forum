@@ -1,10 +1,11 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class ForumChallengeMapper
 {
-    public static ForumChallengeDTO ToDto(this ViewModels.ForumChallengeViewModel r)
+    public static ForumChallengeDTO ToDto(this ForumChallengeViewModel r)
     {
         return new ForumChallengeDTO
         {
@@ -21,9 +22,9 @@ internal static class ForumChallengeMapper
         };
     }
 
-    public static ViewModels.ForumChallengeViewModel ToForumChallengeViewModel(this ForumChallengeDTO model)
+    public static ForumChallengeViewModel ToForumChallengeViewModel(this ForumChallengeDTO model)
     {
-        return new ViewModels.ForumChallengeViewModel
+        return new ForumChallengeViewModel
         {
             ForumChallengeId = model.Id,
             EndDate = model.EndDate,

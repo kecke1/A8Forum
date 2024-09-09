@@ -1,23 +1,24 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class RankBracketMapper
 {
-    public static RankBracketDTO ToDto(this ViewModels.RankBracketViewModel rankBracket)
+    public static RankBracketDTO ToDto(this RankBracketViewModel rankBracket)
     {
         return new RankBracketDTO
         {
             Id = rankBracket.RankBracketId,
             Class = rankBracket.Class,
             MaxRank = rankBracket.MaxRank,
-            MinRank = rankBracket.MinRank,
+            MinRank = rankBracket.MinRank
         };
     }
 
-    public static ViewModels.RankBracketViewModel ToRankBracketViewModel(this RankBracketDTO model)
+    public static RankBracketViewModel ToRankBracketViewModel(this RankBracketDTO model)
     {
-        return new ViewModels.RankBracketViewModel
+        return new RankBracketViewModel
         {
             RankBracketId = model.Id,
             Class = model.Class,

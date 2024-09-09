@@ -7,5 +7,5 @@ public enum ClassEnum
     B = 2,
     A = 3,
     S = 4,
-    NONE = 5,
+    NONE = 5
 }

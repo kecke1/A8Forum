@@ -4,7 +4,8 @@ namespace Shared.Services;
 
 public interface IForumChallengeService
 {
-    public Task<IEnumerable<ForumChallengeDTO>> GetForumChallengesAsync(DateTime? fromDate = null, DateTime? toDate = null);
+    public Task<IEnumerable<ForumChallengeDTO>> GetForumChallengesAsync(DateTime? fromDate = null,
+        DateTime? toDate = null);
 
     public Task<ForumChallengeDTO> GetForumChallengeAsync(string forumChallengeId);
 
@@ -34,7 +35,8 @@ public interface IForumChallengeService
 
     public Task DeleteForumChallengeRunAsync(string runId);
 
-    public IOrderedEnumerable<ForumChallengeLeaderboardDto> GetForumChallengeLeaderBoardDto(IEnumerable<ForumChallengeRunDTO> runs);
+    public IOrderedEnumerable<ForumChallengeLeaderboardDto> GetForumChallengeLeaderBoardDto(
+        IEnumerable<ForumChallengeRunDTO> runs);
 
     public string GetForumChallengeLeaderboard(IOrderedEnumerable<ForumChallengeLeaderboardDto> lb);
 

@@ -5,11 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace A8Forum.Data;
 
-public class A8ForumazurewebsitesnetContex : CosmosIdentityDbContext<A8ForumazurewebsitesnetUser, IdentityRole, string>
+public class A8ForumazurewebsitesnetContex(DbContextOptions dbContextOptions) : CosmosIdentityDbContext<A8ForumazurewebsitesnetUser, IdentityRole, string>(dbContextOptions)
 {
-    public A8ForumazurewebsitesnetContex(DbContextOptions dbContextOptions)
-      : base(dbContextOptions) { }
-
     //  protected override void OnModelCreating(ModelBuilder builder)
     // {
     //    base.OnModelCreating(builder);

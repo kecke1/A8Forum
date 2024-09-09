@@ -5,23 +5,23 @@ namespace Shared.Dto;
 public class GauntletReportDTO
 {
     [Display(Name = "Best lap times BB Code")]
-    public string LeaderBoardByMember { get; set; }
+    public required string LeaderBoardByMember { get; set; }
 
     [Display(Name = "Leaderboards BB Code")]
-    public string LeaderBoardByTrack { get; set; }
+    public required string LeaderBoardByTrack { get; set; }
 
     [Display(Name = "Best lap times")]
-    public string LeaderBoardByMemberHtml { get; set; }
+    public string? LeaderBoardByMemberHtml { get; set; }
 
     [Display(Name = "Leaderboards")]
-    public string LeaderBoardByTrackHtml { get; set; }
+    public string? LeaderBoardByTrackHtml { get; set; }
 
     [Display(Name = "Total Leaderboard BB Code")]
-    public string TotalLeaderBoard { get; set; }
+    public required string TotalLeaderBoard { get; set; }
 
     [Display(Name = "Total Leaderboard")]
-    public string TotalLeaderBoardHtml { get; set; }
+    public string? TotalLeaderBoardHtml { get; set; }
 
     [Display(Name = "Leaderboard Json")]
-    public string LeaderBoardJson { get; set; }
+    public string? LeaderBoardJson { get; set; }
 }

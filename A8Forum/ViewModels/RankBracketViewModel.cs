@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Shared.Enums;
 
 namespace A8Forum.ViewModels;
 
@@ -17,5 +18,5 @@ public class RankBracketViewModel
 
     [Required]
     [Display(Name = "Class")]
-    public Shared.Enums.ClassEnum Class { get; set; }
+    public ClassEnum Class { get; set; }
 }

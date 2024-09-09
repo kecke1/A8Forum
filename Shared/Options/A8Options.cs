@@ -2,11 +2,11 @@
 
 public class A8Options
 {
-    public string VehiclesUrl { get; set; }
-    public string VehiclesBaseUrl { get; set; }
-    public string CosmosConnection { get; set; }
-    public string CosmosDb { get; set; }
-    public string AdminUser { get; set; }
-    public string AdminPassword { get; set; }
-    public string SetupCosmosDb { get; set; }
+    public required string VehiclesUrl { get; set; }
+    public required string VehiclesBaseUrl { get; set; }
+    public required string CosmosConnection { get; set; }
+    public required string CosmosDb { get; set; }
+    public required string AdminUser { get; set; }
+    public required string AdminPassword { get; set; }
+    public required string SetupCosmosDb { get; set; }
 }

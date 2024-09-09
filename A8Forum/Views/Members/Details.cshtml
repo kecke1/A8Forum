@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.MemberViewModel
+﻿@model MemberViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,20 +8,20 @@
 
 <div>
     <h4>Member</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MemberName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.MemberName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MemberDisplayName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.MemberDisplayName)
-        </dd> 
+        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Guest)
         </dt>

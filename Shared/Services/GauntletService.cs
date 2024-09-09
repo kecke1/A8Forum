@@ -10,31 +10,23 @@ using Shared.Options;
 
 namespace Shared.Services;
 
-public class GauntletService : IGauntletService
-{
-    private readonly IRepository<GauntletRun> _gauntletRunRepository;
-    private readonly IMasterDataService _masterDataService;
-    private readonly string _vehiclesBaseUrl;
-
-    public GauntletService(IRepository<GauntletRun> gauntletRunRepository,
+public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
         IMasterDataService masterDataService,
-         IOptions<A8Options> options)
-    {
-        _gauntletRunRepository = gauntletRunRepository;
-        _masterDataService = masterDataService;
-        _vehiclesBaseUrl = options.Value.VehiclesBaseUrl;
-    }
+        IOptions<A8Options> options)
+    : IGauntletService
+{
+    private readonly string _vehiclesBaseUrl = options.Value.VehiclesBaseUrl;
 
     public async Task AddGauntletRunAsync(GauntletRunDTO r)
     {
-        await _gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
+        await gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
     }
 
     public async Task DeleteGauntletRunAsync(string gauntletRunId)
     {
         var r = await GetGauntletRunAsync(gauntletRunId);
         r.Deleted = true;
-        await _gauntletRunRepository.UpdateAsync(r.ToGauntletRunEntity());
+        await gauntletRunRepository.UpdateAsync(r.ToGauntletRunEntity());
     }
 
     public async Task<IOrderedEnumerable<GauntletLeaderboardRowDto>> GetGauntletLeaderboardRowsAsync()
@@ -42,7 +34,6 @@ public class GauntletService : IGauntletService
         var races = (await GetGauntletRunsAsync())
             .Where(x => !x.Deleted);
 
-        var created = DateTime.Now;
         var q = races
             .GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
             .Select(x =>
@@ -68,11 +59,21 @@ public class GauntletService : IGauntletService
                     VehicleName3 = bestRace.Vehicle3.ShortName,
                     VehicleName4 = bestRace.Vehicle4?.ShortName,
                     VehicleName5 = bestRace.Vehicle5?.ShortName,
-                    VehicleUrl1 = string.IsNullOrEmpty(bestRace.Vehicle1.Url) ? "" : _vehiclesBaseUrl + bestRace.Vehicle1.Url,
-                    VehicleUrl2 = string.IsNullOrEmpty(bestRace.Vehicle2.Url) ? "" : _vehiclesBaseUrl + bestRace.Vehicle2.Url,
-                    VehicleUrl3 = string.IsNullOrEmpty(bestRace.Vehicle3.Url) ? "" : _vehiclesBaseUrl + bestRace.Vehicle3.Url,
-                    VehicleUrl4 = string.IsNullOrEmpty(bestRace.Vehicle4?.Url) ? "" : _vehiclesBaseUrl + bestRace.Vehicle4.Url,
-                    VehicleUrl5 = string.IsNullOrEmpty(bestRace.Vehicle5?.Url) ? "" : _vehiclesBaseUrl + bestRace.Vehicle5.Url,
+                    VehicleUrl1 = string.IsNullOrEmpty(bestRace.Vehicle1.Url)
+                        ? ""
+                        : _vehiclesBaseUrl + bestRace.Vehicle1.Url,
+                    VehicleUrl2 = string.IsNullOrEmpty(bestRace.Vehicle2.Url)
+                        ? ""
+                        : _vehiclesBaseUrl + bestRace.Vehicle2.Url,
+                    VehicleUrl3 = string.IsNullOrEmpty(bestRace.Vehicle3.Url)
+                        ? ""
+                        : _vehiclesBaseUrl + bestRace.Vehicle3.Url,
+                    VehicleUrl4 = string.IsNullOrEmpty(bestRace.Vehicle4?.Url)
+                        ? ""
+                        : _vehiclesBaseUrl + bestRace.Vehicle4.Url,
+                    VehicleUrl5 = string.IsNullOrEmpty(bestRace.Vehicle5?.Url)
+                        ? ""
+                        : _vehiclesBaseUrl + bestRace.Vehicle5.Url,
                     Runs = orderedRaces
                 };
 
@@ -113,9 +114,7 @@ public class GauntletService : IGauntletService
     {
         var tables = new List<string>();
         foreach (var track in races.GroupBy(x => x.MemberDisplayName).OrderBy(x => x.Key))
-        {
             tables.Add(GetGauntletLeaderboardTableByMember(track.Select(x => x).OrderBy(x => x.TrackName)));
-        }
         var output = @$"[b]Best lap times[/b]
 
         {string.Join("\n", tables)}";
@@ -126,11 +125,9 @@ public class GauntletService : IGauntletService
     {
         var tables = new List<string>();
         foreach (var track in races.GroupBy(x => x.TrackName).OrderBy(x => x.Key))
-        {
             tables.Add(GetGauntletLeaderboardTableByTrack(track.Select(x => x)
                 .OrderBy(x => x.Position)
                 .ThenByDescending(x => x.RunDate ?? DateTime.MinValue)));
-        }
 
         var output = @$"[b]Leaderboards by track[/b]
 
@@ -141,10 +138,10 @@ public class GauntletService : IGauntletService
 
     public async Task<GauntletRunDTO> GetGauntletRunAsync(string gauntletRunId)
     {
-        var r = await _gauntletRunRepository.GetAsync(gauntletRunId);
-        var member = await _masterDataService.GetMemberAsync(r.MemberId);
-        var track = await _masterDataService.GetTrackAsync(r.TrackId);
-        var vehicles = (await _masterDataService.GetVehiclesAsync()).ToArray();
+        var r = await gauntletRunRepository.GetAsync(gauntletRunId);
+        var member = await masterDataService.GetMemberAsync(r.MemberId);
+        var track = await masterDataService.GetTrackAsync(r.TrackId);
+        var vehicles = (await masterDataService.GetVehiclesAsync()).ToArray();
 
         return r.ToDto(track,
             vehicles.Single(y => y.Id == r.Vehicle1Id),
@@ -157,57 +154,39 @@ public class GauntletService : IGauntletService
 
     public async Task<IEnumerable<GauntletRunDTO>> GetGauntletRunsAsync()
     {
-        var vehicles = (await _masterDataService.GetVehiclesAsync()).ToArray();
-        var tracks = (await _masterDataService.GetTracksAsync()).ToArray();
-        var members = (await _masterDataService.GetMembersAsync()).ToArray();
-        var r = (await _gauntletRunRepository.GetAsync(x => true)).ToArray();
+        var vehicles = (await masterDataService.GetVehiclesAsync()).ToArray();
+        var tracks = (await masterDataService.GetTracksAsync()).ToArray();
+        var members = (await masterDataService.GetMembersAsync()).ToArray();
+        var r = (await gauntletRunRepository.GetAsync(x => true)).ToArray();
 
         return r.Select(x => x
-        .ToDto(tracks
-        .Single(y => y.Id == x.TrackId),
-        vehicles.Single(y => y.Id == x.Vehicle1Id),
-        vehicles.Single(y => y.Id == x.Vehicle2Id),
-        vehicles.Single(y => y.Id == x.Vehicle3Id),
-        vehicles.SingleOrDefault(y => y.Id == x.Vehicle4Id),
-        vehicles.SingleOrDefault(y => y.Id == x.Vehicle5Id),
-        members.Single(y => y.Id == x.MemberId)))
-        .ToArray();
-    }
-
-    private class GauntletLeaderboardResultDto
-    {
-        public string Name { get; set; }
-        public int Points { get; set; }
-        public int Position { get; set; }
-        public int NumberOfTracks { get; set; }
-        public double AvgPoints { get; set; }
-    }
-
-    private string GetGautletTotalLeaderboardTableRow(GauntletLeaderboardResultDto g, int position, int index)
-    {
-        return
-            @$"[tr {(index % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
-{($"{position}.".GetTdCell("padding:1px;padding-left:7px", true))}
-{($"{g.Points}".GetTdCell("padding:1px;padding-left:7px", true))}
-{($"@{g.Name}".GetTdCell("padding:1px;padding-left:7px", true))}
-{($"{g.NumberOfTracks}".GetTdCell("padding:1px;padding-left:7px", true))}
-{($"{Math.Round(g.AvgPoints, 1)}".GetTdCell("padding:1px;padding-left:7px", true))}
-[/tr]";
+                .ToDto(tracks
+                        .Single(y => y.Id == x.TrackId),
+                    vehicles.Single(y => y.Id == x.Vehicle1Id),
+                    vehicles.Single(y => y.Id == x.Vehicle2Id),
+                    vehicles.Single(y => y.Id == x.Vehicle3Id),
+                    vehicles.SingleOrDefault(y => y.Id == x.Vehicle4Id),
+                    vehicles.SingleOrDefault(y => y.Id == x.Vehicle5Id),
+                    members.Single(y => y.Id == x.MemberId)))
+            .ToArray();
     }
 
     public async Task<string> GetGauntletTotalLeaderboardTableAsync(IEnumerable<GauntletLeaderboardRowDto> races)
     {
         var p = 1;
         var result = races.GroupBy(x => x.MemberId)
-            .Select(x => new GauntletLeaderboardResultDto { Name = x.First().MemberName, Points = x.Sum(y => y.PositionPoints), Position = 0, NumberOfTracks = x.Count(), AvgPoints = x.Count() > 0 ? x.Sum(y => y.PositionPoints) / Convert.ToDouble(x.Count()) : 0 })
+            .Select(x => new GauntletLeaderboardResultDto
+            {
+                Name = x.First().MemberName, Points = x.Sum(y => y.PositionPoints), Position = 0,
+                NumberOfTracks = x.Count(),
+                AvgPoints = x.Any() ? x.Sum(y => y.PositionPoints) / Convert.ToDouble(x.Count()) : 0
+            })
             .GroupBy(x => x.Points, y => y)
             .OrderByDescending(x => x.Key)
             .SelectMany((x, i) =>
             {
                 foreach (var r in x)
-                {
                     r.Position = p;
-                }
 
                 p += x.Count();
                 return x;
@@ -261,8 +240,8 @@ The total leaderboard points are the sum of the points given in each track leade
 
     public async Task ImportGauntletRunsAsync(GauntletImportDTO races)
     {
-        var tracks = (await _masterDataService.GetTracksAsync()).ToArray();
-        var vehicles = (await _masterDataService.GetVehiclesAsync()).Where(x => x.MaxRank > 1850).ToArray();
+        var tracks = (await masterDataService.GetTracksAsync()).ToArray();
+        var vehicles = (await masterDataService.GetVehiclesAsync()).Where(x => x.MaxRank > 1850).ToArray();
 
         var toCreate = new List<GauntletRunDTO>();
 
@@ -271,72 +250,83 @@ The total leaderboard points are the sum of the points given in each track leade
             if (string.IsNullOrEmpty(row))
                 continue;
 
-            var gd = new GauntletRunDTO();
-            gd.Idate = DateTime.Now;
-
-            var cols = row.Trim().Split(string.IsNullOrEmpty(races.Seperator) ? "\t" : races.Seperator).Select(x => x.Trim()).ToArray();
-
-            gd.Time = cols[races.TimeColumn - 1].FromTimestringToInt();
-
-            gd.Track = tracks.First(x => x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), cols[races.TrackColumn - 1]));
+            var cols = row.Trim().Split(string.IsNullOrEmpty(races.Seperator) ? "\t" : races.Seperator)
+                .Select(x => x.Trim()).ToArray();
 
             var v = cols[races.VehiclesColumn - 1].Split(races.VehiclesSeperator);
 
-            gd.Vehicle1 = ClosestMatch(vehicles, v[0]);
-            gd.Vehicle2 = ClosestMatch(vehicles, v[1]);
-            gd.Vehicle3 = ClosestMatch(vehicles, v[2]);
-
-            if (v.Length > 3)
+            var gd = new GauntletRunDTO
             {
-                gd.Vehicle4 = ClosestMatch(vehicles, v[3]);
-            }
+                Idate = DateTime.Now,
+                Time = cols[races.TimeColumn - 1].FromTimestringToInt(),
+                Track = tracks.First(x =>
+                    x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), cols[races.TrackColumn - 1])),
+                Vehicle1 = ClosestMatch(vehicles, v[0]),
+                Vehicle2 = ClosestMatch(vehicles, v[1]),
+                Vehicle3 = ClosestMatch(vehicles, v[2]),
+                Vehicle4 = v.Length > 3 ? ClosestMatch(vehicles, v[3]) : null,
+                Vehicle5 = v.Length > 4 ? ClosestMatch(vehicles, v[4]) : null,
+                RunDate = races.RunDateColumn != 0 ? DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null) : null,
+                LapTimeVerified = races.VehiclesColumn != 0 && cols[races.VerifiedColumn - 1] == "1",
+                Member = await masterDataService.GetMemberAsync(races.MemberId),
+                PostUrl = races.PostUrl
+            };
 
-            if (v.Length > 4)
-            {
-                gd.Vehicle5 = ClosestMatch(vehicles, v[4]);
-            }
-
-            if (races.RunDateColumn != 0)
-            {
-                gd.RunDate = DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null);
-            }
-
-            if (races.VerifiedColumn != 0)
-            {
-                if (cols[races.VerifiedColumn - 1] == "1")
-                {
-                    gd.LapTimeVerified = true;
-                }
-            }
 
             if (races.MediaLinkColumn != 0)
             {
                 gd.MediaLink = cols[races.MediaLinkColumn - 1];
                 gd.LapTimeVerified = true;
             }
-
-            gd.Member = await _masterDataService.GetMemberAsync(races.MemberId);
-            gd.PostUrl = races.PostUrl;
-
             toCreate.Add(gd);
         }
 
         foreach (var r in toCreate)
-        {
-            await _gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
-        }
+            await gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
     }
 
     public async Task UpdateGauntletRunAsync(GauntletRunDTO r)
     {
-        await _gauntletRunRepository.UpdateAsync(r.ToGauntletRunEntity());
+        await gauntletRunRepository.UpdateAsync(r.ToGauntletRunEntity());
+    }
+
+    public async Task<GauntletReportDTO> GetGauntletReportAsync()
+    {
+        var races = await GetGauntletLeaderboardRowsAsync();
+        var byTrack = await GetGauntletLeaderboardByTrackAsync(races);
+        var byMember = await GetGauntletLeaderboardByMemberAsync(races);
+
+        var report = new GauntletReportDTO
+        {
+            LeaderBoardByTrack = byTrack,
+            LeaderBoardByMember = byMember,
+            TotalLeaderBoard = await GetGauntletTotalLeaderboardTableAsync(races)
+        };
+        report.LeaderBoardByMemberHtml = report.LeaderBoardByMember.ToHtml();
+        report.LeaderBoardByTrackHtml = report.LeaderBoardByTrack.ToHtml();
+        report.TotalLeaderBoardHtml = report.TotalLeaderBoard.ToHtml();
+        report.LeaderBoardJson = JsonConvert.SerializeObject(races);
+        return report;
+    }
+
+    private string GetGautletTotalLeaderboardTableRow(GauntletLeaderboardResultDto g, int position, int index)
+    {
+        return
+            @$"[tr {(index % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
+{$"{position}.".GetTdCell("padding:1px;padding-left:7px")}
+{$"{g.Points}".GetTdCell("padding:1px;padding-left:7px")}
+{$"@{g.Name}".GetTdCell("padding:1px;padding-left:7px")}
+{$"{g.NumberOfTracks}".GetTdCell("padding:1px;padding-left:7px")}
+{$"{Math.Round(g.AvgPoints, 1)}".GetTdCell("padding:1px;padding-left:7px")}
+[/tr]";
     }
 
     private string GetGauntletLeaderboardTableByMember(IOrderedEnumerable<GauntletLeaderboardRowDto> races)
     {
         var numberOfVehicles = GetNumberOfUsedGauntletVehicles(races);
 
-        var output = @$"´[b]@{races.First().MemberName}[/b][spoiler][div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
+        var output =
+            @$"´[b]@{races.First().MemberName}[/b][spoiler][div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
 [thead style='background-color: black; color:white; font-weight:bold;']
 [tr]
 {"✅".GetTdHeaderCell("", false)}
@@ -361,16 +351,17 @@ The total leaderboard points are the sum of the points given in each track leade
 
     private int GetNumberOfUsedGauntletVehicles(IOrderedEnumerable<GauntletLeaderboardRowDto> races)
     {
-        return races.Any(x => !string.IsNullOrEmpty(x.VehicleName5)) ? 5 : races.Any(x => !string.IsNullOrEmpty(x.VehicleName4)) ? 4 : 3;
+        return races.Any(x => !string.IsNullOrEmpty(x.VehicleName5)) ? 5 :
+            races.Any(x => !string.IsNullOrEmpty(x.VehicleName4)) ? 4 : 3;
     }
 
     private string GetGauntletLeaderboardTableRowByMember(GauntletLeaderboardRowDto race, int i, int numberOfVehicles)
     {
         return $@"[tr {(i % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
 {GetTdCellWithBorder(race.LapTimeVerified ? "✅" : "", false)}
-{GetTdCellWithBorder(race.TrackName, true)}
-{GetTdCellWithBorder(race.TimeString, true)}
-{GetTdCellWithBorder((race.RunDate.HasValue ? race.RunDate.Value.ToString("dd.MM.yyyy") : ""), true)}
+{GetTdCellWithBorder(race.TrackName)}
+{GetTdCellWithBorder(race.TimeString)}
+{GetTdCellWithBorder(race.RunDate.HasValue ? race.RunDate.Value.ToString("dd.MM.yyyy") : "")}
 {GetTdCellWithBorder(!string.IsNullOrEmpty(race.MediaLink) ? GetLinkOrText(race.MediaLink, "🎦") : "", false)}
 {GetGauntletTableVehicleCell(race.VehicleUrl1, race.VehicleName1, true)}
 {GetGauntletTableVehicleCell(race.VehicleUrl2, race.VehicleName2, true)}
@@ -402,9 +393,9 @@ The total leaderboard points are the sum of the points given in each track leade
         return $@"[tr {(i % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
 
 {GetTdCellWithBorder(race.LapTimeVerified ? "✅" : "", false)}
-{GetTdCellWithBorder(($"{race.Position}."), false)}
-{GetTdCellWithBorder(($"@{race.MemberName}"), true)}
-{GetTdCellWithBorder(race.TimeString, true)}
+{GetTdCellWithBorder($"{race.Position}.", false)}
+{GetTdCellWithBorder($"@{race.MemberName}")}
+{GetTdCellWithBorder(race.TimeString)}
 {GetTdCellWithBorder(race.RunDate.HasValue ? race.RunDate.Value.ToString("dd.MM.yyyy") : "", race.RunDate.HasValue)}
 {GetTdCellWithBorder(!string.IsNullOrEmpty(race.MediaLink) ? GetLinkOrText(race.MediaLink, "🎦") : "", false)}
 {GetGauntletTableVehicleCell(race.VehicleUrl1, race.VehicleName1, true)}
@@ -419,7 +410,8 @@ The total leaderboard points are the sum of the points given in each track leade
     {
         var numberOfVehicles = GetNumberOfUsedGauntletVehicles(races);
 
-        return @$"[b]{races.First().TrackName}[/b][spoiler][div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
+        return
+            @$"[b]{races.First().TrackName}[/b][spoiler][div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
 [thead style='background-color: black; color:white; font-weight:bold;']
 [tr]
 {"✅".GetTdHeaderCell("", false)}
@@ -458,6 +450,7 @@ The total leaderboard points are the sum of the points given in each track leade
                 result = t;
             }
         }
+
         return result;
     }
 
@@ -476,10 +469,9 @@ The total leaderboard points are the sum of the points given in each track leade
             {
                 var kwDistance = lcs.Distance(d.Trim(), s);
                 if (kwDistance < shortest)
-                {
                     shortest = kwDistance;
-                }
             }
+
             // var d = Fastenshtein.Levenshtein.Distance(t, s);
             if (shortest < distance)
             {
@@ -487,25 +479,16 @@ The total leaderboard points are the sum of the points given in each track leade
                 result = v;
             }
         }
+
         return result;
     }
 
-    public async Task<GauntletReportDTO> GetGauntletReportAsync()
+    private class GauntletLeaderboardResultDto
     {
-        var report = new GauntletReportDTO();
-
-        var races = await GetGauntletLeaderboardRowsAsync();
-
-        var byTrack = await GetGauntletLeaderboardByTrackAsync(races);
-        report.LeaderBoardByTrack = byTrack;
-        var byMember = await GetGauntletLeaderboardByMemberAsync(races);
-
-        report.LeaderBoardByMember = byMember;
-        report.TotalLeaderBoard = await GetGauntletTotalLeaderboardTableAsync(races);
-        report.LeaderBoardByMemberHtml = report.LeaderBoardByMember.ToHtml();
-        report.LeaderBoardByTrackHtml = report.LeaderBoardByTrack.ToHtml();
-        report.TotalLeaderBoardHtml = report.TotalLeaderBoard.ToHtml();
-        report.LeaderBoardJson = JsonConvert.SerializeObject(races);
-        return report;
+        public required string Name { get; set; }
+        public int Points { get; set; }
+        public int Position { get; set; }
+        public int NumberOfTracks { get; set; }
+        public double AvgPoints { get; set; }
     }
 }

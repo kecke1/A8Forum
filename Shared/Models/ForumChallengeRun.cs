@@ -8,7 +8,7 @@ public class ForumChallengeRun : Item
     public DateTime Idate { get; set; } = DateTime.Now;
     public string? Post { get; set; } = "";
     public bool Deleted { get; set; } = false;
-    public string ForumChallengeId { get; set; }
-    public string MemberId { get; set; }
+    public required string ForumChallengeId { get; set; }
+    public required string MemberId { get; set; }
     public string? VehicleId { get; set; }
 }

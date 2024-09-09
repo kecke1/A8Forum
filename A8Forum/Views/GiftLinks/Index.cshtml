@@ -1,4 +1,4 @@
-﻿@model IEnumerable<A8Forum.ViewModels.GiftLinkViewModel>
+﻿@model IEnumerable<GiftLinkViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,7 @@
 <form asp-action="Index" method="get">
     <div class="form-group">
         <label id="monthSelector">Month</label>
-        <select for="monthSelector" name="MonthId" class="form-control" asp-items="ViewBag.MonthId" onchange='if(this.value != null) { this.form.submit(); }'>
+        <select for="monthSelector" name="MonthId" class="form-control" asp-items="ViewBag.MonthId" onchange="if(this.value != null) { this.form.submit(); }">
         </select>
     </div>
 </form>
@@ -21,36 +21,37 @@
 
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Url)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GiftLinkProvider)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubmitedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Idate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Month)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Url)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GiftLinkProvider)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubmitedBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Deleted)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Idate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Month)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Notes)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-            <tr class="@(item.Deleted ? "deleted" : "" )">
+    @foreach (var item in Model)
+    {
+        <tr class="@(item.Deleted ? "deleted" : "")">
             <td>
-                    <a href='@item.Url'> @Html.DisplayFor(modelItem => item.Url)</a>
+                <a href='@item.Url'> @Html.DisplayFor(modelItem => item.Url)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.GiftLinkProvider.Name)
@@ -76,11 +77,11 @@
                 <a asp-action="Delete" asp-route-id="@item.GiftLinkId">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
 
-                
+
 <h3>Gift Links</h3>
 <textarea rows="20" readonly="readonly" style="width: 100%">@ViewBag.GiftLinkList</textarea>
 

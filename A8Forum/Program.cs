@@ -24,25 +24,25 @@ if (bool.TryParse(options.SetupCosmosDb, out var setup) && setup)
     var builder1 = new DbContextOptionsBuilder<A8ForumazurewebsitesnetContex>();
     builder1.UseCosmos(options.CosmosConnection, options.CosmosDb);
 
-    using (var dbContext = new A8ForumazurewebsitesnetContex(builder1.Options))
+     using (var dbContext = new A8ForumazurewebsitesnetContex(builder1.Options))
     {
         dbContext.Database.EnsureCreated();
     }
 }
 
 builder.Services.AddDbContext<A8ForumazurewebsitesnetContex>(o =>
-    o.UseCosmos(connectionString: options.CosmosConnection, databaseName: options.CosmosDb));
+    o.UseCosmos(options.CosmosConnection, options.CosmosDb));
 
 builder.Services.AddCosmosIdentity<A8ForumazurewebsitesnetContex, A8ForumazurewebsitesnetUser, IdentityRole, string>(
-      options =>
-      {
-          options.SignIn.RequireConfirmedAccount = true; // Always a good idea :)
-          options.SignIn.RequireConfirmedEmail = false;
-          options.User.RequireUniqueEmail = false;
-      }
+        options =>
+        {
+            options.SignIn.RequireConfirmedAccount = true; // Always a good idea :)
+            options.SignIn.RequireConfirmedEmail = false;
+            options.User.RequireUniqueEmail = false;
+        }
     )
     .AddDefaultUI(); // Use this if Identity Scaffolding is in use
-                     //.AddDefaultTokenProviders();
+//.AddDefaultTokenProviders();
 
 // Add services to the container.
 builder.Services.AddAuthorization(x =>
@@ -50,10 +50,12 @@ builder.Services.AddAuthorization(x =>
     x.AddPolicy("AdminRole", policy => policy.RequireRole(nameof(IdentityRoleEnum.Admin)));
 
     x.AddPolicy("ForumChallengeUserRole",
-        policy => policy.RequireRole(nameof(IdentityRoleEnum.ForumChallengeUser), nameof(IdentityRoleEnum.ForumChallengeAdmin), nameof(IdentityRoleEnum.Admin)));
+        policy => policy.RequireRole(nameof(IdentityRoleEnum.ForumChallengeUser),
+            nameof(IdentityRoleEnum.ForumChallengeAdmin), nameof(IdentityRoleEnum.Admin)));
 
     x.AddPolicy("GauntletUserRole",
-        policy => policy.RequireRole(nameof(IdentityRoleEnum.GauntletUser), nameof(IdentityRoleEnum.GauntletAdmin), nameof(IdentityRoleEnum.Admin)));
+        policy => policy.RequireRole(nameof(IdentityRoleEnum.GauntletUser), nameof(IdentityRoleEnum.GauntletAdmin),
+            nameof(IdentityRoleEnum.Admin)));
     x.AddPolicy("ForumChallengeAdminRole",
         policy => policy.RequireRole(nameof(IdentityRoleEnum.ForumChallengeAdmin), nameof(IdentityRoleEnum.Admin)));
 
@@ -61,16 +63,16 @@ builder.Services.AddAuthorization(x =>
         policy => policy.RequireRole(nameof(IdentityRoleEnum.GauntletAdmin), nameof(IdentityRoleEnum.Admin)));
 
     x.AddPolicy("GiftLinkRole",
-    policy => policy.RequireRole(nameof(IdentityRoleEnum.Admin)));
+        policy => policy.RequireRole(nameof(IdentityRoleEnum.Admin)));
 });
 
 builder.Services.AddCosmosRepository(
-x =>
-{
-    x.CosmosConnectionString = options.CosmosConnection;
-    x.DatabaseId = options.CosmosDb;
-    x.ContainerPerItemType = true;
-});
+    x =>
+    {
+        x.CosmosConnectionString = options.CosmosConnection;
+        x.DatabaseId = options.CosmosDb;
+        x.ContainerPerItemType = true;
+    });
 
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddScoped<IGauntletService, GauntletService>();
@@ -84,45 +86,42 @@ var app = builder.Build();
 
 if (setup)
 {
-    using (var scope = app.Services.CreateScope())
+    using var scope = app.Services.CreateScope();
+    //initializing custom roles
+    var UserManager =
+        (UserManager<A8ForumazurewebsitesnetUser>)scope.ServiceProvider.GetService(
+            typeof(UserManager<A8ForumazurewebsitesnetUser>));
+    var RoleManager =
+        (RoleManager<IdentityRole>)scope.ServiceProvider.GetService(typeof(RoleManager<IdentityRole>));
+
+    foreach (var roleName in Enum.GetNames<IdentityRoleEnum>())
     {
-        //initializing custom roles
-        var UserManager = (UserManager<A8ForumazurewebsitesnetUser>)scope.ServiceProvider.GetService(typeof(UserManager<A8ForumazurewebsitesnetUser>));
-        var RoleManager = (RoleManager<IdentityRole>)scope.ServiceProvider.GetService(typeof(RoleManager<IdentityRole>));
+        var roleExist = await RoleManager.RoleExistsAsync(roleName);
+        if (!roleExist)
+            //create the roles and seed them to the database
+            await RoleManager.CreateAsync(new IdentityRole(roleName));
+    }
 
-        foreach (var roleName in Enum.GetNames<IdentityRoleEnum>())
+    //Create a super user who will maintain the web app
+    if (!string.IsNullOrEmpty(options.AdminUser))
+    {
+        var poweruser = new A8ForumazurewebsitesnetUser
         {
-            var roleExist = await RoleManager.RoleExistsAsync(roleName);
-            if (!roleExist)
-            {
-                //create the roles and seed them to the database
-                await RoleManager.CreateAsync(new IdentityRole(roleName));
-            }
-        }
+            UserName = options.AdminUser,
+            Email = $"{options.AdminUser}@A8Forum.azurewebsites.net",
+            EmailConfirmed = true
+        };
 
-        //Create a super user who will maintain the web app
-        if (!string.IsNullOrEmpty(options.AdminUser))
+        //Ensure you have these values in your appsettings.json file
+        var userPWD = options.AdminPassword;
+        var _user = await UserManager.FindByNameAsync(poweruser.UserName);
+
+        if (_user == null)
         {
-            var poweruser = new A8ForumazurewebsitesnetUser
-            {
-                UserName = options.AdminUser,
-                Email = $"{options.AdminUser}@A8Forum.azurewebsites.net",
-                EmailConfirmed = true
-            };
-
-            //Ensure you have these values in your appsettings.json file
-            string userPWD = options.AdminPassword;
-            var _user = await UserManager.FindByNameAsync(poweruser.UserName);
-
-            if (_user == null)
-            {
-                var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
-                if (createPowerUser.Succeeded)
-                {
-                    //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(poweruser, nameof(IdentityRoleEnum.Admin));
-                }
-            }
+            var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
+            if (createPowerUser.Succeeded)
+                //here we tie the new user to the role
+                await UserManager.AddToRoleAsync(poweruser, nameof(IdentityRoleEnum.Admin));
         }
     }
 }
@@ -144,7 +143,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=GauntletLeaderboard}/{action=Index}/{id?}");
+    "default",
+    "{controller=GauntletLeaderboard}/{action=Index}/{id?}");
 
 app.Run();

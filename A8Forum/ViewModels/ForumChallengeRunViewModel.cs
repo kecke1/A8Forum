@@ -21,7 +21,7 @@ public class ForumChallengeRunViewModel
     public string? Post { get; set; } = "";
 
     public bool Deleted { get; set; } = false;
-    public ForumChallengeViewModel? ForumChallenge { get; set; } = new ForumChallengeViewModel();
-    public MemberViewModel? Member { get; set; } = new MemberViewModel();
-    public VehicleViewModel? Vehicle { get; set; } = new VehicleViewModel();
+    public ForumChallengeViewModel? ForumChallenge { get; set; } = new();
+    public MemberViewModel? Member { get; set; } = new();
+    public VehicleViewModel? Vehicle { get; set; } = new();
 }

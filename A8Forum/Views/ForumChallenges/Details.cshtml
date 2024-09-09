@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.ForumChallengeViewModel
+﻿@model ForumChallengeViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,24 +8,24 @@
 
 <div>
     <h4>Challenge</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StartDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.EndDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Season.SeasonName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Season.SeasonName)
         </dd>
         <dt class="col-sm-2">
@@ -34,23 +34,23 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Track.TrackName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Post)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Post)
         </dd>
-        
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CustomTitle)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CustomTitle)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MaxRank)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.MaxRank)
         </dd>
 

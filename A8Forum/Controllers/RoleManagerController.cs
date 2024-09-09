@@ -6,18 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace A8Forum.Controllers;
 
 [Authorize(Policy = "AdminRole")]
-public class RoleManagerController : Controller
+public class RoleManagerController(RoleManager<IdentityRole> roleManager) : Controller
 {
-    private readonly RoleManager<IdentityRole> _roleManager;
-
-    public RoleManagerController(RoleManager<IdentityRole> roleManager)
-    {
-        _roleManager = roleManager;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var roles = await _roleManager.Roles.ToListAsync();
+        var roles = await roleManager.Roles.ToListAsync();
         return View(roles);
     }
 
@@ -25,9 +18,7 @@ public class RoleManagerController : Controller
     public async Task<IActionResult> AddRole(string roleName)
     {
         if (roleName != null)
-        {
-            await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
-        }
+            await roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
         return RedirectToAction("Index");
     }
 }

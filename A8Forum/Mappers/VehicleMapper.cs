@@ -1,10 +1,11 @@
-﻿using Shared.Dto;
+﻿using A8Forum.ViewModels;
+using Shared.Dto;
 
 namespace A8Forum.Mappers;
 
 internal static class VehicleMapper
 {
-    public static VehicleDTO ToDto(this ViewModels.VehicleViewModel vehicle)
+    public static VehicleDTO ToDto(this VehicleViewModel vehicle)
     {
         return new VehicleDTO
         {
@@ -17,9 +18,9 @@ internal static class VehicleMapper
         };
     }
 
-    public static ViewModels.VehicleViewModel ToVehicleViewModel(this VehicleDTO model)
+    public static VehicleViewModel ToVehicleViewModel(this VehicleDTO model)
     {
-        var v = new ViewModels.VehicleViewModel
+        var v = new VehicleViewModel
         {
             Name = model.Name,
             ShortName = model.ShortName,
@@ -30,9 +31,7 @@ internal static class VehicleMapper
         };
 
         if (model.Id != null)
-        {
             v.VehicleId = model.Id;
-        }
 
         return v;
     }

@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.SeasonViewModel
+﻿@model SeasonViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,12 +8,12 @@
 
 <div>
     <h4>Season</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SeasonName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.SeasonName)
         </dd>
     </dl>

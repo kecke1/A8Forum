@@ -6,10 +6,10 @@ public class GiftLinkViewModel
 {
     public string? GiftLinkId { get; set; }
     public string? Url { get; set; }
-    public GiftLinkProvider GiftLinkProvider { get; set; } = new GiftLinkProvider();
+    public GiftLinkProvider GiftLinkProvider { get; set; } = new();
 
     [Display(Name = "Submited By")]
-    public MemberViewModel SubmitedBy { get; set; } = new MemberViewModel();
+    public MemberViewModel SubmitedBy { get; set; } = new();
 
     public bool Deleted { get; set; } = false;
 
