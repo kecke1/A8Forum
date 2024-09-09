@@ -357,7 +357,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
     private string GetGauntletLeaderboardTableRowByMember(GauntletLeaderboardRowDto race, int i, int numberOfVehicles)
     {
-        return $@"[tr {(i % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
+        return $@"[tr]
 {GetTdCellWithBorder(race.LapTimeVerified ? "✅" : "", false)}
 {GetTdCellWithBorder(race.TrackName)}
 {GetTdCellWithBorder(race.TimeString)}
@@ -373,7 +373,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
     private string GetTdCellWithBorder(string text = "", bool spanText = true, bool emptyCellIfMissing = true)
     {
-        return text.GetTdCell("border: 1px solid", spanText, emptyCellIfMissing);
+        return text.GetTdCell("", spanText, emptyCellIfMissing);
     }
 
     private string GetLinkOrText(string linkUrl, string text)
@@ -390,7 +390,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
     private string GetGauntletLeaderboardTableRowByTrack(GauntletLeaderboardRowDto race, int i, int numberOfVehicles)
     {
-        return $@"[tr {(i % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
+        return $@"[tr]
 
 {GetTdCellWithBorder(race.LapTimeVerified ? "✅" : "", false)}
 {GetTdCellWithBorder($"{race.Position}.", false)}

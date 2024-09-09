@@ -33,8 +33,8 @@ public static class StringExtensions
             return "";
 
         if (spanText)
-            return $"[td style=\"white-space: nowrap;{style}\"]{text}[/td]";
-        return $"[td style=\"{style}\"]{text}[/td]";
+            return $"[td]{text}[/td]";
+        return $"[td]{text}[/td]";
     }
 
     public static string GetTdHeaderCell(this string text, string style = "", bool spanText = true)
