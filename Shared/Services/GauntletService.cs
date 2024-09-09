@@ -326,7 +326,7 @@ The total leaderboard points are the sum of the points given in each track leade
         var numberOfVehicles = GetNumberOfUsedGauntletVehicles(races);
 
         var output =
-            @$"´[b]@{races.First().MemberName}[/b][spoiler][div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
+            @$"´[b]@{races.First().MemberName}[/b][spoiler][div style=""overflow:auto;""][table class=""list"" style='border-collapse: collapse;font-family: arial, sans-serif;']
 [thead style='background-color: black; color:white; font-weight:bold;']
 [tr]
 {"✅".GetTdHeaderCell("", false)}
@@ -411,7 +411,7 @@ The total leaderboard points are the sum of the points given in each track leade
         var numberOfVehicles = GetNumberOfUsedGauntletVehicles(races);
 
         return
-            @$"[b]{races.First().TrackName}[/b][spoiler][div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
+            @$"[b]{races.First().TrackName}[/b][spoiler][div style=""overflow:auto;""][table class=""list"" style='border-collapse: collapse;font-family: arial, sans-serif;']
 [thead style='background-color: black; color:white; font-weight:bold;']
 [tr]
 {"✅".GetTdHeaderCell("", false)}
