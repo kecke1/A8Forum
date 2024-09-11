@@ -9,7 +9,7 @@ public class GauntletRunViewModel
 
     public int Time { get; set; }
 
-    [Display(Name = "Time")]
+    [Display(Name = "Lap Time")]
     public required string TimeString { get; set; }
 
     [Display(Name = "Insert Date")]
@@ -37,10 +37,10 @@ public class GauntletRunViewModel
     [Display(Name = "Vehicle 5")]
     public VehicleViewModel? Vehicle5 { get; set; } = new();
 
-    [Display(Name = "Forunm Member")]
+    [Display(Name = "Forum Member")]
     public MemberViewModel? Member { get; set; } = new();
 
-    [Display(Name = "Post URL")]
+    [Display(Name = "Forum Post")]
     public required string PostUrl { get; set; }
 
     [Display(Name = "Run Date")]
@@ -48,7 +48,7 @@ public class GauntletRunViewModel
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime? RunDate { get; set; }
 
-    [Display(Name = "Media Link")]
+    [Display(Name = "Video Link")]
     public string? MediaLink { get; set; }
 
     [Display(Name = "✅")]

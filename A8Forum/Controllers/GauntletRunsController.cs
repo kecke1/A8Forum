@@ -137,7 +137,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> Create(
         [Bind(
-            "GauntletRunId,TimeString,Deleted, LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
+            "GauntletRunId,TimeString, LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
         GauntletRunViewModel gauntletRun)
     {
         if (ModelState.IsValid)

@@ -1,6 +1,7 @@
 ﻿using A8Forum.ViewModels;
 using Shared.Dto;
 using Shared.Extensions;
+using A8Forum.Extensions;
 
 namespace A8Forum.Mappers;
 
@@ -14,9 +15,9 @@ internal static class GauntletRunMapper
             Deleted = r.Deleted,
             Idate = r.Idate,
             LapTimeVerified = r.LapTimeVerified,
-            MediaLink = r.MediaLink,
+            MediaLink = r.MediaLink?.CheckAndFormatUrl(),
             Member = r.Member.ToDto(),
-            PostUrl = r.PostUrl,
+            PostUrl = r.PostUrl.CheckAndFormatUrl(),
             RunDate = r.RunDate,
             Time = r.TimeString.FromTimestringToInt(),
             Vehicle1 = r.Vehicle1.ToDto(),
