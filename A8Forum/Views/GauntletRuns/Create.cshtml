@@ -6,7 +6,7 @@
 
 <h1>Create Gauntlet Run</h1>
 
-<h4>Before a run is created here, it has to be posted in the Gauntlet FC thread on Asphalt8.freeforums.net. </h4>
+<h4>Before a run is created here, it has to be posted in the "Gauntlet FC"-thread on Asphalt8.freeforums.net. </h4>
 <hr/>
 <div class="row">
     <div class="col-md-4">
@@ -14,12 +14,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
                 <label asp-for="TimeString" class="control-label"></label>
-                <input  asp-for="TimeString" class="form-control" placeholder="00:000"/>
+                <input  asp-for="TimeString" class="form-control" placeholder="Lap time, 00:000"/>
                 <span asp-validation-for="TimeString" class="text-danger"></span>
             </div>
             <div class="form-group mb-4">
                 <label asp-for="PostUrl" class="control-label"></label>
-                <input asp-for="PostUrl" class="form-control" placeholder="https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp" />
+                <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp" />
                 <small id="postUrlHelp" class="form-text text-muted">
                     Link to the post in the Gauntlet FC-thread. This can be obtained in the forum by pressing the icon with a gearwheel in the upper right corner of the post and then by selecting 'Link to post'. It looks something like this: https://asphalt8.freeforums.net/post/32313/thread
                 </small>
@@ -27,9 +27,9 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="MediaLink" class="control-label"></label>
-                <input asp-for="MediaLink" class="form-control" placeholder="https://..." aria-describedby="mediaLinkHelp" />
+                <input asp-for="MediaLink" class="form-control" placeholder="Link to video, https://..." aria-describedby="mediaLinkHelp" />
                 <small id="mediaLinkHelp" class="form-text text-muted">
-                    Link to video if it exists.
+                    Link to video if it exists. The link could be to a video streaming site like Youtube or a link to a post within Asphalt8 forum where the link to video is posted. Leave this empty if there is no video.
                 </small>
                 <span asp-validation-for="MediaLink" class="text-danger"></span>
             </div>
@@ -44,7 +44,7 @@
                     <input class="form-check-input" asp-for="LapTimeVerified" aria-describedby="verifiedHelp" /> @Html.DisplayNameFor(model => model.LapTimeVerified)
                 </label>
                 <small id="verifiedHelp" class="form-text text-muted">
-                    Check this if you are posting a video of your run or if your forum post contains a screenshot where both lap time and track name is visible
+                    Check this if you are posting a video of your run or if your forum post contains a screen shot where both lap time and track name is visible
                 </small>
             </div>
 

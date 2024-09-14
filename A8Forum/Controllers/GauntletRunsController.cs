@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dto;
+using Shared.Models;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
@@ -140,9 +141,10 @@ public class GauntletRunsController(IMasterDataService masterDataService,
             "GauntletRunId,TimeString, LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
         GauntletRunViewModel gauntletRun)
     {
-        if (ModelState.IsValid)
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
+        if (ModelState.IsValid && gauntletRun.Track?.TrackId != null && gauntletRun.Vehicle1?.VehicleId != null 
+            && gauntletRun.Vehicle2?.VehicleId != null && gauntletRun.Vehicle3?.VehicleId != null)
         {
-            var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
             if (!isAdmin.Succeeded)
             {
                 var user = await userManager.GetUserAsync(User);
@@ -153,10 +155,32 @@ public class GauntletRunsController(IMasterDataService masterDataService,
             return RedirectToAction(nameof(Index));
         }
 
+        if (gauntletRun.Track?.TrackId == null)
+        {
+            ModelState.AddModelError("Track", "Track is missing");
+        }
+
+        if (gauntletRun.Vehicle1?.VehicleId == null)
+        {
+            ModelState.AddModelError("Vehicle1", "Vehicle is missing");
+        }
+
+        if (gauntletRun.Vehicle2?.VehicleId == null)
+        {
+            ModelState.AddModelError("Vehicle2", "Vehicle is missing");
+        }
+
+        if (gauntletRun.Vehicle3?.VehicleId == null)
+        {
+            ModelState.AddModelError("Vehicle3", "Vehicle is missing");
+        }
+
         await PopulateMembersDropDownListAsync(gauntletRun.Member.MemberId);
         await PopulateTracksDropDownListAsync(gauntletRun.Track.TrackId);
         await PopulateVehiclesDropDownListAsync(gauntletRun.Vehicle1.VehicleId, gauntletRun.Vehicle2.VehicleId,
             gauntletRun.Vehicle3?.VehicleId, gauntletRun.Vehicle4?.VehicleId, gauntletRun.Vehicle5?.VehicleId);
+
+        ViewBag.IsAdmin = isAdmin.Succeeded;
 
         return View(gauntletRun);
     }
