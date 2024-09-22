@@ -1,0 +1,51 @@
+﻿@model A8Forum.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h3>User @Model.UserName</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="UserName" />
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <select asp-for="MemberId" class="form-control" id='membersDropdown' asp-items="ViewBag.MemberId">
+                </select>
+                <span asp-validation-for="MemberId" class="text-danger" />
+            </div>
+            <div class="form-group">
+                <label asp-for="LockedOut" class="form-check-label"></label>
+                <input asp-for="LockedOut" type="checkbox" class="form-check-input" />
+                <span asp-validation-for="LockedOut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#membersDropdown").select2({
+                placeholder: "-- Select Member --",
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

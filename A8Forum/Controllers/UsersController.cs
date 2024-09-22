@@ -45,7 +45,8 @@ public class UsersController(UserManager<A8ForumazurewebsitesnetUser> userManage
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Member, UserName, Password, ConfirmPassword")] CreateUserViewModel input)
+        [Bind("Member, UserName, Password, ConfirmPassword")]
+        CreateUserViewModel input)
     {
         if (ModelState.IsValid)
         {
@@ -93,7 +94,7 @@ public class UsersController(UserManager<A8ForumazurewebsitesnetUser> userManage
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> ToggleLockout(string? userId)
+    public async Task<IActionResult> Edit(string? userId)
     {
         if (userId == null)
             return NotFound();
@@ -102,19 +103,35 @@ public class UsersController(UserManager<A8ForumazurewebsitesnetUser> userManage
         if (user == null)
             return NotFound();
 
-        return View(new ToggleLockoutViewModel
-            { UserName = user.UserName, UserId = userId, IsLockedOut = user.LockoutEnd.HasValue });
+        await PopulateMembersDropDownListAsync(user.MemberId);
+
+        return View(new EditUserViewModel
+        {
+            UserName = user.UserName, UserId = userId, LockedOut = user.LockoutEnd.HasValue, MemberId = user.MemberId
+        });
     }
 
     [HttpPost]
-    [ActionName("ToggleLockout")]
+    [ActionName("Edit")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ToggleLockoutConfirmed(string userId)
+    public async Task<IActionResult> EditConfirmed(string userId, EditUserViewModel u)
     {
-        var user = await userManager.FindByIdAsync(userId);
-        if (user != null)
-            await userManager.SetLockoutEndDateAsync(user, user.LockoutEnd.HasValue ? null : DateTimeOffset.MaxValue);
-        return RedirectToAction(nameof(Index));
+        if (ModelState.IsValid)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            await userManager.SetLockoutEndDateAsync(user,
+                u.LockedOut ? DateTimeOffset.MaxValue : null);
+            user.MemberId = u.MemberId;
+            await userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        await PopulateMembersDropDownListAsync(u.MemberId);
+        return View(u);
     }
 
     public async Task<IActionResult> ChangePassword(string? userId)
@@ -126,7 +143,8 @@ public class UsersController(UserManager<A8ForumazurewebsitesnetUser> userManage
         if (user == null)
             return NotFound();
 
-        return View(new ChangePasswordViewModel { UserName = user.UserName, UserId = userId, Password = "", ConfirmPassword = ""});
+        return View(new ChangePasswordViewModel
+            { UserName = user.UserName, UserId = userId, Password = "", ConfirmPassword = "" });
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.

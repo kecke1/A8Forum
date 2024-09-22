@@ -61,7 +61,6 @@
             <div class="form-group mb-3">
                 <label asp-for="Track" class="control-label"></label>
                 <select asp-for="Track.TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
-                    <option value="">-- Select Track --</option>
                 </select>
                 <span asp-validation-for="Track.TrackId" class="text-danger"/>
             </div>
@@ -118,7 +117,7 @@
 @section Scripts {
     <script type="text/javascript">
         $("#membersDropdown").select2();
-        $("#tracksDropdown").select2();
+        $("#tracksDropdown").select2({ placeholder: "-- Select Track --", allowClear: true });
         $(document).ready(function () { $("#vehicles1Dropdown").select2(); });
         $(document).ready(function () { $("#vehicles2Dropdown").select2(); });
         $(document).ready(function () { $("#vehicles3Dropdown").select2(); });
