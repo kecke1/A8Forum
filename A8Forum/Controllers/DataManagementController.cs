@@ -4,7 +4,7 @@ using Shared.Services;
 
 namespace A8Forum.Controllers;
 
-[Authorize(Policy = "AdminRole")]
+[Authorize]
 public class DataManagementController(IDataManagementService dataManagementService) : Controller
 {
     [HttpGet]

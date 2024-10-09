@@ -6,7 +6,7 @@ using Shared.Services;
 
 namespace A8Forum.Controllers;
 
-[Authorize(Policy = "AdminRole")]
+[Authorize]
 public class MembersController(IMasterDataService masterDataService) : Controller
 {
     // GET: Members
@@ -36,6 +36,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Policy = "AdminRole")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
@@ -63,6 +64,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Policy = "AdminRole")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(string id, [Bind("MemberId,MemberName," +
@@ -101,6 +103,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
         return View(member.ToMemberViewModel());
     }
 
+    [Authorize(Policy = "AdminRole")]
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
