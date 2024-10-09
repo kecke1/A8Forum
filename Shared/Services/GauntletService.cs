@@ -17,7 +17,7 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
 {
     private readonly string _vehiclesBaseUrl = options.Value.VehiclesBaseUrl;
 
-    public async Task AddGauntletRunAsync(GauntletRunDTO r)
+    public async Task AddGauntletRunAsync(EditGauntletRunDTO r)
     {
         await gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
     }
@@ -285,7 +285,7 @@ The total leaderboard points are the sum of the points given in each track leade
             await gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
     }
 
-    public async Task UpdateGauntletRunAsync(GauntletRunDTO r)
+    public async Task UpdateGauntletRunAsync(EditGauntletRunDTO r)
     {
         await gauntletRunRepository.UpdateAsync(r.ToGauntletRunEntity());
     }

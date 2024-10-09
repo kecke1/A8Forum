@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.ForumChallengeRunViewModel
+﻿@model A8Forum.ViewModels.EditForumChallengeRunViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -20,25 +20,25 @@
                 <span asp-validation-for="TimeString" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ForumChallenge" class="control-label"></label>
-                <select asp-for="ForumChallenge.ForumChallengeId" class="form-control" asp-items="ViewBag.ChallengeId">
-                    <option value="">-- Select Forum Challenge --</option>
+                <label asp-for="ForumChallengeId" class="control-label"></label>
+                <select asp-for="ForumChallengeId" class="form-control" asp-items="ViewBag.ChallengeId">
+                    <option value=""></option>
                 </select>
-                <span asp-validation-for="ForumChallenge.ForumChallengeId" class="text-danger"/>
+                <span asp-validation-for="ForumChallengeId" class="text-danger"/>
             </div>
             <div class="form-group">
-                <label asp-for="Member" class="control-label"></label>
-                <select asp-for="Member.MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
-                    <option value="">-- Select Member --</option>
+                <label asp-for="MemberId" class="control-label"></label>
+                <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
+                    <option value=""></option>
                 </select>
-                <span asp-validation-for="Member.MemberId" class="text-danger"/>
+                <span asp-validation-for="MemberId" class="text-danger"/>
             </div>
             <div class="form-group">
-                <label asp-for="Vehicle" class="control-label"></label>
-                <select asp-for="Vehicle.VehicleId" class="form-control" asp-items="ViewBag.VehicleId" id="vehiclesDropdown">
-                    <option value="">-- Select Vehicle --</option>
+                <label asp-for="VehicleId" class="control-label"></label>
+                <select asp-for="VehicleId" class="form-control" asp-items="ViewBag.VehicleId" id="vehiclesDropdown">
+                    <option value=""></option>
                 </select>
-                <span asp-validation-for="Vehicle.VehicleId" class="text-danger"/>
+                <span asp-validation-for="VehicleId" class="text-danger"/>
             </div>
             <div class="form-group">
                 <label asp-for="Post" class="control-label"></label>
@@ -63,7 +63,10 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $(document).ready(function () { $("#vehiclesDropdown").select2(); $("#membersDropdown").select2(); });
+        $(document).ready(function () {
+            $("#vehiclesDropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+            $("#membersDropdown").select2({ placeholder: "-- Select Member --", allowClear: true });
+        });
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

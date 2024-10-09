@@ -22,7 +22,7 @@ public class ForumChallengeService(IRepository<ForumChallenge> forumChallengeRep
         await forumChallengeRepository.CreateAsync(f.ToForumChallengeEntity());
     }
 
-    public async Task AddForumChallengeRunAsync(ForumChallengeRunDTO r)
+    public async Task AddForumChallengeRunAsync(EditForumChallengeRunDTO r)
     {
         await forumChallengeRunRepository.CreateAsync(r.ToForumChallengeRunEntity());
     }
@@ -43,7 +43,7 @@ public class ForumChallengeService(IRepository<ForumChallenge> forumChallengeRep
     {
         var r = await GetForumChallengeRunAsync(runId);
         r.Deleted = true;
-        await UpdateForumChallengeRunAsync(r);
+        await forumChallengeRunRepository.UpdateAsync(r.ToForumChallengeRunEntity());
     }
 
     public async Task DeleteSeriesAsync(string seriesId)
@@ -223,7 +223,7 @@ public class ForumChallengeService(IRepository<ForumChallenge> forumChallengeRep
         await forumChallengeRepository.UpdateAsync(f.ToForumChallengeEntity());
     }
 
-    public async Task UpdateForumChallengeRunAsync(ForumChallengeRunDTO r)
+    public async Task UpdateForumChallengeRunAsync(EditForumChallengeRunDTO r)
     {
         await forumChallengeRunRepository.UpdateAsync(r.ToForumChallengeRunEntity());
     }

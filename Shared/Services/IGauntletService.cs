@@ -8,9 +8,9 @@ public interface IGauntletService
 
     public Task<GauntletRunDTO> GetGauntletRunAsync(string gauntletRunId);
 
-    public Task UpdateGauntletRunAsync(GauntletRunDTO r);
+    public Task UpdateGauntletRunAsync(EditGauntletRunDTO r);
 
-    public Task AddGauntletRunAsync(GauntletRunDTO r);
+    public Task AddGauntletRunAsync(EditGauntletRunDTO r);
 
     public Task DeleteGauntletRunAsync(string gauntletRunId);
 

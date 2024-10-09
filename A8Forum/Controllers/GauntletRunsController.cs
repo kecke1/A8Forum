@@ -138,47 +138,26 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> Create(
         [Bind(
-            "GauntletRunId,TimeString, LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
-        GauntletRunViewModel gauntletRun)
+            "GauntletRunId,TimeString, LapTimeVerified,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink")]
+        EditGauntletRunViewModel gauntletRun)
     {
         var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
-        if (ModelState.IsValid && gauntletRun.Track?.TrackId != null && gauntletRun.Vehicle1?.VehicleId != null 
-            && gauntletRun.Vehicle2?.VehicleId != null && gauntletRun.Vehicle3?.VehicleId != null)
+        if (ModelState.IsValid)
         {
-            if (!isAdmin.Succeeded)
+            if (!isAdmin.Succeeded || string.IsNullOrEmpty(gauntletRun.MemberId))
             {
                 var user = await userManager.GetUserAsync(User);
-                gauntletRun.Member = (await masterDataService.GetMemberAsync(user.MemberId)).ToMemberViewModel();
+                gauntletRun.MemberId = (await masterDataService.GetMemberAsync(user.MemberId)).Id;
             }
 
             await gauntletService.AddGauntletRunAsync(gauntletRun.ToDto());
             return RedirectToAction(nameof(Index));
         }
 
-        if (gauntletRun.Track?.TrackId == null)
-        {
-            ModelState.AddModelError("Track", "Track is missing");
-        }
-
-        if (gauntletRun.Vehicle1?.VehicleId == null)
-        {
-            ModelState.AddModelError("Vehicle1", "Vehicle is missing");
-        }
-
-        if (gauntletRun.Vehicle2?.VehicleId == null)
-        {
-            ModelState.AddModelError("Vehicle2", "Vehicle is missing");
-        }
-
-        if (gauntletRun.Vehicle3?.VehicleId == null)
-        {
-            ModelState.AddModelError("Vehicle3", "Vehicle is missing");
-        }
-
-        await PopulateMembersDropDownListAsync(gauntletRun.Member.MemberId);
-        await PopulateTracksDropDownListAsync(gauntletRun.Track.TrackId);
-        await PopulateVehiclesDropDownListAsync(gauntletRun.Vehicle1.VehicleId, gauntletRun.Vehicle2.VehicleId,
-            gauntletRun.Vehicle3?.VehicleId, gauntletRun.Vehicle4?.VehicleId, gauntletRun.Vehicle5?.VehicleId);
+        await PopulateMembersDropDownListAsync(gauntletRun.MemberId);
+        await PopulateTracksDropDownListAsync(gauntletRun.TrackId);
+        await PopulateVehiclesDropDownListAsync(gauntletRun.Vehicle1Id, gauntletRun.Vehicle2Id,
+            gauntletRun.Vehicle3Id, gauntletRun.Vehicle4Id, gauntletRun.Vehicle5Id);
 
         ViewBag.IsAdmin = isAdmin.Succeeded;
 
@@ -199,7 +178,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
         await PopulateTracksDropDownListAsync(d.Track.Id);
         await PopulateMembersDropDownListAsync(d.Member.Id);
 
-        return View(d.ToGauntletRunViewModel());
+        return View(d.ToEditGauntletRunViewModel());
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -209,8 +188,8 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletAdminRole")]
     public async Task<IActionResult> Edit(string id,
         [Bind(
-            "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,Track,Vehicle1,Vehicle2,Vehicle3,Vehicle4,Vehicle5, Member, PostUrl, RunDate, MediaLink")]
-        GauntletRunViewModel d)
+            "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink")]
+        EditGauntletRunViewModel d)
     {
         if (id != d.GauntletRunId)
             return NotFound();
@@ -229,10 +208,10 @@ public class GauntletRunsController(IMasterDataService masterDataService,
             return RedirectToAction(nameof(Index));
         }
 
-        await PopulateVehiclesDropDownListAsync(d.Vehicle1.VehicleId, d.Vehicle2.VehicleId, d.Vehicle3.VehicleId,
-            d.Vehicle4?.VehicleId, d.Vehicle5?.VehicleId);
-        await PopulateTracksDropDownListAsync(d.Track.TrackId);
-        await PopulateMembersDropDownListAsync(d.Member.MemberId);
+        await PopulateVehiclesDropDownListAsync(d.Vehicle1Id, d.Vehicle2Id, d.Vehicle3Id,
+            d.Vehicle4Id, d.Vehicle5Id);
+        await PopulateTracksDropDownListAsync(d.TrackId);
+        await PopulateMembersDropDownListAsync(d.MemberId);
         return View(d);
     }
 

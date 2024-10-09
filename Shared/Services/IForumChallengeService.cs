@@ -29,9 +29,9 @@ public interface IForumChallengeService
 
     public Task<ForumChallengeRunDTO> GetForumChallengeRunAsync(string runId);
 
-    public Task UpdateForumChallengeRunAsync(ForumChallengeRunDTO r);
+    public Task UpdateForumChallengeRunAsync(EditForumChallengeRunDTO r);
 
-    public Task AddForumChallengeRunAsync(ForumChallengeRunDTO r);
+    public Task AddForumChallengeRunAsync(EditForumChallengeRunDTO r);
 
     public Task DeleteForumChallengeRunAsync(string runId);
 

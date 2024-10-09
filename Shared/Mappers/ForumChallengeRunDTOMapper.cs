@@ -41,4 +41,23 @@ internal static class ForumChallengeRunDTOMapper
 
         return r;
     }
+
+    public static ForumChallengeRun ToForumChallengeRunEntity(this EditForumChallengeRunDTO model)
+    {
+        var r = new ForumChallengeRun
+        {
+            Time = model.Time,
+            Idate = model.Idate,
+            Post = model.Post,
+            Deleted = model.Deleted,
+            ForumChallengeId = model.ForumChallengeId ?? throw new NullReferenceException(),
+            MemberId = model.MemberId ?? throw new NullReferenceException(),
+            VehicleId = model.VehicleId ?? throw new NullReferenceException()
+        };
+
+        if (!string.IsNullOrEmpty(model.Id))
+            r.Id = model.Id;
+
+        return r;
+    }
 }

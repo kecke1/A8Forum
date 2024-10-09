@@ -1,18 +1,22 @@
-﻿using A8Forum.Extensions;
+﻿using A8Forum.Areas.Identity.Data;
+using A8Forum.Extensions;
 using A8Forum.Mappers;
 using A8Forum.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Shared.Dto;
 using Shared.Extensions;
+using Shared.Models;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
 
 [Authorize]
 public class ForumChallengeRunsController(IMasterDataService masterDataService,
-        IForumChallengeService forumChallengeService)
+        IForumChallengeService forumChallengeService, IAuthorizationService authorizationService,
+        UserManager<A8ForumazurewebsitesnetUser> userManager)
     : Controller
 {
     public async Task<IActionResult> Index(string? forumChallengeId = null)
@@ -68,6 +72,10 @@ public class ForumChallengeRunsController(IMasterDataService masterDataService,
         await PopulateChallengesDropDownListAsync();
         await PopulateMembersDropDownListAsync();
         await PopulateVehiclesDropDownListAsync();
+
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "ForumChallengeAdminRole");
+        ViewBag.IsAdmin = isAdmin.Succeeded;
+
         return View();
     }
 
@@ -96,20 +104,27 @@ public class ForumChallengeRunsController(IMasterDataService masterDataService,
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Policy = "ForumChallengeAdminRole")]
+    [Authorize(Policy = "ForumChallengeUserRole")]
     public async Task<IActionResult> Create(
-        [Bind("TimeString,Post,Vehicle,Member,ForumChallenge")] ForumChallengeRunViewModel run)
+        [Bind("TimeString,Post,VehicleId,MemberId,ForumChallengeId")] EditForumChallengeRunViewModel run)
     {
-        if (ModelState.IsValid && !string.IsNullOrEmpty(run.TimeString))
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "ForumChallengeAdminRole");
+        if (ModelState.IsValid)
         {
+            if (!isAdmin.Succeeded || string.IsNullOrEmpty(run.MemberId))
+            {
+                var user = await userManager.GetUserAsync(User);
+                run.MemberId = (await masterDataService.GetMemberAsync(user.MemberId)).Id;
+            }
+
             run.Time = run.TimeString.FromTimestringToInt();
             await forumChallengeService.AddForumChallengeRunAsync(run.ToDto());
             return RedirectToAction(nameof(Index));
         }
 
         await PopulateChallengesDropDownListAsync(run.ForumChallengeRunId);
-        await PopulateMembersDropDownListAsync(run.Member.MemberId);
-        await PopulateVehiclesDropDownListAsync(run.Vehicle.VehicleId);
+        await PopulateMembersDropDownListAsync(run.MemberId);
+        await PopulateVehiclesDropDownListAsync(run.VehicleId);
         return View(run);
     }
 
@@ -125,7 +140,7 @@ public class ForumChallengeRunsController(IMasterDataService masterDataService,
         await PopulateMembersDropDownListAsync(run.Member.Id);
         await PopulateVehiclesDropDownListAsync(run.Vehicle.Id);
 
-        return View(run.ToForumChallengeRunViewModel());
+        return View(run.ToEditForumChallengeRunViewModel());
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -134,8 +149,8 @@ public class ForumChallengeRunsController(IMasterDataService masterDataService,
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "ForumChallengeAdminRole")]
     public async Task<IActionResult> Edit(string id,
-        [Bind("ForumChallengeRunId,TimeString,Vehicle,Post,Member,ForumChallenge, Deleted")]
-        ForumChallengeRunViewModel run)
+        [Bind("ForumChallengeRunId,TimeString,VehicleId,Post,MemberId,ForumChallengeId, Deleted")]
+        EditForumChallengeRunViewModel run)
     {
         if (id != run.ForumChallengeRunId)
             return NotFound();

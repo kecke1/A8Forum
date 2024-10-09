@@ -1,4 +1,4 @@
-﻿@model A8Forum.ViewModels.GauntletRunViewModel
+﻿@model A8Forum.ViewModels.EditGauntletRunViewModel
 
 @{
     ViewData["Title"] = "Create Gauntlet Run";
@@ -20,18 +20,18 @@
             <div class="form-group mb-4">
                 <label asp-for="PostUrl" class="control-label"></label>
                 <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp" />
+                <span asp-validation-for="PostUrl" class="text-danger"></span>
                 <small id="postUrlHelp" class="form-text text-muted">
                     Link to the post in the Gauntlet FC-thread. This can be obtained in the forum by pressing the icon with a gearwheel in the upper right corner of the post and then by selecting 'Link to post'. It looks something like this: https://asphalt8.freeforums.net/post/32313/thread
                 </small>
-                <span asp-validation-for="PostUrl" class="text-danger"></span>
             </div>
             <div class="form-group mb-4">
                 <label asp-for="MediaLink" class="control-label"></label>
                 <input asp-for="MediaLink" class="form-control" placeholder="Link to video, https://..." aria-describedby="mediaLinkHelp" />
+                <span asp-validation-for="MediaLink" class="text-danger"></span>
                 <small id="mediaLinkHelp" class="form-text text-muted">
                     Link to video if it exists. The link could be to a video streaming site like Youtube or a link to a post within Asphalt8 forum where the link to video is posted. Leave this empty if there is no video.
                 </small>
-                <span asp-validation-for="MediaLink" class="text-danger"></span>
             </div>
             <div class="form-group mb-4">
                 <label asp-for="RunDate" class="control-label"></label>
@@ -51,56 +51,57 @@
             @if (ViewBag.IsAdmin)
             {
                 <div class="form-group mb-3">
-                    <label asp-for="Member" class="control-label"></label>
-                    <select asp-for="Member.MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
-                        <option value="">-- Select Member --</option>
-                    </select>
-                    <span asp-validation-for="Member.MemberId" class="text-danger"/>
+                    <label asp-for="MemberId" class="control-label"></label>
+                    <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
+                        <option value=""></option>
+                        </select>
+                    <span asp-validation-for="MemberId" class="text-danger"/>
                 </div>
             }
             <div class="form-group mb-3">
-                <label asp-for="Track" class="control-label"></label>
-                <select asp-for="Track.TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
-                </select>
-                <span asp-validation-for="Track.TrackId" class="text-danger"/>
+                <label asp-for="TrackId" class="control-label"></label>
+                <select asp-for="TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
+                    <option value=""></option>
+                    </select>
+                <span asp-validation-for="TrackId" class="text-danger"/>
             </div>
             <div class="form-group mb-2">
-                <label asp-for="Vehicle1" class="control-label"></label>
-                <select asp-for="Vehicle1.VehicleId" class="form-control" asp-items="ViewBag.Vehicle1Id" id="vehicles1Dropdown">
-                    <option value="">-- Select Vehicle --</option>
-                </select>
-                <span asp-validation-for="Vehicle1.VehicleId" class="text-danger"/>
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="Vehicle2" class="control-label"></label>
-                <select asp-for="Vehicle2.VehicleId" class="form-control" asp-items="ViewBag.Vehicle2Id" id="vehicles2Dropdown">
-                    <option value="">-- Select Vehicle --</option>
-                </select>
-                <span asp-validation-for="Vehicle2.VehicleId" class="text-danger"/>
+                <label asp-for="Vehicle1Id" class="control-label"></label>
+                <select asp-for="Vehicle1Id" class="form-control" asp-items="ViewBag.Vehicle1Id" id="vehicles1Dropdown">
+                    <option value=""></option>
+                    </select>
+                <span asp-validation-for="Vehicle1Id" class="text-danger"/>
             </div>
 
             <div class="form-group mb-2">
-                <label asp-for="Vehicle3" class="control-label"></label>
-                <select asp-for="Vehicle3.VehicleId" class="form-control" asp-items="ViewBag.Vehicle3Id" id="vehicles3Dropdown">
-                    <option value="">-- Select Vehicle --</option>
-                </select>
-                <span asp-validation-for="Vehicle3.VehicleId" class="text-danger"/>
-            </div>
-            <div class="form-group mb-2">
-                <label asp-for="Vehicle4" class="control-label"></label>
-                <select asp-for="Vehicle4.VehicleId" class="form-control" asp-items="ViewBag.Vehicle4Id" id="vehicles4Dropdown">
-                    <option value="">-- Select Vehicle --</option>
-                </select>
-                <span asp-validation-for="Vehicle4.VehicleId" class="text-danger"/>
+                <label asp-for="Vehicle2Id" class="control-label"></label>
+                <select asp-for="Vehicle2Id" class="form-control" asp-items="ViewBag.Vehicle2Id" id="vehicles2Dropdown">
+                    <option value=""></option>
+                    </select>
+                <span asp-validation-for="Vehicle2Id" class="text-danger"/>
             </div>
 
             <div class="form-group mb-2">
-                <label asp-for="Vehicle5" class="control-label"></label>
-                <select asp-for="Vehicle5.VehicleId" class="form-control" asp-items="ViewBag.Vehicle5Id" id="vehicles5Dropdown">
-                    <option value="">-- Select Vehicle --</option>
-                </select>
-                <span asp-validation-for="Vehicle5.VehicleId" class="text-danger"/>
+                <label asp-for="Vehicle3Id" class="control-label"></label>
+                <select asp-for="Vehicle3Id" class="form-control" asp-items="ViewBag.Vehicle3Id" id="vehicles3Dropdown">
+                    <option value=""></option>
+                    </select>
+                <span asp-validation-for="Vehicle3Id" class="text-danger"/>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Vehicle4Id" class="control-label"></label>
+                <select asp-for="Vehicle4Id" class="form-control" asp-items="ViewBag.Vehicle4Id" id="vehicles4Dropdown">
+                    <option value=""></option>
+                    </select>
+                <span asp-validation-for="Vehicle4Id" class="text-danger"/>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Vehicle5Id" class="control-label"></label>
+                <select asp-for="Vehicle5Id" class="form-control" asp-items="ViewBag.Vehicle5Id" id="vehicles5Dropdown">
+                    <option value=""></option>
+                    </select>
+                <span asp-validation-for="Vehicle5Id" class="text-danger"/>
             </div>
 
             <div class="form-group">
@@ -116,13 +117,22 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $("#membersDropdown").select2();
-        $("#tracksDropdown").select2({ placeholder: "-- Select Track --", allowClear: true });
-        $(document).ready(function () { $("#vehicles1Dropdown").select2(); });
-        $(document).ready(function () { $("#vehicles2Dropdown").select2(); });
-        $(document).ready(function () { $("#vehicles3Dropdown").select2(); });
-        $(document).ready(function () { $("#vehicles4Dropdown").select2(); });
-        $(document).ready(function () { $("#vehicles5Dropdown").select2(); });
+       
+        $(document).ready(function () {
+
+            @if (ViewBag.IsAdmin)
+            {
+                <text>
+                    $("#membersDropdown").select2({placeholder:"-- Select Member --", allowClear: true});
+                </text>
+            }
+            $("#tracksDropdown").select2({ placeholder: "-- Select Track --", allowClear: true });
+            $("#vehicles1Dropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+            $("#vehicles2Dropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+            $("#vehicles3Dropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+            $("#vehicles4Dropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+            $("#vehicles5Dropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+        });
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -34,6 +34,32 @@ internal static class GauntletRunDTOMapper
         };
     }
 
+    public static GauntletRun ToGauntletRunEntity(this EditGauntletRunDTO model)
+    {
+        var r = new GauntletRun
+        {
+            Time = model.Time,
+            Idate = model.Idate,
+            Deleted = model.Deleted,
+            TrackId = model.TrackId ?? throw new NullReferenceException(),
+            Vehicle1Id = model.Vehicle1Id ?? throw new NullReferenceException(),
+            Vehicle2Id = model.Vehicle2Id ?? throw new NullReferenceException(),
+            Vehicle3Id = model.Vehicle3Id ?? throw new NullReferenceException(),
+            Vehicle4Id = model.Vehicle4Id,
+            Vehicle5Id = model.Vehicle5Id,
+            MemberId = model.MemberId ?? throw new NullReferenceException(),
+            PostUrl = model.PostUrl,
+            RunDate = model.RunDate,
+            MediaLink = model.MediaLink,
+            LapTimeVerified = model.LapTimeVerified
+        };
+
+        if (!string.IsNullOrEmpty(model.Id))
+            r.Id = model.Id;
+
+        return r;
+    }
+
     public static GauntletRun ToGauntletRunEntity(this GauntletRunDTO model)
     {
         var r = new GauntletRun
@@ -45,8 +71,8 @@ internal static class GauntletRunDTOMapper
             Vehicle1Id = model.Vehicle1.Id ?? throw new NullReferenceException(),
             Vehicle2Id = model.Vehicle2.Id ?? throw new NullReferenceException(),
             Vehicle3Id = model.Vehicle3.Id ?? throw new NullReferenceException(),
-            Vehicle4Id = model.Vehicle4?.Id,
-            Vehicle5Id = model.Vehicle5?.Id,
+            Vehicle4Id = model.Vehicle4.Id,
+            Vehicle5Id = model.Vehicle5.Id,
             MemberId = model.Member.Id ?? throw new NullReferenceException(),
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
