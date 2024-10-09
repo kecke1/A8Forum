@@ -39,7 +39,7 @@ builder.Services.AddCosmosIdentity<A8ForumazurewebsitesnetContex, A8Forumazurewe
             options.SignIn.RequireConfirmedAccount = true; // Always a good idea :)
             options.SignIn.RequireConfirmedEmail = false;
             options.User.RequireUniqueEmail = false;
-        }, new TimeSpan(60, 0, 0, 0)
+        }, new TimeSpan(30, 0, 0, 0), true
     )
     .AddDefaultUI(); // Use this if Identity Scaffolding is in use
 //.AddDefaultTokenProviders();
