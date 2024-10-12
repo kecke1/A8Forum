@@ -9,17 +9,15 @@ public static class StringExtensions
             return "";
         }
 
-        var u = url.ToLower();
-
-        if(!url.StartsWith("http://") && !url.StartsWith("https://"))
+        if(!url.ToLower().StartsWith("http://") && !url.ToLower().StartsWith("https://"))
         {
-            u = $"https://{url}";
+            url = $"https://{url}";
         }
 
-        if (Uri.TryCreate(u, UriKind.Absolute, out var uriResult) &&
+        if (Uri.TryCreate(url, UriKind.Absolute, out var uriResult) &&
             (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
         {
-            return u;
+            return url;
         }
 
         return "";
