@@ -17,4 +17,5 @@ public class EditGauntletRunDTO
     public DateTime? RunDate { get; set; }
     public string? MediaLink { get; set; }
     public bool LapTimeVerified { get; set; }
+    public bool A8Plus { get; set; }
 }

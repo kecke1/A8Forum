@@ -47,6 +47,15 @@
                     Check this if you are posting a video of your run or if your forum post contains a screen shot where both lap time and track name is visible
                 </small>
             </div>
+            
+            <div class="form-group form-check mb-3">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="A8Plus" aria-describedby="a8PlusHelp" /> @Html.DisplayNameFor(model => model.A8Plus)
+                </label>
+                <small id="a8PlusHelp" class="form-text text-muted">
+                    Check this if you were using A8+ on Apple arcade instead of the regular A8
+                </small>
+            </div>
 
             @if (ViewBag.IsAdmin)
             {

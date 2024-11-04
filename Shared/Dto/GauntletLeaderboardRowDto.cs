@@ -18,6 +18,7 @@ public class GauntletLeaderboardRowDto
     public required string TimeString { get; set; }
     public int Time { get; set; }
     public bool LapTimeVerified { get; set; }
+    public bool A8Plus { get; set; }
     public required string PostUrl { get; set; }
     public required string MediaLink { get; set; }
     public DateTime? RunDate { get; set; }

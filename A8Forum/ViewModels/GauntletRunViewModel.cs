@@ -53,4 +53,7 @@ public class GauntletRunViewModel
 
     [Display(Name = "✅")]
     public bool LapTimeVerified { get; set; } = false;
+
+    [Display(Name = "A8+")]
+    public bool A8Plus { get; set; } = false;
 }

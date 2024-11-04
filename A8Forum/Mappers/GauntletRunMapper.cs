@@ -38,6 +38,7 @@ internal static class GauntletRunMapper
             Deleted = model.Deleted,
             Idate = model.Idate,
             LapTimeVerified = model.LapTimeVerified,
+            A8Plus = model.A8Plus,
             MediaLink = model.MediaLink,
             Member = model.Member.ToMemberViewModel(),
             PostUrl = model.PostUrl,

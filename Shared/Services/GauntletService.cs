@@ -48,6 +48,7 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
                     MemberDisplayName = bestRace.Member.MemberDisplayName,
                     PostUrl = bestRace.PostUrl ?? "",
                     LapTimeVerified = bestRace.LapTimeVerified,
+                    A8Plus = bestRace.A8Plus,
                     MediaLink = bestRace.MediaLink ?? "",
                     RunDate = bestRace.RunDate,
                     Time = bestRace.Time,
@@ -355,10 +356,11 @@ The total leaderboard points are the sum of the points given in each track leade
             races.Any(x => !string.IsNullOrEmpty(x.VehicleName4)) ? 4 : 3;
     }
 
+
     private string GetGauntletLeaderboardTableRowByMember(GauntletLeaderboardRowDto race, int i, int numberOfVehicles)
     {
         return $@"[tr]
-{GetTdCellWithBorder(race.LapTimeVerified ? "✅" : "", false)}
+{GetTdCellWithBorder($"{(race.A8Plus ? "+" : "")}{(race.LapTimeVerified ? "✅" : "")}", false)}
 {GetTdCellWithBorder(race.TrackName)}
 {GetTdCellWithBorder(race.TimeString)}
 {GetTdCellWithBorder(race.RunDate.HasValue ? race.RunDate.Value.ToString("dd.MM.yyyy") : "")}
@@ -392,7 +394,7 @@ The total leaderboard points are the sum of the points given in each track leade
     {
         return $@"[tr]
 
-{GetTdCellWithBorder(race.LapTimeVerified ? "✅" : "", false)}
+{GetTdCellWithBorder($"{(race.A8Plus ? "+" : "")}{(race.LapTimeVerified ? "✅" : "")}", false)}
 {GetTdCellWithBorder($"{race.Position}.", false)}
 {GetTdCellWithBorder($"@{race.MemberName}")}
 {GetTdCellWithBorder(race.TimeString)}
