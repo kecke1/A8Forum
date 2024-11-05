@@ -259,6 +259,7 @@ The total leaderboard points are the sum of the points given in each track leade
             var gd = new GauntletRunDTO
             {
                 Idate = DateTime.Now,
+                A8Plus = false,
                 Time = cols[races.TimeColumn - 1].FromTimestringToInt(),
                 Track = tracks.First(x =>
                     x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), cols[races.TrackColumn - 1])),
