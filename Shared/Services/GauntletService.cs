@@ -269,7 +269,7 @@ The total leaderboard points are the sum of the points given in each track leade
                 Vehicle4 = v.Length > 3 ? ClosestMatch(vehicles, v[3]) : null,
                 Vehicle5 = v.Length > 4 ? ClosestMatch(vehicles, v[4]) : null,
                 RunDate = races.RunDateColumn != 0 ? DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null) : null,
-                LapTimeVerified = races.VehiclesColumn != 0 && cols[races.VerifiedColumn - 1] == "1",
+                LapTimeVerified = races.VerifiedColumn != 0 && cols[races.VerifiedColumn - 1] == "1",
                 Member = await masterDataService.GetMemberAsync(races.MemberId),
                 PostUrl = races.PostUrl
             };
