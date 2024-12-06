@@ -237,6 +237,7 @@ public class ForumChallengeService(IRepository<ForumChallenge> forumChallengeRep
     {
         return
             @$"[tr {(index % 2 == 1 ? "style='background-color: #f3f3f3'" : "")}]
+{GetTdCellWithBorder($"{position}.")}
 {GetTdCellWithBorder($"@{c.MemberName}")}
 {GetTdCellWithBorder($"{(!string.IsNullOrEmpty(c.PostUrl) ? $"[a href=\"{c.PostUrl}\"]{c.TimeString}[/a]" : c.TimeString)}")}
 {GetTdCellWithBorder($"{(!string.IsNullOrEmpty(c.VehicleUrl) ? $"[a href=\"{_vehiclesBaseUrl}{c.VehicleUrl}\"]{c.VehicleName}[/a]" : c.VehicleName)}")}
