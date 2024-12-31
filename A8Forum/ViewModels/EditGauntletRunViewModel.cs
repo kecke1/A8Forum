@@ -56,4 +56,6 @@ public class EditGauntletRunViewModel
 
     [Display(Name = "A8+")]
     public bool A8Plus { get; set; } = false;
+
+    public bool Save { get; set; } = true;
 }

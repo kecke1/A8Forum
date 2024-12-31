@@ -311,6 +311,50 @@ The total leaderboard points are the sum of the points given in each track leade
         return report;
     }
 
+    private string? GetValueFromTemplate(string key, string template)
+    {
+        foreach (var row in template.Split('\n'))
+        {
+            var cols = row.Split(':',2);
+            if (cols.Length == 2 && cols.First().ToLower().Contains(key))
+            {
+                return cols.Last();
+            }
+        }
+
+        return null;
+    }
+
+    private DateTime? GetDate()
+    {
+        return null;
+    }
+
+    public async Task<GauntletRunDTO> GetGauntletRunFromTemplateAsync(string template, string postUrl)
+    {
+        var tracks = (await masterDataService.GetTracksAsync()).ToArray();
+        var vehicles = (await masterDataService.GetVehiclesAsync()).Where(x => x.MaxRank > 1850).ToArray();
+
+        return new GauntletRunDTO
+        {
+            Time = GetValueFromTemplate("time", template)?.FromTimestringToInt() ?? 0,
+            Idate = DateTime.Now,
+            Track = tracks.FirstOrDefault(x =>
+                x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), GetValueFromTemplate("track", template))),
+            Vehicle1 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 1", template)),
+            Vehicle2 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 2", template)),
+            Vehicle3 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 3", template)),
+            Vehicle4 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 4", template)),
+            Vehicle5 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 5", template)),
+            Member = null,
+            PostUrl = postUrl,
+            RunDate = null,
+            MediaLink = GetValueFromTemplate("video", template),
+            LapTimeVerified = false,
+            A8Plus = false
+        };
+    }
+
     private string GetGautletTotalLeaderboardTableRow(GauntletLeaderboardResultDto g, int position, int index)
     {
         return
@@ -457,8 +501,12 @@ The total leaderboard points are the sum of the points given in each track leade
         return result;
     }
 
-    private VehicleDTO ClosestMatch(IEnumerable<VehicleDTO> vehicles, string s)
+    private VehicleDTO? ClosestMatch(IEnumerable<VehicleDTO> vehicles, string? s)
     {
+        if (s == null)
+        {
+            return null;
+        }
         //var distance = int.MaxValue;//
         var distance = double.MaxValue;
         var result = vehicles.First();

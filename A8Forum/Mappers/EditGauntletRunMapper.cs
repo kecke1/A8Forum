@@ -35,20 +35,20 @@ internal static class EditGauntletRunMapper
         return new EditGauntletRunViewModel
         {
             GauntletRunId = model.Id,
-            TrackId = model.Track.Id,
+            TrackId = model.Track?.Id ?? "",
             Deleted = model.Deleted,
             Idate = model.Idate,
             LapTimeVerified = model.LapTimeVerified,
             A8Plus = model.A8Plus,
             MediaLink = model.MediaLink,
-            MemberId = model.Member.Id,
+            MemberId = model.Member?.Id,
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
             Time = model.Time,
             TimeString = model.Time.ToTimeString(),
-            Vehicle1Id = model.Vehicle1.Id,
-            Vehicle2Id = model.Vehicle2.Id,
-            Vehicle3Id = model.Vehicle3.Id,
+            Vehicle1Id = model.Vehicle1?.Id ?? "",
+            Vehicle2Id = model.Vehicle2?.Id ?? "",
+            Vehicle3Id = model.Vehicle3?.Id ?? "",
             Vehicle4Id = model.Vehicle4?.Id,
             Vehicle5Id = model.Vehicle5?.Id
         };

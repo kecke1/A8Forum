@@ -25,4 +25,6 @@ public interface IGauntletService
     public Task<string> GetGauntletTotalLeaderboardTableAsync(IEnumerable<GauntletLeaderboardRowDto> races);
 
     public Task<GauntletReportDTO> GetGauntletReportAsync();
+
+    public Task<GauntletRunDTO> GetGauntletRunFromTemplateAsync(string template, string postUrl);
 }

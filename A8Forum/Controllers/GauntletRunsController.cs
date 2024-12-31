@@ -5,6 +5,7 @@ using A8Forum.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Shared.Dto;
 using Shared.Models;
 using Shared.Services;
@@ -131,6 +132,33 @@ public class GauntletRunsController(IMasterDataService masterDataService,
         return View();
     }
 
+    public IActionResult CreateFromTemplate()
+    {
+        return View();
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = "GauntletUserRole")]
+    public async Task<IActionResult> CreateFromTemplate(
+        [Bind(
+            "PostUrl,TemplateText")]
+        CreateGauntletRunFromTemplateViewModel template)
+    {
+
+        await PopulateVehiclesDropDownListAsync();
+        await PopulateMembersDropDownListAsync();
+        await PopulateTracksDropDownListAsync();
+
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
+        ViewBag.IsAdmin = isAdmin.Succeeded;
+        return View("Create", (await gauntletService
+            .GetGauntletRunFromTemplateAsync(template.TemplateText, template.PostUrl))
+            .ToEditGauntletRunViewModel());
+    }
+
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
@@ -138,11 +166,11 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> Create(
         [Bind(
-            "GauntletRunId,TimeString, LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink")]
+            "GauntletRunId,TimeString, LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink, Save")]
         EditGauntletRunViewModel gauntletRun)
     {
         var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && gauntletRun.Save)
         {
             if (!isAdmin.Succeeded || string.IsNullOrEmpty(gauntletRun.MemberId))
             {
