@@ -72,7 +72,8 @@ public class VehiclesController(IMasterDataService masterDataService) : Controll
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "AdminRole")]
     public async Task<IActionResult> Edit(string id,
-        [Bind("VehicleId,Name,Url,MaxRank, ShortName, Keyword")] VehicleViewModel vehicle)
+        [Bind("VehicleId,Name,Url,MaxRank, ShortName, Keyword")]
+        VehicleViewModel vehicle)
     {
         if (id != vehicle.VehicleId)
             return NotFound();

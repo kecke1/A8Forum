@@ -70,7 +70,8 @@ public class ForumChallengesController(IMasterDataService masterDataService,
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "ForumChallengeAdminRole")]
     public async Task<IActionResult> Create(
-        [Bind("StartDate,EndDate,Rules,Post,MaxRank, Track,Season,CustomTitle")] ForumChallengeViewModel challenge)
+        [Bind("StartDate,EndDate,Rules,Post,MaxRank, Track,Season,CustomTitle")]
+        ForumChallengeViewModel challenge)
     {
         if (ModelState.IsValid)
         {

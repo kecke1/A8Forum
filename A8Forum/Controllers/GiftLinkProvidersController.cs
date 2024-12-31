@@ -42,7 +42,8 @@ public class GiftLinkProvidersController(IGiftLinkService giftLinkService) : Con
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "GiftLinkRole")]
     public async Task<IActionResult> Create(
-        [Bind("GiftLinkProviderId,Name,Url,Deleted,Display")] GiftLinkProvider giftLinkProvider)
+        [Bind("GiftLinkProviderId,Name,Url,Deleted,Display")]
+        GiftLinkProvider giftLinkProvider)
     {
         if (ModelState.IsValid)
         {
@@ -72,7 +73,8 @@ public class GiftLinkProvidersController(IGiftLinkService giftLinkService) : Con
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "GiftLinkRole")]
     public async Task<IActionResult> Edit(string id,
-        [Bind("GiftLinkProviderId,Name,Url,Deleted,Hide")] GiftLinkProvider giftLinkProvider)
+        [Bind("GiftLinkProviderId,Name,Url,Deleted,Hide")]
+        GiftLinkProvider giftLinkProvider)
     {
         if (id != giftLinkProvider.GiftLinkProviderId)
             return NotFound();

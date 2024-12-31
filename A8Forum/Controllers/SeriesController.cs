@@ -77,7 +77,8 @@ public class SeriesController(IMasterDataService masterDataService,
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "ForumChallengeAdminRole")]
     public async Task<IActionResult> Edit(string id,
-        [Bind("SeriesId,StartDate,EndDate,NumberOfRaces")] SeriesViewModel series)
+        [Bind("SeriesId,StartDate,EndDate,NumberOfRaces")]
+        SeriesViewModel series)
     {
         if (id != series.SeriesId)
             return NotFound();

@@ -142,7 +142,8 @@ public class GiftLinksController(IGiftLinkService giftLinkService,
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "GiftLinkRole")]
     public async Task<IActionResult> Edit(string id,
-        [Bind("GiftLinkId,Url,GiftLinkProvider,SubmitedBy,Deleted,Idate,Month,Notes")] GiftLinkViewModel giftLink)
+        [Bind("GiftLinkId,Url,GiftLinkProvider,SubmitedBy,Deleted,Idate,Month,Notes")]
+        GiftLinkViewModel giftLink)
     {
         if (id != giftLink.GiftLinkId)
             return NotFound();

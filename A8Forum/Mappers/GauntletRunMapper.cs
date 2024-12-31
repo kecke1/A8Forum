@@ -1,7 +1,7 @@
-﻿using A8Forum.ViewModels;
+﻿using A8Forum.Extensions;
+using A8Forum.ViewModels;
 using Shared.Dto;
 using Shared.Extensions;
-using A8Forum.Extensions;
 
 namespace A8Forum.Mappers;
 

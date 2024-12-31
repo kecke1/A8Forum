@@ -5,9 +5,7 @@ using A8Forum.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Shared.Dto;
-using Shared.Models;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
@@ -147,7 +145,6 @@ public class GauntletRunsController(IMasterDataService masterDataService,
             "PostUrl,TemplateText")]
         CreateGauntletRunFromTemplateViewModel template)
     {
-
         await PopulateVehiclesDropDownListAsync();
         await PopulateMembersDropDownListAsync();
         await PopulateTracksDropDownListAsync();
@@ -155,7 +152,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
         var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
         ViewBag.IsAdmin = isAdmin.Succeeded;
         return View("Create", (await gauntletService
-            .GetGauntletRunFromTemplateAsync(template.TemplateText, template.PostUrl))
+                .GetGauntletRunFromTemplateAsync(template.TemplateText, template.PostUrl))
             .ToEditGauntletRunViewModel());
     }
 

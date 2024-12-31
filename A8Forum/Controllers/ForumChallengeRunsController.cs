@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Shared.Dto;
 using Shared.Extensions;
-using Shared.Models;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
@@ -106,7 +105,8 @@ public class ForumChallengeRunsController(IMasterDataService masterDataService,
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "ForumChallengeUserRole")]
     public async Task<IActionResult> Create(
-        [Bind("TimeString,Post,VehicleId,MemberId,ForumChallengeId")] EditForumChallengeRunViewModel run)
+        [Bind("TimeString,Post,VehicleId,MemberId,ForumChallengeId")]
+        EditForumChallengeRunViewModel run)
     {
         var isAdmin = await authorizationService.AuthorizeAsync(User, "ForumChallengeAdminRole");
         if (ModelState.IsValid)

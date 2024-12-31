@@ -7,27 +7,27 @@
 <h2>Edit</h2>
 
 <h3>User @Model.UserName</h3>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="UserName" />
+            <input type="hidden" asp-for="UserId"/>
+            <input type="hidden" asp-for="UserName"/>
             <div class="form-group">
                 <label asp-for="MemberId" class="control-label"></label>
-                <select asp-for="MemberId" class="form-control" id='membersDropdown' asp-items="ViewBag.MemberId">
+                <select asp-for="MemberId" class="form-control" id="membersDropdown" asp-items="ViewBag.MemberId">
                 </select>
-                <span asp-validation-for="MemberId" class="text-danger" />
+                <span asp-validation-for="MemberId" class="text-danger"/>
             </div>
             <div class="form-group">
                 <label asp-for="LockedOut" class="form-check-label"></label>
-                <input asp-for="LockedOut" type="checkbox" class="form-check-input" />
+                <input asp-for="LockedOut" type="checkbox" class="form-check-input"/>
                 <span asp-validation-for="LockedOut" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary"/>
             </div>
         </form>
     </div>

@@ -294,13 +294,13 @@ public class ForumChallengeService(IRepository<ForumChallenge> forumChallengeRep
                     MemberDisplayName = x.First().MemberDisplayName,
                     NumberOfRuns = x.Count(),
                     Points = x.Count() <= numberOfRuns
-                    ? x.Sum(y => y.SeriesPoints)
-                    : x.OrderByDescending(y => y.SeriesPoints).Take(numberOfRuns).Sum(y => y.SeriesPoints),
+                        ? x.Sum(y => y.SeriesPoints)
+                        : x.OrderByDescending(y => y.SeriesPoints).Take(numberOfRuns).Sum(y => y.SeriesPoints),
 
                     LatestForumChallengeId = x.Max(y => y.ForumChallengeId),
                     LatestChallengeEndDate = x.Max(y => y.ChallengeEndDate),
                     LatestChallengeLapTime =
-                    x.FirstOrDefault(y => y.ChallengeEndDate == x.Max(z => z.ChallengeEndDate))?.Time ?? 999999,
+                        x.FirstOrDefault(y => y.ChallengeEndDate == x.Max(z => z.ChallengeEndDate))?.Time ?? 999999,
                     LatestChallengeTimeString = ""
                 };
                 l.LatestChallengeTimeString =

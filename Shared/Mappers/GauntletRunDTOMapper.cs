@@ -32,7 +32,6 @@ internal static class GauntletRunDTOMapper
             MediaLink = gauntletrun.MediaLink,
             LapTimeVerified = gauntletrun.LapTimeVerified,
             A8Plus = gauntletrun.A8Plus
-
         };
     }
 

@@ -14,12 +14,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
                 <label asp-for="TimeString" class="control-label"></label>
-                <input  asp-for="TimeString" class="form-control" placeholder="Lap time, 00:000"/>
+                <input asp-for="TimeString" class="form-control" placeholder="Lap time, 00:000"/>
                 <span asp-validation-for="TimeString" class="text-danger"></span>
             </div>
             <div class="form-group mb-4">
                 <label asp-for="PostUrl" class="control-label"></label>
-                <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp" />
+                <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp"/>
                 <span asp-validation-for="PostUrl" class="text-danger"></span>
                 <small id="postUrlHelp" class="form-text text-muted">
                     Link to the post in the Gauntlet FC-thread. This can be obtained in the forum by pressing the icon with a gearwheel in the upper right corner of the post and then by selecting 'Link to post'. It looks something like this: https://asphalt8.freeforums.net/post/32313/thread
@@ -27,7 +27,7 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="MediaLink" class="control-label"></label>
-                <input asp-for="MediaLink" class="form-control" placeholder="Link to video, https://..." aria-describedby="mediaLinkHelp" />
+                <input asp-for="MediaLink" class="form-control" placeholder="Link to video, https://..." aria-describedby="mediaLinkHelp"/>
                 <span asp-validation-for="MediaLink" class="text-danger"></span>
                 <small id="mediaLinkHelp" class="form-text text-muted">
                     Link to video if it exists. The link could be to a video streaming site like Youtube or a link to a post within Asphalt8 forum where the link to video is posted. Leave this empty if there is no video.
@@ -35,22 +35,22 @@
             </div>
             <div class="form-group mb-4">
                 <label asp-for="RunDate" class="control-label"></label>
-                <input autocomplete="off" asp-for="RunDate" class="form-control" />
+                <input autocomplete="off" asp-for="RunDate" class="form-control"/>
                 <span asp-validation-for="RunDate" class="text-danger"></span>
             </div>
 
             <div class="form-group form-check mb-3">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="LapTimeVerified" aria-describedby="verifiedHelp" /> @Html.DisplayNameFor(model => model.LapTimeVerified)
+                    <input class="form-check-input" asp-for="LapTimeVerified" aria-describedby="verifiedHelp"/> @Html.DisplayNameFor(model => model.LapTimeVerified)
                 </label>
                 <small id="verifiedHelp" class="form-text text-muted">
                     Check this if you are posting a video of your run or if your forum post contains a screen shot where both lap time and track name is visible
                 </small>
             </div>
-            
+
             <div class="form-group form-check mb-3">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="A8Plus" aria-describedby="a8PlusHelp" /> @Html.DisplayNameFor(model => model.A8Plus)
+                    <input class="form-check-input" asp-for="A8Plus" aria-describedby="a8PlusHelp"/> @Html.DisplayNameFor(model => model.A8Plus)
                 </label>
                 <small id="a8PlusHelp" class="form-text text-muted">
                     Check this if you were using A8+ on Apple arcade instead of the regular A8
@@ -63,7 +63,7 @@
                     <label asp-for="MemberId" class="control-label"></label>
                     <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
                         <option value=""></option>
-                        </select>
+                    </select>
                     <span asp-validation-for="MemberId" class="text-danger"/>
                 </div>
             }
@@ -71,14 +71,14 @@
                 <label asp-for="TrackId" class="control-label"></label>
                 <select asp-for="TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
                     <option value=""></option>
-                    </select>
+                </select>
                 <span asp-validation-for="TrackId" class="text-danger"/>
             </div>
             <div class="form-group mb-2">
                 <label asp-for="Vehicle1Id" class="control-label"></label>
                 <select asp-for="Vehicle1Id" class="form-control" asp-items="ViewBag.Vehicle1Id" id="vehicles1Dropdown">
                     <option value=""></option>
-                    </select>
+                </select>
                 <span asp-validation-for="Vehicle1Id" class="text-danger"/>
             </div>
 
@@ -86,7 +86,7 @@
                 <label asp-for="Vehicle2Id" class="control-label"></label>
                 <select asp-for="Vehicle2Id" class="form-control" asp-items="ViewBag.Vehicle2Id" id="vehicles2Dropdown">
                     <option value=""></option>
-                    </select>
+                </select>
                 <span asp-validation-for="Vehicle2Id" class="text-danger"/>
             </div>
 
@@ -94,14 +94,14 @@
                 <label asp-for="Vehicle3Id" class="control-label"></label>
                 <select asp-for="Vehicle3Id" class="form-control" asp-items="ViewBag.Vehicle3Id" id="vehicles3Dropdown">
                     <option value=""></option>
-                    </select>
+                </select>
                 <span asp-validation-for="Vehicle3Id" class="text-danger"/>
             </div>
             <div class="form-group mb-2">
                 <label asp-for="Vehicle4Id" class="control-label"></label>
                 <select asp-for="Vehicle4Id" class="form-control" asp-items="ViewBag.Vehicle4Id" id="vehicles4Dropdown">
                     <option value=""></option>
-                    </select>
+                </select>
                 <span asp-validation-for="Vehicle4Id" class="text-danger"/>
             </div>
 
@@ -109,7 +109,7 @@
                 <label asp-for="Vehicle5Id" class="control-label"></label>
                 <select asp-for="Vehicle5Id" class="form-control" asp-items="ViewBag.Vehicle5Id" id="vehicles5Dropdown">
                     <option value=""></option>
-                    </select>
+                </select>
                 <span asp-validation-for="Vehicle5Id" class="text-danger"/>
             </div>
 

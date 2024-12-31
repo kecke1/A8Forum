@@ -71,7 +71,8 @@ public class RankBracketsController(IMasterDataService masterDataService) : Cont
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "AdminRole")]
     public async Task<IActionResult> Edit(string id,
-        [Bind("MinRank,MaxRank,Class, RankBracketId")] RankBracketViewModel rankBracket)
+        [Bind("MinRank,MaxRank,Class, RankBracketId")]
+        RankBracketViewModel rankBracket)
     {
         if (id != rankBracket.RankBracketId)
             return NotFound();

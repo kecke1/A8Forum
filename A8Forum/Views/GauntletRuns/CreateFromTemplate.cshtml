@@ -12,13 +12,13 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-4">
                 <label asp-for="PostUrl" class="control-label"></label>
-                <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp" />
+                <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp"/>
                 <span asp-validation-for="PostUrl" class="text-danger"></span>
                 <small id="postUrlHelp" class="form-text text-muted">
                     Link to the post in the Gauntlet FC-thread. This can be obtained in the forum by pressing the icon with a gearwheel in the upper right corner of the post and then by selecting 'Link to post'. It looks something like this: https://asphalt8.freeforums.net/post/32313/thread
                 </small>
             </div>
-           
+
             <div class="form-group mb-4">
                 <label asp-for="TemplateText" class="control-label"></label>
                 <textarea rows="20" cols="100" asp-for="TemplateText" class="form-control" style="overflow: scroll; white-space: nowrap; width: 100%;"></textarea>
@@ -36,5 +36,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

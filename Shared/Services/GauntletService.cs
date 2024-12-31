@@ -268,7 +268,9 @@ The total leaderboard points are the sum of the points given in each track leade
                 Vehicle3 = ClosestMatch(vehicles, v[2]),
                 Vehicle4 = v.Length > 3 ? ClosestMatch(vehicles, v[3]) : null,
                 Vehicle5 = v.Length > 4 ? ClosestMatch(vehicles, v[4]) : null,
-                RunDate = races.RunDateColumn != 0 ? DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null) : null,
+                RunDate = races.RunDateColumn != 0
+                    ? DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null)
+                    : null,
                 LapTimeVerified = races.VerifiedColumn != 0 && cols[races.VerifiedColumn - 1] == "1",
                 Member = await masterDataService.GetMemberAsync(races.MemberId),
                 PostUrl = races.PostUrl
@@ -280,6 +282,7 @@ The total leaderboard points are the sum of the points given in each track leade
                 gd.MediaLink = cols[races.MediaLinkColumn - 1];
                 gd.LapTimeVerified = true;
             }
+
             toCreate.Add(gd);
         }
 
@@ -311,25 +314,6 @@ The total leaderboard points are the sum of the points given in each track leade
         return report;
     }
 
-    private string? GetValueFromTemplate(string key, string template)
-    {
-        foreach (var row in template.Split('\n'))
-        {
-            var cols = row.Split(':',2);
-            if (cols.Length == 2 && cols.First().ToLower().Contains(key))
-            {
-                return cols.Last();
-            }
-        }
-
-        return null;
-    }
-
-    private DateTime? GetDate()
-    {
-        return null;
-    }
-
     public async Task<GauntletRunDTO> GetGauntletRunFromTemplateAsync(string template, string postUrl)
     {
         var tracks = (await masterDataService.GetTracksAsync()).ToArray();
@@ -353,6 +337,23 @@ The total leaderboard points are the sum of the points given in each track leade
             LapTimeVerified = false,
             A8Plus = false
         };
+    }
+
+    private string? GetValueFromTemplate(string key, string template)
+    {
+        foreach (var row in template.Split('\n'))
+        {
+            var cols = row.Split(':', 2);
+            if (cols.Length == 2 && cols.First().ToLower().Contains(key))
+                return cols.Last();
+        }
+
+        return null;
+    }
+
+    private DateTime? GetDate()
+    {
+        return null;
     }
 
     private string GetGautletTotalLeaderboardTableRow(GauntletLeaderboardResultDto g, int position, int index)
@@ -504,9 +505,7 @@ The total leaderboard points are the sum of the points given in each track leade
     private VehicleDTO? ClosestMatch(IEnumerable<VehicleDTO> vehicles, string? s)
     {
         if (s == null)
-        {
             return null;
-        }
         //var distance = int.MaxValue;//
         var distance = double.MaxValue;
         var result = vehicles.First();

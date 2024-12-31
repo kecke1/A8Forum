@@ -24,7 +24,7 @@ if (bool.TryParse(options.SetupCosmosDb, out var setup) && setup)
     var builder1 = new DbContextOptionsBuilder<A8ForumazurewebsitesnetContex>();
     builder1.UseCosmos(options.CosmosConnection, options.CosmosDb);
 
-     using (var dbContext = new A8ForumazurewebsitesnetContex(builder1.Options))
+    using (var dbContext = new A8ForumazurewebsitesnetContex(builder1.Options))
     {
         dbContext.Database.EnsureCreated();
     }
