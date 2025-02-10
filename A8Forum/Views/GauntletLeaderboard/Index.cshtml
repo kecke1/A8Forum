@@ -85,16 +85,61 @@
             $('#tracksDropdown').on('change.select2', function (e) {
                 applyFilters();
             });
+
+            setFiltersFromQueryString();
+
+
         });
     </script>
 
     <script>
+
         function applyFilters() {
 
-            var table = $('#leaderboardTable').DataTable();
-            var nameData = $("#namesDropdown").select2('data');
-            var trackData = $("#tracksDropdown").select2('data');
+             var table = $('#leaderboardTable').DataTable();
+             var nameData = $("#namesDropdown").select2('data');
+             var trackData = $("#tracksDropdown").select2('data');
 
+             var tracks = jQuery.map(trackData, function (x) {
+                 return '^' + x.id + '$';
+             }).join('|');
+
+             table.column(1).search(tracks, true, false, false).draw(false);
+
+             var names = jQuery.map(nameData, function (x) {
+                 return '^' + x.id + '$';
+             }).join('|');
+
+             table.column(3).search(names, true, false, false).draw(false);
+
+             setQuerystringValue("tracks", jQuery.map(trackData, function (x) {
+                return x.id;
+            }).join(','));
+
+             setQuerystringValue("names", jQuery.map(nameData, function (x) {
+                return x.id;
+            }).join(','));
+         }
+
+
+        function setFiltersFromQueryString() {
+
+            var names = getQueryStringValue("names");
+            var tracks = getQueryStringValue("tracks");
+
+            if(names){
+                $("#namesDropdown").val(names.split(','));
+                $("#namesDropdown").trigger('change');
+            }
+
+            if(tracks){
+                $("#tracksDropdown").val(tracks.split(','));
+                $("#tracksDropdown").trigger('change');
+            }
+        }
+
+        function filterTable(names, tracks)
+        {
             var tracks = jQuery.map(trackData, function (x) {
                 return '^' + x.id + '$';
             }).join('|');
@@ -106,6 +151,19 @@
             }).join('|');
 
             table.column(3).search(names, true, false, false).draw(false);
+        }
+
+        function setQuerystringValue(key, value) {
+            var url = new URL(window.location.href);
+            url.searchParams.set(key, value);
+            window.history.pushState(null, document.title, url.href);
+        }
+
+
+        function getQueryStringValue(key){
+           var url = new URL(window.location.href);
+           var urlParams = new URLSearchParams(window.location.search);
+           return urlParams.get(key);
         }
 
     </script>

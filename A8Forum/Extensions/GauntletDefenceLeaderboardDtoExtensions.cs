@@ -30,6 +30,6 @@ public static class GauntletLeaderboardRowDtoExtensions
     {
         if (string.IsNullOrEmpty(link))
             return text;
-        return string.IsNullOrEmpty(text) ? "" : $"<a href='{link}'>{text}</a>";
+        return string.IsNullOrEmpty(text) ? "" : $"<a href='{link}' target='_blank'>{text}</a>";
     }
 }
