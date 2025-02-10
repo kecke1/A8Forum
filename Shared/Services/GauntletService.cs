@@ -1,4 +1,6 @@
-﻿using F23.StringSimilarity;
+﻿using System.Text;
+using F23.StringSimilarity;
+using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.CosmosRepository;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -319,25 +321,87 @@ The total leaderboard points are the sum of the points given in each track leade
         var tracks = (await masterDataService.GetTracksAsync()).ToArray();
         var vehicles = (await masterDataService.GetVehiclesAsync()).Where(x => x.MaxRank > 1850).ToArray();
 
-        return new GauntletRunDTO
+        if (template.Contains("track:"))
         {
-            Time = GetValueFromTemplate("time", template)?.FromTimestringToInt() ?? 0,
+
+            return new GauntletRunDTO
+            {
+                Time = GetValueFromTemplate("time", template)?.FromTimestringToInt() ?? 0,
+                Idate = DateTime.Now,
+                Track = tracks.FirstOrDefault(x =>
+                    x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName),
+                        GetValueFromTemplate("track", template))),
+                Vehicle1 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 1", template)),
+                Vehicle2 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 2", template)),
+                Vehicle3 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 3", template)),
+                Vehicle4 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 4", template)),
+                Vehicle5 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 5", template)),
+                Member = null,
+                PostUrl = postUrl,
+                RunDate = null,
+                MediaLink = GetValueFromTemplate("video", template),
+                LapTimeVerified = false,
+                A8Plus = false
+            };
+        }
+
+        var templateRows = template.Split("\n").Where(x => !string.IsNullOrEmpty(x)).ToList();
+
+        var r = new GauntletRunDTO
+        {
             Idate = DateTime.Now,
-            Track = tracks.FirstOrDefault(x =>
-                x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), GetValueFromTemplate("track", template))),
-            Vehicle1 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 1", template)),
-            Vehicle2 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 2", template)),
-            Vehicle3 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 3", template)),
-            Vehicle4 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 4", template)),
-            Vehicle5 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 5", template)),
             Member = null,
-            PostUrl = postUrl,
-            RunDate = null,
-            MediaLink = GetValueFromTemplate("video", template),
+            RunDate = DateTime.Now,
             LapTimeVerified = false,
-            A8Plus = false
+            A8Plus = false,
         };
+
+        if (!templateRows.Any())
+        {
+            return r;
+        }
+
+        var timeIndex = 1;
+        var trackIndex = 0;
+
+        if (char.IsDigit(templateRows.First().First()))
+        {
+            timeIndex = 0;
+            trackIndex = 1;
+        }
+
+        r.Time = templateRows[timeIndex].Trim().FromTimestringToInt();
+        r.Track = tracks.FirstOrDefault(x =>
+            x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), templateRows[trackIndex]));
+
+        templateRows.RemoveRange(0,2);
+
+        var videoLinkIndex = templateRows.FindIndex(x => x.StartsWith("http"));
+        if (videoLinkIndex != -1)
+        {
+            r.MediaLink = templateRows[videoLinkIndex].Trim();
+            templateRows.RemoveAt(videoLinkIndex);
+        }
+
+        r.Vehicle1 = ClosestMatch(vehicles, templateRows[0]);
+        r.Vehicle2 = ClosestMatch(vehicles, templateRows[1]);
+        r.Vehicle3 = ClosestMatch(vehicles, templateRows[2]);
+
+        templateRows.RemoveRange(0,3);
+
+        if (templateRows.Any())
+        {
+            r.Vehicle4 = ClosestMatch(vehicles, templateRows[0]);
+        }
+
+        if (templateRows.Any() && templateRows.Count > 1)
+        {
+            r.Vehicle5 = ClosestMatch(vehicles, templateRows[1]);
+        }
+
+        return r;
     }
+
 
     private string? GetValueFromTemplate(string key, string template)
     {
