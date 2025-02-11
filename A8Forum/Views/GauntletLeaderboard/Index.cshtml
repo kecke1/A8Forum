@@ -1,4 +1,6 @@
-﻿@{
+﻿@model A8Forum.ViewModels.GauntletLeaderboardViewModel
+
+@{
     ViewData["Title"] = "Gauntlet Leaderboard";
 }
 
@@ -23,6 +25,23 @@
                 </select>
             </div>
         </div>
+    </div>
+    </form>
+<form asp-action="Index" method="get">
+    <input type="hidden" asp-for="Names" id="selectedNames" />
+    <input type="hidden" asp-for="Tracks" id="selectedTracks" />
+    <div class="row">
+        <div class="form-group form-check mb-3">
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ShowAllRuns" aria-describedby="showAllHelp" onchange="submitForm();this.form.submit()" /> @Html.DisplayNameFor(model => model.ShowAllRuns)
+                </label>
+                <small id="showAllHelp" class="form-text text-muted">
+                    Check this if you want to show all recorded runs
+                </small>
+            </div>
+        </div>
+
     </div>
 </form>
 
@@ -94,6 +113,11 @@
 
     <script>
 
+        function submitForm() {
+            $('#selectedNames').val(getQueryStringValue("Names"));
+            $('#selectedTracks').val(getQueryStringValue("Tracks"));
+        }
+
         function applyFilters() {
 
              var table = $('#leaderboardTable').DataTable();
@@ -112,11 +136,11 @@
 
              table.column(3).search(names, true, false, false).draw(false);
 
-             setQuerystringValue("tracks", jQuery.map(trackData, function (x) {
+             setQuerystringValue("Tracks", jQuery.map(trackData, function (x) {
                 return x.id;
             }).join(','));
 
-             setQuerystringValue("names", jQuery.map(nameData, function (x) {
+             setQuerystringValue("Names", jQuery.map(nameData, function (x) {
                 return x.id;
             }).join(','));
          }
@@ -124,8 +148,8 @@
 
         function setFiltersFromQueryString() {
 
-            var names = getQueryStringValue("names");
-            var tracks = getQueryStringValue("tracks");
+            var names = getQueryStringValue("Names");
+            var tracks = getQueryStringValue("Tracks");
 
             if(names){
                 $("#namesDropdown").val(names.split(','));

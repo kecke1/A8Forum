@@ -15,10 +15,12 @@ public class GauntletLeaderboardController(ILogger<GauntletLeaderboardController
 {
     private readonly ILogger<GauntletLeaderboardController> _logger = logger;
 
-    public async Task<IActionResult> Index()
+    [HttpPost]
+    [HttpGet]
+    public async Task<IActionResult> Index(GauntletLeaderboardViewModel? model)
     {
         var lb = await gauntletService.GetGauntletLeaderboardRowsAsync();
-        var tableCols = lb.ToTableCols();
+        var tableCols = lb.ToTableCols(model?.ShowAllRuns ?? false);
         var tableSetings = new HtmlTableSetting
         {
             IsHtmlEncodeMode = false

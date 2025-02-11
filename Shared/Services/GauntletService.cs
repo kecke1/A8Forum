@@ -345,7 +345,10 @@ The total leaderboard points are the sum of the points given in each track leade
             };
         }
 
-        var templateRows = template.Split("\n").Where(x => !string.IsNullOrEmpty(x)).ToList();
+        var templateRows = template
+            .Split(new char[]{'\n', ';'})
+            .Where(x => !string.IsNullOrEmpty(x.Trim()))
+            .ToList();
 
         var r = new GauntletRunDTO
         {
