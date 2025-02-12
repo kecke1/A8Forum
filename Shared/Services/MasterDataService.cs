@@ -96,9 +96,13 @@ public class MasterDataService(IRepository<Vehicle> vehicleRepository,
         await seasonRepository.UpdateAsync(s.ToSeasonEntity());
     }
 
-    public async Task<IEnumerable<TrackDTO>> GetTracksAsync()
+    public async Task<IEnumerable<TrackDTO>> GetTracksAsync(bool includeRegularTracks = true, bool includeSprintTracks = false)
     {
-        var t = await trackRepository.GetAsync(x => true);
+        var t = await trackRepository
+            .GetAsync(x => true);
+
+        t = t.Where(x => x.Sprint == includeSprintTracks || x.Sprint != includeRegularTracks);
+
         return t.Select(x => x.ToDto()).ToArray();
     }
 

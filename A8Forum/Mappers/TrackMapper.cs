@@ -10,7 +10,8 @@ internal static class TrackMapper
         return new TrackDTO
         {
             Id = track.TrackId,
-            TrackName = track.TrackName
+            TrackName = track.TrackName,
+            Sprint = track.Sprint
         };
     }
 
@@ -19,7 +20,8 @@ internal static class TrackMapper
         return new TrackViewModel
         {
             TrackId = model.Id,
-            TrackName = model.TrackName
+            TrackName = model.TrackName,
+            Sprint = model.Sprint
         };
     }
 }

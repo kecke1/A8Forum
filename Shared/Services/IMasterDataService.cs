@@ -34,7 +34,7 @@ public interface IMasterDataService
 
     public Task DeleteSeasonAsync(string seasonId);
 
-    public Task<IEnumerable<TrackDTO>> GetTracksAsync();
+    public Task<IEnumerable<TrackDTO>> GetTracksAsync(bool includeRegularTracks = true, bool includeSprintTracks = false);
 
     public Task<TrackDTO> GetTrackAsync(string trackId);
 

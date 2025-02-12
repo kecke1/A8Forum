@@ -1,0 +1,94 @@
+﻿@model A8Forum.ViewModels.EditSprintRunViewModel
+
+@{
+    ViewData["Title"] = "Create Sprint Run";
+}
+
+<h1>Create Sprint Run</h1>
+
+<h4>Before a run is created here, it has to be posted in the "Sprint FC"-thread on Asphalt8.freeforums.net. </h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" class="form-horizontal" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="TimeString" class="control-label"></label>
+                <input asp-for="TimeString" class="form-control" placeholder="Lap time, 00:000"/>
+                <span asp-validation-for="TimeString" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="PostUrl" class="control-label"></label>
+                <input asp-for="PostUrl" class="form-control" placeholder="Link to forum post, https://asphalt8.freeforums.net/post/..." aria-describedby="postUrlHelp"/>
+                <span asp-validation-for="PostUrl" class="text-danger"></span>
+                <small id="postUrlHelp" class="form-text text-muted">
+                    Link to the post in the Sprint FC-thread. This can be obtained in the forum by pressing the icon with a gearwheel in the upper right corner of the post and then by selecting 'Link to post'. It looks something like this: https://asphalt8.freeforums.net/post/32313/thread
+                </small>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="MediaLink" class="control-label"></label>
+                <input asp-for="MediaLink" class="form-control" placeholder="Link to video, https://..." aria-describedby="mediaLinkHelp"/>
+                <span asp-validation-for="MediaLink" class="text-danger"></span>
+                <small id="mediaLinkHelp" class="form-text text-muted">
+                    Link to video if it exists. The link could be to a video streaming site like Youtube or a link to a post within Asphalt8 forum where the link to video is posted. Leave this empty if there is no video.
+                </small>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="RunDate" class="control-label"></label>
+                <input autocomplete="off" asp-for="RunDate" class="form-control"/>
+                <span asp-validation-for="RunDate" class="text-danger"></span>
+            </div>
+
+            @if (ViewBag.IsAdmin)
+            {
+                <div class="form-group mb-3">
+                    <label asp-for="MemberId" class="control-label"></label>
+                    <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="MemberId" class="text-danger"/>
+                </div>
+            }
+            <div class="form-group mb-3">
+                <label asp-for="TrackId" class="control-label"></label>
+                <select asp-for="TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
+                    <option value=""></option>
+                </select>
+                <span asp-validation-for="TrackId" class="text-danger"/>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="VehicleId" class="control-label"></label>
+                <select asp-for="VehicleId" class="form-control" asp-items="ViewBag.VehicleId" id="vehiclesDropdown">
+                    <option value=""></option>
+                </select>
+                <span asp-validation-for="VehicleId" class="text-danger"/>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+
+            @if (ViewBag.IsAdmin)
+            {
+                <text>
+                    $("#membersDropdown").select2({placeholder:"-- Select Member --", allowClear: true});
+                </text>
+            }
+            $("#tracksDropdown").select2({ placeholder: "-- Select Track --", allowClear: true });
+            $("#vehiclesDropdown").select2({ placeholder: "-- Select Vehicle --", allowClear: true });
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

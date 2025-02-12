@@ -1,0 +1,76 @@
+﻿@model SprintRunViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Sprint Run</h4>
+    <hr/>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Member)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Member.MemberDisplayName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Time)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Time)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PostUrl)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PostUrl)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MediaLink)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MediaLink)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RunDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RunDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Idate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Idate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Deleted)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Deleted)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Track.TrackName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Track.TrackName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Vehicle)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Vehicle.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.SprintRunId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

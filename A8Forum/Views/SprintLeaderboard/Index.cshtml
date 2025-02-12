@@ -1,0 +1,175 @@
+﻿@model A8Forum.ViewModels.SprintLeaderboardViewModel
+
+@{
+    ViewData["Title"] = "Sprint Leaderboard";
+}
+
+@section Css {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet"/>
+}
+
+<form>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Filter on one or many names</label>
+                <select class="form-select form-select-lg" asp-items="ViewBag.Names" id="namesDropdown" name="names[]" multiple="multiple">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Filter on one or many tracks</label>
+                <select class="form-select form-select-lg" asp-items="ViewBag.Tracks" id="tracksDropdown" name="tracks[]" multiple="multiple">
+                </select>
+            </div>
+        </div>
+    </div>
+    </form>
+<form asp-action="Index" method="get">
+    <input type="hidden" asp-for="Names" id="selectedNames" />
+    <input type="hidden" asp-for="Tracks" id="selectedTracks" />
+    <div class="row">
+        <div class="form-group form-check mb-3">
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ShowAllRuns" aria-describedby="showAllHelp" onchange="submitForm();this.form.submit()" /> @Html.DisplayNameFor(model => model.ShowAllRuns)
+                </label>
+                <small id="showAllHelp" class="form-text text-muted">
+                    Check this if you want to show all recorded runs
+                </small>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+<div class="position-relative">
+    @Html.Raw(ViewBag.Table)
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#namesDropdown").select2();
+            $("#tracksDropdown").select2();
+
+            $('#leaderboardTable').DataTable({
+                ordering: false,
+                paging: false,
+                scrollY: '300px',
+                layout: {
+                    topEnd: null
+                },
+                columnDefs: [
+                    {
+                        title: 'Pos.',
+                        targets: 1
+                    },
+                    {
+                        title: 'Vehicle',
+                        targets: 6
+                    }
+                ]
+            });
+
+            $('#namesDropdown').on('change.select2', function (e) {
+                applyFilters();
+            });
+            $('#tracksDropdown').on('change.select2', function (e) {
+                applyFilters();
+            });
+
+            setFiltersFromQueryString();
+
+
+        });
+    </script>
+
+    <script>
+
+        function submitForm() {
+            $('#selectedNames').val(getQueryStringValue("Names"));
+            $('#selectedTracks').val(getQueryStringValue("Tracks"));
+        }
+
+        function applyFilters() {
+
+             var table = $('#leaderboardTable').DataTable();
+             var nameData = $("#namesDropdown").select2('data');
+             var trackData = $("#tracksDropdown").select2('data');
+
+             var tracks = jQuery.map(trackData, function (x) {
+                 return '^' + x.id + '$';
+             }).join('|');
+
+             table.column(0).search(tracks, true, false, false).draw(false);
+
+             var names = jQuery.map(nameData, function (x) {
+                 return '^' + x.id + '$';
+             }).join('|');
+
+             table.column(2).search(names, true, false, false).draw(false);
+
+             setQuerystringValue("Tracks", jQuery.map(trackData, function (x) {
+                return x.id;
+            }).join(','));
+
+             setQuerystringValue("Names", jQuery.map(nameData, function (x) {
+                return x.id;
+            }).join(','));
+         }
+
+
+        function setFiltersFromQueryString() {
+
+            var names = getQueryStringValue("Names");
+            var tracks = getQueryStringValue("Tracks");
+
+            if(names){
+                $("#namesDropdown").val(names.split(','));
+                $("#namesDropdown").trigger('change');
+            }
+
+            if(tracks){
+                $("#tracksDropdown").val(tracks.split(','));
+                $("#tracksDropdown").trigger('change');
+            }
+        }
+
+        function filterTable(names, tracks)
+        {
+            var tracks = jQuery.map(trackData, function (x) {
+                return '^' + x.id + '$';
+            }).join('|');
+
+            table.column(1).search(tracks, true, false, false).draw(false);
+
+            var names = jQuery.map(nameData, function (x) {
+                return '^' + x.id + '$';
+            }).join('|');
+
+            table.column(3).search(names, true, false, false).draw(false);
+        }
+
+        function setQuerystringValue(key, value) {
+            var url = new URL(window.location.href);
+            url.searchParams.set(key, value);
+            window.history.pushState(null, document.title, url.href);
+        }
+
+
+        function getQueryStringValue(key){
+           var url = new URL(window.location.href);
+           var urlParams = new URLSearchParams(window.location.search);
+           return urlParams.get(key);
+        }
+
+    </script>
+
+}

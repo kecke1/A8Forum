@@ -12,7 +12,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
     // GET: Tracks
     public async Task<IActionResult> Index()
     {
-        var t = await masterDataService.GetTracksAsync();
+        var t = await masterDataService.GetTracksAsync(true, true);
         return View(t.Select(x => x.ToTrackViewModel()));
     }
 
@@ -41,7 +41,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "AdminRole")]
-    public async Task<IActionResult> Create([Bind("TrackId,TrackName")] TrackViewModel track)
+    public async Task<IActionResult> Create([Bind("TrackId,TrackName, Sprint")] TrackViewModel track)
     {
         if (ModelState.IsValid)
         {
@@ -70,7 +70,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "AdminRole")]
-    public async Task<IActionResult> Edit(string id, [Bind("TrackId,TrackName")] TrackViewModel track)
+    public async Task<IActionResult> Edit(string id, [Bind("TrackId,TrackName, Sprint")] TrackViewModel track)
     {
         if (id != track.TrackId)
             return NotFound();

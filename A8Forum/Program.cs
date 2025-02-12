@@ -64,6 +64,13 @@ builder.Services.AddAuthorization(x =>
 
     x.AddPolicy("GiftLinkRole",
         policy => policy.RequireRole(nameof(IdentityRoleEnum.Admin)));
+
+    x.AddPolicy("SprintUserRole",
+        policy => policy.RequireRole(nameof(IdentityRoleEnum.SprintUser), nameof(IdentityRoleEnum.SprintAdmin),
+            nameof(IdentityRoleEnum.Admin)));
+    x.AddPolicy("SprintAdminRole",
+        policy => policy.RequireRole(nameof(IdentityRoleEnum.SprintAdmin), nameof(IdentityRoleEnum.Admin)));
+
 });
 
 builder.Services.AddCosmosRepository(
@@ -76,6 +83,7 @@ builder.Services.AddCosmosRepository(
 
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddScoped<IGauntletService, GauntletService>();
+builder.Services.AddScoped<ISprintService, SprintService>();
 builder.Services.AddScoped<IForumChallengeService, ForumChallengeService>();
 builder.Services.AddScoped<IGiftLinkService, GiftLinkService>();
 builder.Services.AddScoped<IDataManagementService, DataManagementService>();

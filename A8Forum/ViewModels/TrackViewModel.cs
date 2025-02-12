@@ -9,4 +9,7 @@ public class TrackViewModel
 
     [Display(Name = "Track Name")]
     public string? TrackName { get; set; }
+
+    [Display(Name = "Sprint")]
+    public bool Sprint { get; set; } = false;
 }

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.CodeAnalysis.CSharp.Syntax
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -54,6 +55,20 @@
                                 </li>
                             </ul>
                         </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="sprintFcDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Sprint FC</a>
+                                <ul class="dropdown-menu" aria-labelledby="forumChallengeDropdown">
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="SprintRuns" asp-action="Index">Sprint Runs</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="SprintRuns" asp-action="Report">Leaderboard BBCode</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="SprintLeaderboard" asp-action="Index">Leaderboard table</a>
+                                    </li>
+                                </ul>
+                            </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" href="#" id="giftLinkDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gift Link</a>
                             <ul class="dropdown-menu" aria-labelledby="giftLinkDropdown">
@@ -103,6 +118,14 @@
                             </ul>
                         </li>
                     }
+                    else {
+                    <li class="nav-item">
+                        <a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Index">Gauntlet FC</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="dropdown-item text-dark" asp-area="" asp-controller="SprintLeaderboard" asp-action="Index">Sprint FC</a>
+                    </li>
+                    }
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>
@@ -117,7 +140,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2023, 2024 - Kecke
+        &copy; 2023-2025 - Kecke
     </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

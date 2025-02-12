@@ -10,7 +10,8 @@ internal static class TrackDTOMapper
         return new TrackDTO
         {
             Id = track.Id,
-            TrackName = track.TrackName
+            TrackName = track.TrackName,
+            Sprint = track.Sprint
         };
     }
 
@@ -18,7 +19,8 @@ internal static class TrackDTOMapper
     {
         var t = new Track
         {
-            TrackName = model.TrackName
+            TrackName = model.TrackName,
+            Sprint = model.Sprint
         };
 
         if (!string.IsNullOrEmpty(model.Id))

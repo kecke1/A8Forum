@@ -1,0 +1,77 @@
+﻿@model Shared.Dto.SprintImportDTO
+
+@{
+    ViewData["Title"] = "Import";
+}
+
+<h1>Import</h1>
+
+<h4>Sprint Import</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Import">
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
+                    <option value="">-- Select Member --</option>
+                </select>
+                <span asp-validation-for="MemberId" class="text-danger"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Seperator" class="control-label"></label>
+                <input asp-for="Seperator" class="form-control"/>
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="PostUrl" class="control-label"></label>
+                <input asp-for="PostUrl" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="RunDateColumn" class="control-label"></label>
+                <input asp-for="RunDateColumn" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RunDateFormat" class="control-label"></label>
+                <input asp-for="RunDateFormat" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TrackColumn" class="control-label"></label>
+                <input asp-for="TrackColumn" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="TimeColumn" class="control-label"></label>
+                <input asp-for="TimeColumn" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="VehicleColumn" class="control-label"></label>
+                <input asp-for="VehicleColumn" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="MediaLinkColumn" class="control-label"></label>
+                <input asp-for="MediaLinkColumn" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImportedText" class="control-label"></label>
+                <textarea rows="20" cols="100" asp-for="ImportedText" class="form-control" style="overflow: scroll; white-space: nowrap; width: 100%;"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#racersDropdown").select2();
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
