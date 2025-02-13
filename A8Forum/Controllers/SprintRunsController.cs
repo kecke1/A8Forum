@@ -99,17 +99,17 @@ public class SprintRunsController(IMasterDataService masterDataService,
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Import(
-        SprintImportDTO gauntletDefences)
+        SprintImportDTO sprintRuns)
     {
         if (ModelState.IsValid)
         {
-            await sprintService.ImportSprintRunsAsync(gauntletDefences);
+            await sprintService.ImportSprintRunsAsync(sprintRuns);
             return RedirectToAction(nameof(Index));
         }
 
-        await PopulateMembersDropDownListAsync(gauntletDefences.MemberId);
+        await PopulateMembersDropDownListAsync(sprintRuns.MemberId);
 
-        return View(gauntletDefences);
+        return View(sprintRuns);
     }
 
     public async Task<IActionResult> Create()

@@ -211,7 +211,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
     public async Task ImportSprintRunsAsync(SprintImportDTO races)
     {
-        var tracks = (await masterDataService.GetTracksAsync()).ToArray();
+        var tracks = (await masterDataService.GetTracksAsync(false, true)).ToArray();
         var vehicles = (await masterDataService.GetVehiclesAsync()).Where(x => x.MaxRank > 1850).ToArray();
 
         var toCreate = new List<SprintRunDTO>();
@@ -277,7 +277,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
     public async Task<SprintRunDTO> GetSprintRunFromTemplateAsync(string template, string postUrl)
     {
-        var tracks = (await masterDataService.GetTracksAsync()).ToArray();
+        var tracks = (await masterDataService.GetTracksAsync(false, true)).ToArray();
         var vehicles = (await masterDataService.GetVehiclesAsync()).Where(x => x.MaxRank > 1850).ToArray();
 
         if (template.Contains("track:"))
