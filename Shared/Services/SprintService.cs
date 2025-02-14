@@ -228,20 +228,22 @@ The total leaderboard points are the sum of the points given in each track leade
             {
                 Idate = DateTime.Now,
                 Time = cols[races.TimeColumn - 1].FromTimestringToInt(),
-                Track = tracks.First(x =>
-                    x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), cols[races.TrackColumn - 1])),
+                Track = tracks
+                    .Where(x => x.TrackName.First() == cols[races.TrackColumn - 1].First())
+                    .Where(x => x.TrackName.Last() == cols[races.TrackColumn - 1].Last())
+                    .First(x => x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), cols[races.TrackColumn - 1])),
                 Vehicle = ClosestMatch(vehicles, cols[races.VehicleColumn - 1]),
-                RunDate = races.RunDateColumn != 0
-                    ? DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null)
+                RunDate = races.RunDateColumn.HasValue && !string.IsNullOrEmpty(races.RunDateFormat)
+                    ? DateTime.ParseExact(cols[races.RunDateColumn.Value - 1].Trim(), races.RunDateFormat, null)
                     : null,
                 Member = await masterDataService.GetMemberAsync(races.MemberId),
                 PostUrl = races.PostUrl
             };
 
 
-            if (races.MediaLinkColumn != 0)
+            if (races.MediaLinkColumn.HasValue)
             {
-                gd.MediaLink = cols[races.MediaLinkColumn - 1];
+                gd.MediaLink = cols[races.MediaLinkColumn.Value - 1];
             }
 
             toCreate.Add(gd);
