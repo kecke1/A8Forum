@@ -14,4 +14,5 @@ public class ExportDataDto
     public required IEnumerable<Vehicle> Vehicles { get; set; }
     public required IEnumerable<Member> Members { get; set; }
     public required IEnumerable<CareerRace> CareerRaces { get; set; }
+    public required IEnumerable<SprintRun> SprintRuns { get; set; }
 }

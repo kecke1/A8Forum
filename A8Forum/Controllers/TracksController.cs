@@ -41,7 +41,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "AdminRole")]
-    public async Task<IActionResult> Create([Bind("TrackId,TrackName, Sprint")] TrackViewModel track)
+    public async Task<IActionResult> Create([Bind("TrackId,TrackName, Sprint, Order")] TrackViewModel track)
     {
         if (ModelState.IsValid)
         {
@@ -70,7 +70,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = "AdminRole")]
-    public async Task<IActionResult> Edit(string id, [Bind("TrackId,TrackName, Sprint")] TrackViewModel track)
+    public async Task<IActionResult> Edit(string id, [Bind("TrackId,TrackName, Sprint, Order")] TrackViewModel track)
     {
         if (id != track.TrackId)
             return NotFound();

@@ -2,6 +2,7 @@
 using F23.StringSimilarity;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.CosmosRepository;
+using Microsoft.Azure.CosmosRepository.Extensions;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Dto;
@@ -14,7 +15,8 @@ namespace Shared.Services;
 
 public class SprintService(IRepository<SprintRun> sprintRunRepository,
         IMasterDataService masterDataService,
-        IOptions<A8Options> options)
+        IOptions<A8Options> options,
+        IRepository<SprintTrackReferencePoint> sprintTrackReferencePointRepository)
     : ISprintService
 {
     private readonly string _vehiclesBaseUrl = options.Value.VehiclesBaseUrl;
@@ -148,6 +150,34 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
             .ToArray();
     }
 
+    public async Task<SprintTrackReferencePointDto?> GetSprintTrackReferencePointAsync()
+    {
+        var r = await sprintTrackReferencePointRepository
+            .GetAsync(x => true)
+            .FirstOrDefaultAsync();
+
+        if (r == null)
+        {
+            return null;
+        }
+
+        var t = await masterDataService.GetTrackAsync(r.TrackId);
+        return r.ToDto(t);
+    }
+
+    public async Task UpsertSprintTrackReferencePointAsync(SprintTrackReferencePointDto r)
+    {
+        var exist = await GetSprintTrackReferencePointAsync();
+        if (exist == null)
+        {
+            await sprintTrackReferencePointRepository.CreateAsync(r.ToSprintTrackReferencePointEntity());
+        }
+        else
+        {
+            await sprintTrackReferencePointRepository.UpdateAsync(r.ToSprintTrackReferencePointEntity());
+        }
+    }
+
     public async Task<string> GetSprintTotalLeaderboardTableAsync(IEnumerable<SprintLeaderboardRowDto> races)
     {
         var p = 1;
@@ -158,7 +188,8 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
                 Points = x.Sum(y => y.PositionPoints),
                 Position = 0,
                 NumberOfTracks = x.Count(),
-                AvgPoints = x.Any() ? x.Sum(y => y.PositionPoints) / Convert.ToDouble(x.Count()) : 0
+                AvgPoints = x.Any() ? x.Sum(y => y.PositionPoints) / Convert.ToDouble(x.Count()) : 0,
+                NumberOfFirstPositions = x.Count(y => y.Position == 1)
             })
             .GroupBy(x => x.Points, y => y)
             .OrderByDescending(x => x.Key)
@@ -199,6 +230,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {"Name".GetTdHeaderCell()}
 {"No of tracks".GetTdHeaderCell()}
 {"Avg points/track".GetTdHeaderCell()}
+{"No of 1st pos.".GetTdHeaderCell()}
 [/tr]
 [/thead]
 {string.Join('\n', result.Select((x, i) => GetSprintTotalLeaderboardTableRow(x, x.Position, i)))}
@@ -371,6 +403,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {$"@{g.Name}".GetTdCell("padding:1px;padding-left:7px")}
 {$"{g.NumberOfTracks}".GetTdCell("padding:1px;padding-left:7px")}
 {$"{Math.Round(g.AvgPoints, 1)}".GetTdCell("padding:1px;padding-left:7px")}
+{$"{g.NumberOfFirstPositions}".GetTdCell("padding:1px;padding-left:7px")}
 [/tr]";
     }
 
@@ -516,5 +549,6 @@ The total leaderboard points are the sum of the points given in each track leade
         public int Position { get; set; }
         public int NumberOfTracks { get; set; }
         public double AvgPoints { get; set; }
+        public int NumberOfFirstPositions { get; set; }
     }
 }

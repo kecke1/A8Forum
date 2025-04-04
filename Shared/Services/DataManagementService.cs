@@ -13,7 +13,8 @@ public class DataManagementService(IRepository<ForumChallenge> forumChallengeRep
         IRepository<Season> seasonRepository,
         IRepository<Track> trackRepository,
         IRepository<RankBracket> rankBracketRepository,
-        IRepository<CareerRace> careerRaceRepository)
+        IRepository<CareerRace> careerRaceRepository,
+        IRepository<SprintRun> sprintRunRepository)
     : IDataManagementService
 {
     private readonly IRepository<GiftLinkProvider> _giftLinkProviderRepository;
@@ -32,7 +33,8 @@ public class DataManagementService(IRepository<ForumChallenge> forumChallengeRep
             GautletRuns = await gauntletRunRepository.GetAsync(x => true),
             Vehicles = await vehicleRepository.GetAsync(x => true),
             Members = await memberRepository.GetAsync(x => true),
-            CareerRaces = await careerRaceRepository.GetAsync(x => true)
+            CareerRaces = await careerRaceRepository.GetAsync(x => true),
+            SprintRuns = await sprintRunRepository.GetAsync(x => true),
         };
 
         return export;

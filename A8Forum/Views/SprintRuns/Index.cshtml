@@ -65,6 +65,9 @@
         <th>
             @Html.DisplayNameFor(model => model.Idate)
         </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RunDate)
+            </th>
         <th>
             @Html.DisplayNameFor(model => model.Track)
         </th>
@@ -87,6 +90,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Idate)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RunDate)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Track.TrackName)
             </td>

@@ -12,4 +12,7 @@ public class TrackViewModel
 
     [Display(Name = "Sprint")]
     public bool Sprint { get; set; } = false;
+
+    [Display(Name = "Order")]
+    public int? Order { get; set; }
 }

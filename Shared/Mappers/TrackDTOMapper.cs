@@ -11,7 +11,8 @@ internal static class TrackDTOMapper
         {
             Id = track.Id,
             TrackName = track.TrackName,
-            Sprint = track.Sprint
+            Sprint = track.Sprint,
+            Order = track.Order
         };
     }
 
@@ -20,7 +21,8 @@ internal static class TrackDTOMapper
         var t = new Track
         {
             TrackName = model.TrackName,
-            Sprint = model.Sprint
+            Sprint = model.Sprint,
+            Order = model.Order
         };
 
         if (!string.IsNullOrEmpty(model.Id))

@@ -1,0 +1,48 @@
+﻿@model A8Forum.ViewModels.SprintTrackReferencePointViewModel?
+
+@{
+    ViewData["Title"] = "Sprint track reference point";
+}
+
+<h4>Sprint track reference point</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditReferencePoint">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SprintTrackReferencePointId"/>
+
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Track" class="control-label"></label>
+                <select asp-for="Track.TrackId" class="form-control" asp-items="ViewBag.TrackId" id="tracksDropdown">
+                    <option value=""></option>
+                </select>
+                <span asp-validation-for="Track" class="text-danger"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tracksDropdown").select2({ placeholder: "-- Select Track --", allowClear: true });
+        });
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

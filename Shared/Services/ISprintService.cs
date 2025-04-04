@@ -1,11 +1,7 @@
 ﻿using Shared.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shared.Services;
+
 public interface ISprintService
 {
     public Task<IEnumerable<SprintRunDTO>> GetSprintRunsAsync();
@@ -31,5 +27,6 @@ public interface ISprintService
     public Task<SprintReportDTO> GetSprintReportAsync();
 
     public Task<SprintRunDTO> GetSprintRunFromTemplateAsync(string template, string postUrl);
-
+    public Task UpsertSprintTrackReferencePointAsync(SprintTrackReferencePointDto r);
+    public Task<SprintTrackReferencePointDto?> GetSprintTrackReferencePointAsync();
 }

@@ -182,6 +182,36 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(sprintRun);
     }
 
+    public async Task<IActionResult> EditReferencePoint()
+    {
+        var r = await sprintService.GetSprintTrackReferencePointAsync();
+        await PopulateTracksDropDownListAsync(r?.Track.Id);
+        return View(r?.ToSprintTrackReferencePointViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = "AdminRole")]
+    public async Task<IActionResult> EditReferencePoint(SprintTrackReferencePointViewModel r)
+    {
+        if (ModelState.IsValid && r.Track.TrackId != null)
+        {
+            try
+            {
+                await sprintService.UpsertSprintTrackReferencePointAsync(r.ToDto());
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        await PopulateTracksDropDownListAsync(r?.Track.TrackId);
+        return View(r);
+    }
+
     public async Task<IActionResult> Edit(string? id)
     {
         if (id == null)

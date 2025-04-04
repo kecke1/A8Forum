@@ -11,7 +11,8 @@ internal static class TrackMapper
         {
             Id = track.TrackId,
             TrackName = track.TrackName,
-            Sprint = track.Sprint
+            Sprint = track.Sprint,
+            Order = track.Order
         };
     }
 
@@ -21,7 +22,8 @@ internal static class TrackMapper
         {
             TrackId = model.Id,
             TrackName = model.TrackName,
-            Sprint = model.Sprint
+            Sprint = model.Sprint,
+            Order = model.Order
         };
     }
 }
