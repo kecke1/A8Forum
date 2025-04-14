@@ -39,4 +39,19 @@ public class DataManagementService(IRepository<ForumChallenge> forumChallengeRep
 
         return export;
     }
+
+    public async Task ImportData(ExportDataDto data)
+    {
+        await seasonRepository.CreateAsync(data.Seasons);
+        await rankBracketRepository.CreateAsync(data.RankBrackets);
+        await vehicleRepository.CreateAsync(data.Vehicles);
+        await memberRepository.CreateAsync(data.Members);
+        await trackRepository.CreateAsync(data.Tracks);
+        await careerRaceRepository.CreateAsync(data.CareerRaces);
+        await forumChallengeRepository.CreateAsync(data.ForumChallenges);
+        await forumChallengeRunRepository.CreateAsync(data.ForumChallengeRuns);
+        await seriesRepository.CreateAsync(data.Series);
+        await gauntletRunRepository.CreateAsync(data.GautletRuns);
+        await sprintRunRepository.CreateAsync(data.SprintRuns);
+    }
 }
