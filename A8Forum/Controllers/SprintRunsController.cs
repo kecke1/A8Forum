@@ -89,6 +89,14 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(gauntletDefence.ToSprintRunViewModel());
     }
 
+
+    public async Task<IActionResult> Schedule()
+    {
+
+        var s = await sprintService.GetSprintScheduleAsync(DateTime.Now.AddDays(-61));
+
+        return View(s);
+    }
     public async Task<IActionResult> Import()
     {
         await PopulateMembersDropDownListAsync();

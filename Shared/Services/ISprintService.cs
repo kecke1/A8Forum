@@ -29,4 +29,5 @@ public interface ISprintService
     public Task<SprintRunDTO> GetSprintRunFromTemplateAsync(string template, string postUrl);
     public Task UpsertSprintTrackReferencePointAsync(SprintTrackReferencePointDto r);
     public Task<SprintTrackReferencePointDto?> GetSprintTrackReferencePointAsync();
+    public Task<SprintScheduleDTO> GetSprintScheduleAsync(DateTime startDate);
 }

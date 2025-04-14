@@ -3,7 +3,10 @@ using A8Forum.Data;
 using A8Forum.Enums;
 using AspNetCore.Identity.CosmosDb.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Shared.Models;
 using Shared.Options;
 using Shared.Services;
 
@@ -11,6 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<A8Options>(builder.Configuration);
 var options = builder.Configuration.Get<A8Options>();
+bool.TryParse(options.SetupCosmosDb, out var setup);
+
+#if DEBUG
+
+builder.Services.AddDbContext<A8ForumazurewebsitesnetContex>(o =>
+    o.UseSqlServer(options.Connectionstring));
+
+builder.Services.AddIdentity<A8ForumazurewebsitesnetUser, IdentityRole>(o => o.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<A8ForumazurewebsitesnetContex>()
+    .AddDefaultUI(); // Use this if Identity Scaffolding is in use
+//.AddDefaultTokenProviders();
+
+#else
+
 
 // If this is set, the Cosmos identity provider will:
 // 1. Create the database if it does not already exist.
@@ -19,10 +36,10 @@ var options = builder.Configuration.Get<A8Options>();
 
 // If the following is set, it will create the Cosmos database and
 //  required containers.
-if (bool.TryParse(options.SetupCosmosDb, out var setup) && setup)
+if (setup)
 {
     var builder1 = new DbContextOptionsBuilder<A8ForumazurewebsitesnetContex>();
-    builder1.UseCosmos(options.CosmosConnection, options.CosmosDb);
+    builder1.UseCosmos(options.Connectionstring, options.CosmosDb);
 
     using (var dbContext = new A8ForumazurewebsitesnetContex(builder1.Options))
     {
@@ -31,7 +48,7 @@ if (bool.TryParse(options.SetupCosmosDb, out var setup) && setup)
 }
 
 builder.Services.AddDbContext<A8ForumazurewebsitesnetContex>(o =>
-    o.UseCosmos(options.CosmosConnection, options.CosmosDb));
+    o.UseCosmos(options.Connectionstring, options.CosmosDb));
 
 builder.Services.AddCosmosIdentity<A8ForumazurewebsitesnetContex, A8ForumazurewebsitesnetUser, IdentityRole, string>(
         options =>
@@ -43,6 +60,8 @@ builder.Services.AddCosmosIdentity<A8ForumazurewebsitesnetContex, A8Forumazurewe
     )
     .AddDefaultUI(); // Use this if Identity Scaffolding is in use
 //.AddDefaultTokenProviders();
+
+#endif
 
 // Add services to the container.
 builder.Services.AddAuthorization(x =>
@@ -73,14 +92,20 @@ builder.Services.AddAuthorization(x =>
 
 });
 
+#if DEBUG
+builder.Services.AddInMemoryCosmosRepository();
+
+
+#else
+
 builder.Services.AddCosmosRepository(
     x =>
     {
-        x.CosmosConnectionString = options.CosmosConnection;
+        x.CosmosConnectionString = options.Connectionstring;
         x.DatabaseId = options.CosmosDb;
         x.ContainerPerItemType = true;
     });
-
+#endif
 builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 builder.Services.AddScoped<IGauntletService, GauntletService>();
 builder.Services.AddScoped<ISprintService, SprintService>();
@@ -96,7 +121,7 @@ if (setup)
 {
     using var scope = app.Services.CreateScope();
     //initializing custom roles
-    var UserManager =
+    var userManager =
         (UserManager<A8ForumazurewebsitesnetUser>)scope.ServiceProvider.GetService(
             typeof(UserManager<A8ForumazurewebsitesnetUser>));
     var RoleManager =
@@ -122,14 +147,14 @@ if (setup)
 
         //Ensure you have these values in your appsettings.json file
         var userPWD = options.AdminPassword;
-        var _user = await UserManager.FindByNameAsync(poweruser.UserName);
+        var _user = await userManager.FindByNameAsync(poweruser.UserName);
 
         if (_user == null)
         {
-            var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
+            var createPowerUser = await userManager.CreateAsync(poweruser, userPWD);
             if (createPowerUser.Succeeded)
                 //here we tie the new user to the role
-                await UserManager.AddToRoleAsync(poweruser, nameof(IdentityRoleEnum.Admin));
+                await userManager.AddToRoleAsync(poweruser, nameof(IdentityRoleEnum.Admin));
         }
     }
 }

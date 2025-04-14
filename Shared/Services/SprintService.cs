@@ -490,6 +490,57 @@ The total leaderboard points are the sum of the points given in each track leade
 [/spoiler]";
     }
 
+
+    private TrackDTO GetSprintTrackByDate(DateTime date, IEnumerable<TrackDTO> tracks, SprintTrackReferencePointDto reference)
+    {
+        var o = tracks.OrderBy(x => x.Order).ToList();
+        // Get number of weekdays between date and reference point
+        var diff = date > reference.Date ? reference.Date.BusinessDaysUntil(date) : date.BusinessDaysUntil(reference.Date);
+        
+        var s = date < reference.Date ? reference.Track.Order +1 - diff % 40 : reference.Track.Order -1 + diff % 40;
+
+        var t = s < 0 ? tracks.Single(x => x.Order == 40 + s + reference.Track.Order) : tracks.Single(x => x.Order == s);
+
+        return t;
+    }
+
+    private List<TrackDTO> AlignTrackOrder(string firstTrackId, List<TrackDTO> tracks)
+    {
+        var t = tracks.Single(x => x.Id == firstTrackId);
+
+        return tracks;
+
+    }
+
+    public async Task<SprintScheduleDTO> GetSprintScheduleAsync(DateTime startDate)
+    {
+        var tracks = (await masterDataService.GetTracksAsync(false, true)).ToList();
+        var reference = await GetSprintTrackReferencePointAsync();
+
+        var today = GetSprintTrackByDate(startDate, tracks, reference);
+
+        // change track order, set today as first
+        tracks = AlignTrackOrder(today.Id, tracks);
+
+        var s = new SprintScheduleDTO();
+        foreach (var track in tracks.Where(x => x.Order.HasValue).OrderBy(x => x.Order))
+        {
+            var dates = new List<DateTime?>();
+            // Add 5 columns
+            for (var i = 0; i < 5; i++)
+            {
+
+                //dates.Add(GetSprintTrackByDate(DateTime.MinValue, tracks, reference));
+            }
+
+            s.Schedule.Add((track, dates));
+
+        }
+
+        return s;
+    }
+
+
     private string ClosestMatch(IEnumerable<string> m, string s)
     {
         //var distance = int.MaxValue;//
