@@ -20,7 +20,8 @@ internal static class SprintRunMapper
             RunDate = r.RunDate,
             Time = r.TimeString.FromTimestringToInt(),
             Vehicle = r.Vehicle.ToDto(),
-            Track = r.Track.ToDto()
+            Track = r.Track.ToDto(),
+            VipLevel = r.VipLevel
         };
     }
 
@@ -39,6 +40,7 @@ internal static class SprintRunMapper
             Time = model.Time,
             TimeString = model.Time.ToTimeString(),
             Vehicle = model.Vehicle.ToVehicleViewModel(),
+            VipLevel = model.VipLevel
         };
     }
 }

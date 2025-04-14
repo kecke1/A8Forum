@@ -20,7 +20,8 @@ internal static class EditSprintRunMapper
             RunDate = r.RunDate,
             Time = r.TimeString.FromTimestringToInt(),
             VehicleId = r.VehicleId,
-            TrackId = r.TrackId
+            TrackId = r.TrackId,
+            VipLevel = r.VipLevel
         };
     }
 
@@ -39,6 +40,7 @@ internal static class EditSprintRunMapper
             Time = model.Time,
             TimeString = model.Time.ToTimeString(),
             VehicleId = model.Vehicle?.Id ?? "",
+            VipLevel = model.VipLevel
         };
     }
 }

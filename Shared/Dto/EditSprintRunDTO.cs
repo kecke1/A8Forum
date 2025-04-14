@@ -12,4 +12,5 @@ public class EditSprintRunDTO
     public string? PostUrl { get; set; }
     public DateTime? RunDate { get; set; }
     public string? MediaLink { get; set; }
+    public int? VipLevel { get; set; }
 }

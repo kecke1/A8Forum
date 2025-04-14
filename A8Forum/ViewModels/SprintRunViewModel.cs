@@ -38,4 +38,7 @@ public class SprintRunViewModel
 
     [Display(Name = "Video Link")]
     public string? MediaLink { get; set; }
+
+    [Display(Name = "VIP Level")]
+    public int? VipLevel { get; set; }
 }

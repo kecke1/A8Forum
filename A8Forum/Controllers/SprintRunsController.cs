@@ -165,7 +165,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "SprintUserRole")]
     public async Task<IActionResult> Create(
         [Bind(
-            "SprintRunId,TimeString,TrackId,VehicleId, MemberId, PostUrl, RunDate, MediaLink, Save")]
+            "SprintRunId,TimeString,TrackId,VehicleId, MemberId, PostUrl, RunDate, MediaLink, Save, VipLevel")]
         EditSprintRunViewModel sprintRun)
     {
         var isAdmin = await authorizationService.AuthorizeAsync(User, "SprintAdminRole");
@@ -243,7 +243,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "SprintAdminRole")]
     public async Task<IActionResult> Edit(string id,
         [Bind(
-            "SprintRunId,TimeString,Idate,Deleted,TrackId,VehicleId, MemberId, PostUrl, RunDate, MediaLink")]
+            "SprintRunId,TimeString,Idate,Deleted,TrackId,VehicleId, MemberId, PostUrl, RunDate, MediaLink, VipLevel")]
         EditSprintRunViewModel d)
     {
         if (id != d.SprintRunId)

@@ -22,6 +22,7 @@ internal static class SprintRunDTOMapper
             PostUrl = Sprintrun.PostUrl,
             RunDate = Sprintrun.RunDate,
             MediaLink = Sprintrun.MediaLink,
+            VipLevel = Sprintrun.VipLevel
         };
     }
 
@@ -38,6 +39,7 @@ internal static class SprintRunDTOMapper
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
             MediaLink = model.MediaLink,
+            VipLevel = model.VipLevel
         };
 
         if (!string.IsNullOrEmpty(model.Id))
@@ -59,6 +61,7 @@ internal static class SprintRunDTOMapper
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
             MediaLink = model.MediaLink,
+            VipLevel = model.VipLevel
         };
 
         if (!string.IsNullOrEmpty(model.Id))

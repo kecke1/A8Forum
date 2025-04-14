@@ -39,4 +39,7 @@ public class EditSprintRunViewModel
     [Display(Name = "Video Link")]
     public string? MediaLink { get; set; }
     public bool Save { get; set; } = true;
+
+    [Display(Name = "VIP Level")]
+    public int? VipLevel { get; set; }
 }
