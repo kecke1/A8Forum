@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Dto;
 using Shared.Models;
 using Shared.Options;
 using Shared.Services;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -157,6 +159,18 @@ if (setup)
                 await userManager.AddToRoleAsync(poweruser, nameof(IdentityRoleEnum.Admin));
         }
     }
+
+#if DEBUG
+    var dataManger = (IDataManagementService)scope.ServiceProvider.GetService(typeof(IDataManagementService));
+    var content = System.IO.File.ReadAllText(options.ImportFile);
+    var jsonopts = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+    var data = JsonSerializer.Deserialize<ExportDataDto>(content, jsonopts);
+
+    dataManger.ImportData(data);
+#endif
 }
 
 // Configure the HTTP request pipeline.

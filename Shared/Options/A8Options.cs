@@ -9,4 +9,5 @@ public class A8Options
     public required string AdminUser { get; set; }
     public required string AdminPassword { get; set; }
     public required string SetupCosmosDb { get; set; }
+    public required string ImportFile { get; set; }
 }
