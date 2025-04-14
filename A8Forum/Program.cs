@@ -21,7 +21,7 @@ bool.TryParse(options.SetupCosmosDb, out var setup);
 #if DEBUG
 
 builder.Services.AddDbContext<A8ForumazurewebsitesnetContex>(o =>
-    o.UseSqlServer(options.Connectionstring));
+    o.UseSqlServer(options.CosmosConnection));
 
 builder.Services.AddIdentity<A8ForumazurewebsitesnetUser, IdentityRole>(o => o.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<A8ForumazurewebsitesnetContex>()
@@ -41,7 +41,7 @@ builder.Services.AddIdentity<A8ForumazurewebsitesnetUser, IdentityRole>(o => o.S
 if (setup)
 {
     var builder1 = new DbContextOptionsBuilder<A8ForumazurewebsitesnetContex>();
-    builder1.UseCosmos(options.Connectionstring, options.CosmosDb);
+    builder1.UseCosmos(options.CosmosConnection, options.CosmosDb);
 
     using (var dbContext = new A8ForumazurewebsitesnetContex(builder1.Options))
     {
@@ -50,7 +50,7 @@ if (setup)
 }
 
 builder.Services.AddDbContext<A8ForumazurewebsitesnetContex>(o =>
-    o.UseCosmos(options.Connectionstring, options.CosmosDb));
+    o.UseCosmos(options.CosmosConnection, options.CosmosDb));
 
 builder.Services.AddCosmosIdentity<A8ForumazurewebsitesnetContex, A8ForumazurewebsitesnetUser, IdentityRole, string>(
         options =>
@@ -103,7 +103,7 @@ builder.Services.AddInMemoryCosmosRepository();
 builder.Services.AddCosmosRepository(
     x =>
     {
-        x.CosmosConnectionString = options.Connectionstring;
+        x.CosmosConnectionString = options.CosmosConnection;
         x.DatabaseId = options.CosmosDb;
         x.ContainerPerItemType = true;
     });
