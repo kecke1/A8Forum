@@ -10,7 +10,6 @@ using Shared.Services;
 
 namespace A8Forum.Controllers;
 
-[Authorize]
 public class SprintRunsController(IMasterDataService masterDataService,
         ISprintService sprintService, IAuthorizationService authorizationService,
         UserManager<A8ForumazurewebsitesnetUser> userManager)
@@ -45,6 +44,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
             .ToSelectList(memberId);
     }
 
+    [Authorize]
     public async Task<IActionResult> Index(string? trackId = null, string? memberId = null,
         DateTime? InsertDateFrom = null, DateTime? InsertDateTo = null)
     {
@@ -72,10 +72,12 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(runs);
     }
 
+    [Authorize]
     public async Task<IActionResult> Report()
     {
         return View(await sprintService.GetSprintReportAsync());
     }
+    [Authorize]
 
     public async Task<IActionResult> Details(string? id)
     {
@@ -120,6 +122,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(sprintRuns);
     }
 
+    [Authorize]
     public async Task<IActionResult> Create()
     {
         await PopulateVehiclesDropDownListAsync();
@@ -132,6 +135,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View();
     }
 
+    [Authorize]
     public IActionResult CreateFromTemplate()
     {
         return View();
@@ -190,6 +194,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(sprintRun);
     }
 
+    [Authorize]
     public async Task<IActionResult> EditReferencePoint()
     {
         var r = await sprintService.GetSprintTrackReferencePointAsync();
@@ -220,6 +225,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(r);
     }
 
+    [Authorize]
     public async Task<IActionResult> Edit(string? id)
     {
         if (id == null)
@@ -269,6 +275,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
         return View(d);
     }
 
+    [Authorize]
     public async Task<IActionResult> Delete(string? id)
     {
         if (id == null)
