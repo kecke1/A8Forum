@@ -93,7 +93,7 @@ public class SprintRunsController(IMasterDataService masterDataService,
     public async Task<IActionResult> Schedule()
     {
 
-        var s = await sprintService.GetSprintScheduleAsync(DateTime.Now.AddDays(-61));
+        var s = await sprintService.GetSprintScheduleAsync(DateTime.Now);
 
         return View(s);
     }

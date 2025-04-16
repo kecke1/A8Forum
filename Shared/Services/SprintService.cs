@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using F23.StringSimilarity;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.CosmosRepository;
@@ -495,21 +496,28 @@ The total leaderboard points are the sum of the points given in each track leade
     {
         var o = tracks.OrderBy(x => x.Order).ToList();
         // Get number of weekdays between date and reference point
-        var diff = date > reference.Date ? reference.Date.BusinessDaysUntil(date) : date.BusinessDaysUntil(reference.Date);
+        var diff = (date.Date > reference.Date ? reference.Date.BusinessDaysUntil(date.Date) : date.Date.BusinessDaysUntil(reference.Date))  -1;
         
-        var s = date < reference.Date ? reference.Track.Order +1 - diff % 40 : reference.Track.Order -1 + diff % 40;
+        var s = date.Date < reference.Date ? reference.Track.Order - diff % 40 : (reference.Track.Order + diff) % 40;
 
-        var t = s < 0 ? tracks.Single(x => x.Order == 40 + s + reference.Track.Order) : tracks.Single(x => x.Order == s);
+        var t = s switch
+        {
+            0 => tracks.Single(x => x.Order == 40),
+            < 0 => tracks.Single(x => x.Order == 40 + s + reference.Track.Order),
+            _ => tracks.Single(x => x.Order == s)
+        };
 
         return t;
     }
 
-    private List<TrackDTO> AlignTrackOrder(string firstTrackId, List<TrackDTO> tracks)
+    private (TrackDTO track, List<DateTime?> dates) GetTrackSchedule(TrackDTO t, DateTime startDate)
     {
-        var t = tracks.Single(x => x.Id == firstTrackId);
-
-        return tracks;
-
+        return (t,
+            new List<DateTime?>
+            {
+                startDate, startDate.AddDays(56), startDate.AddDays(56 * 2), startDate.AddDays(56 * 3),
+                startDate.AddDays(56 * 4), startDate.AddDays(56 * 5)
+            });
     }
 
     public async Task<SprintScheduleDTO> GetSprintScheduleAsync(DateTime startDate)
@@ -519,22 +527,38 @@ The total leaderboard points are the sum of the points given in each track leade
 
         var today = GetSprintTrackByDate(startDate, tracks, reference);
 
-        // change track order, set today as first
-        tracks = AlignTrackOrder(today.Id, tracks);
-
         var s = new SprintScheduleDTO();
-        foreach (var track in tracks.Where(x => x.Order.HasValue).OrderBy(x => x.Order))
-        {
-            var dates = new List<DateTime?>();
-            // Add 5 columns
-            for (var i = 0; i < 5; i++)
-            {
 
-                //dates.Add(GetSprintTrackByDate(DateTime.MinValue, tracks, reference));
+        var day = 0;
+        foreach (var t in tracks.Where(x => x.Order >= today.Order).OrderBy(x => x.Order))
+        {
+            while (true)
+            {
+                if (t.Id == GetSprintTrackByDate(startDate.AddDays(day), tracks, reference).Id)
+                {
+                    break;
+                }
+
+                day++;
             }
 
-            s.Schedule.Add((track, dates));
+            s.Schedule.Add(GetTrackSchedule(t, startDate.AddDays(day)));
+            day++;
+        }
 
+        foreach (var t in tracks.Where(x => x.Order < today.Order).OrderBy(x => x.Order))
+        {
+            while (true)
+            {
+                if (t.Id == GetSprintTrackByDate(startDate.AddDays(day), tracks, reference).Id)
+                {
+                    break;
+                }
+                day++;
+            }
+
+            s.Schedule.Add(GetTrackSchedule(t, startDate.AddDays(day)));
+            day++;
         }
 
         return s;

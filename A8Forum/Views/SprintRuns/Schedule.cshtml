@@ -7,7 +7,24 @@
 <h1>Sprint Schedule</h1>
 
 <div>
- 
+    <table class = "table table-bordered">
+        <tbody>
+        @foreach (var item in Model.Schedule)
+        {
+            <tr class="p-2">
+                    <td>@Html.DisplayFor(modelItem => item.track.TrackName)</td>
+                <td class="text-center">@item.dates[0]?.ToString("dd.MM.yyyy")</td>
+                <td class="text-center">@item.dates[1]?.ToString("dd.MM.yyyy")</td>
+                <td class="text-center">@item.dates[2]?.ToString("dd.MM.yyyy")</td>
+                <td class="text-center">@item.dates[3]?.ToString("dd.MM.yyyy")</td>
+                <td class="text-center">@item.dates[4]?.ToString("dd.MM.yyyy")</td>
+            </tr>
+        }
+        </tbody>
+
+    </table>
+    
+
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
