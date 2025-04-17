@@ -522,6 +522,16 @@ The total leaderboard points are the sum of the points given in each track leade
 
     public async Task<SprintScheduleDTO> GetSprintScheduleAsync(DateTime startDate)
     {
+        if (startDate.DayOfWeek == DayOfWeek.Saturday)
+        {
+            startDate = startDate.AddDays(2);
+        }
+
+        if (startDate.DayOfWeek == DayOfWeek.Sunday)
+        {
+            startDate = startDate.AddDays(1);
+        }
+
         var tracks = (await masterDataService.GetTracksAsync(false, true)).ToList();
         var reference = await GetSprintTrackReferencePointAsync();
 
