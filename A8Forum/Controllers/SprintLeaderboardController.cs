@@ -38,6 +38,15 @@ public class SprintLeaderboardController(ILogger<SprintLeaderboardController> lo
         return View();
     }
 
+    public async Task<IActionResult> Schedule()
+    {
+
+        var s = await sprintService.GetSprintScheduleAsync(DateTime.Now);
+
+        return View(s);
+    }
+
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

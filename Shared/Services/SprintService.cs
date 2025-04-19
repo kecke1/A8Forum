@@ -212,6 +212,8 @@ It will hopefully also be a starting point for discussing how to improve lap tim
 
 I will maintain leaderboards for every track, and also a total leaderboard where participants will receive points based on their positions on the track leaderboards.
 
+If you want to know the next date for a specific sprint, [a href='https://a8forum.azurewebsites.net/SprintLeaderboard/Schedule']Here is a schedule of upcoming sprints[/a]
+
 [b]Posting lap times[/b]
 Everyone is welcome to post their lap times when they set a new personal record for at track.
 
@@ -219,6 +221,8 @@ You are encouraged to provide a video or screenshot in the post, but it is not n
 
 Please include track name, lap time and vehicle name in the post. It makes it a lot easier for me to maintain the leaderboards.
 If the run was not made recently, you can also include the date of when it was made.
+
+I would also like you to specify VIP level if you are VIP 12 or above.
 
 [b]Total leaderboard[/b]
 The total leaderboard points are the sum of the points given in each track leaderboard. The formula for calculating points for each track is 21 - position. For example, position 1 will give 21 points - 1 = 20 points. Everyone on a track leaderboard will always receive at least 1 point.
@@ -336,6 +340,7 @@ The total leaderboard points are the sum of the points given in each track leade
         var templateRows = template
             .Split(new char[] { '\n', ';' })
             .Where(x => !string.IsNullOrEmpty(x.Trim()))
+            .Select(x => x.Trim())
             .ToList();
 
         var r = new SprintRunDTO
@@ -350,31 +355,82 @@ The total leaderboard points are the sum of the points given in each track leade
             return r;
         }
 
-        var timeIndex = 1;
-        var trackIndex = 0;
+        var timeSet = false;
+        var trackSet = false;
+        var vehicleSet = false;
+        var mediaLinkSet = false;
 
-        if (char.IsDigit(templateRows.First().First()))
+        foreach (var row in templateRows)
         {
-            timeIndex = 0;
-            trackIndex = 1;
+            if (!trackSet && !char.IsDigit(row.First()))
+            {
+                r.Track = tracks.FirstOrDefault(x =>
+                    x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), row));
+                trackSet = true;
+                continue;
+            }
+
+            if (!timeSet)
+            {
+                try
+                {
+                    r.Time = row.Trim().FromTimestringToInt();
+                    timeSet = true;
+                    continue;
+                }
+                catch
+                {
+                }
+            }
+
+            if (!mediaLinkSet && row.StartsWith("http"))
+            {
+                r.MediaLink = row;
+                mediaLinkSet = true;
+                continue;
+            }
+
+            if (!vehicleSet)
+            {
+                r.Vehicle = ClosestMatch(vehicles, row);
+                vehicleSet = true;
+                continue;
+            }
         }
 
-        r.Time = templateRows[timeIndex].Trim().FromTimestringToInt();
-        r.Track = tracks.FirstOrDefault(x =>
-            x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), templateRows[trackIndex]));
-
-        templateRows.RemoveRange(0, 2);
-
-        var videoLinkIndex = templateRows.FindIndex(x => x.StartsWith("http"));
-        if (videoLinkIndex != -1)
-        {
-            r.MediaLink = templateRows[videoLinkIndex].Trim();
-            templateRows.RemoveAt(videoLinkIndex);
-        }
-
-        r.Vehicle = ClosestMatch(vehicles, templateRows[0]);
+        var referencePoint = await GetSprintTrackReferencePointAsync();
+        r.RunDate = GetLatestTrackDate(DateTime.Now, r.Track, tracks, referencePoint);
 
         return r;
+    }
+
+    private DateTime GetLatestTrackDate(DateTime startDate, TrackDTO track, IEnumerable<TrackDTO> tracks, SprintTrackReferencePointDto reference)
+    {
+        var found = false;
+        do
+        {
+            if (startDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                startDate = startDate.AddDays(-2);
+            }
+
+            if (startDate.DayOfWeek == DayOfWeek.Saturday)
+            {
+                startDate = startDate.AddDays(-1);
+            }
+
+            if (GetSprintTrackByDate(startDate, tracks, reference).Id == track.Id)
+            {
+                found = true;
+                return startDate;
+            }
+
+            startDate = startDate.AddDays(-1);
+
+
+        } while (found == false);
+
+        return startDate;
     }
 
 
@@ -387,11 +443,6 @@ The total leaderboard points are the sum of the points given in each track leade
                 return cols.Last();
         }
 
-        return null;
-    }
-
-    private DateTime? GetDate()
-    {
         return null;
     }
 
@@ -582,9 +633,11 @@ The total leaderboard points are the sum of the points given in each track leade
         var result = "";
         var lcs = new LongestCommonSubsequence();
 
-        foreach (var t in m)
+        foreach (var t in m
+                     .Where(x => x.ToLower().StartsWith(s.ToLower().First()) 
+                                 && x.ToLower().EndsWith(s.ToLower().Last())))
         {
-            var d = lcs.Distance(t, s);
+            var d = lcs.Distance(t.ToLower(), s.ToLower());
             // var d = Fastenshtein.Levenshtein.Distance(t, s);
             if (d < distance)
             {
