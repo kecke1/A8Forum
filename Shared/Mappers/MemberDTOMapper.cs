@@ -12,7 +12,9 @@ internal static class MemberDTOMapper
             Id = member.Id,
             MemberName = member.MemberName,
             MemberDisplayName = member.MemberDisplayName,
-            Guest = member.Guest
+            Guest = member.Guest,
+            RacingNames = member.RacingNames,
+            VipLevel = member.VipLevel
         };
     }
 
@@ -22,7 +24,9 @@ internal static class MemberDTOMapper
         {
             MemberName = model.MemberName,
             MemberDisplayName = model.MemberDisplayName,
-            Guest = model.Guest
+            Guest = model.Guest,
+            VipLevel = model.VipLevel,
+            RacingNames = model.RacingNames,
         };
         if (!string.IsNullOrEmpty(model.Id))
             m.Id = model.Id;

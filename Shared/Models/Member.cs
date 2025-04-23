@@ -7,4 +7,6 @@ public class Member : Item
     public required string MemberName { get; set; }
     public required string MemberDisplayName { get; set; }
     public bool Guest { get; set; } = false;
+    public int? VipLevel { get; set; }
+    public IEnumerable<string> RacingNames { get; set; } = Enumerable.Empty<string>();
 }

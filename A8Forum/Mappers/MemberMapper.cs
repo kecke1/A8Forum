@@ -12,7 +12,9 @@ internal static class MemberMapper
             Guest = member.Guest,
             MemberDisplayName = member.MemberDisplayName,
             MemberName = member.MemberName,
-            Id = member.MemberId
+            Id = member.MemberId,
+            VipLevel = member.VipLevel,
+            RacingNames = member.RacingNames
         };
     }
 
@@ -22,7 +24,9 @@ internal static class MemberMapper
         {
             Guest = model.Guest,
             MemberDisplayName = model.MemberDisplayName,
-            MemberName = model.MemberName
+            MemberName = model.MemberName,
+            VipLevel = model.VipLevel,
+            RacingNames = model.RacingNames
         };
 
         if (model.Id != null)

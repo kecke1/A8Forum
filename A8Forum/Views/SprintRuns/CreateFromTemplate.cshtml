@@ -1,10 +1,10 @@
 ﻿@model A8Forum.ViewModels.CreateSprintRunFromTemplateViewModel
 
 @{
-    ViewData["Title"] = "Create Sprint Run From Template";
+    ViewData["Title"] = "Create Sprint Run From Forum Post";
 }
 
-<h1>Create Sprint Run From template</h1>
+<h1>Create Sprint Run From Forum Post</h1>
 
 <div class="row">
     <div class="col-md-4">
@@ -18,6 +18,17 @@
                     Link to the post in the Sprint FC-thread. This can be obtained in the forum by pressing the icon with a gearwheel in the upper right corner of the post and then by selecting 'Link to post'. It looks something like this: https://asphalt8.freeforums.net/post/32313/thread
                 </small>
             </div>
+            
+            @if (ViewBag.IsAdmin)
+            {
+                <div class="form-group mb-3">
+                    <label asp-for="MemberId" class="control-label"></label>
+                    <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId" id="membersDropdown">
+                        <option value=""></option>
+                    </select>
+                    <span asp-validation-for="MemberId" class="text-danger" />
+                </div>
+            }
 
             <div class="form-group mb-4">
                 <label asp-for="TemplateText" class="control-label"></label>
@@ -36,5 +47,17 @@
 </div>
 
 @section Scripts {
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+
+            @if (ViewBag.IsAdmin)
+            {
+                <text>
+                    $("#membersDropdown").select2({placeholder:"-- Select Member --", allowClear: true});
+                </text>
+            }
+        });
+    </script>
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

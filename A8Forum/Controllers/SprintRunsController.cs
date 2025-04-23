@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dto;
+using Shared.Models;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
@@ -136,8 +137,12 @@ public class SprintRunsController(IMasterDataService masterDataService,
     }
 
     [Authorize]
-    public IActionResult CreateFromTemplate()
+    public async Task<IActionResult> CreateFromTemplate()
     {
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "SprintAdminRole");
+        ViewBag.IsAdmin = isAdmin.Succeeded;
+        await PopulateMembersDropDownListAsync();
+
         return View();
     }
 
@@ -148,18 +153,36 @@ public class SprintRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "SprintUserRole")]
     public async Task<IActionResult> CreateFromTemplate(
         [Bind(
-            "PostUrl,TemplateText")]
+            "PostUrl,TemplateText, MemberId")]
         CreateSprintRunFromTemplateViewModel template)
     {
         await PopulateVehiclesDropDownListAsync();
         await PopulateMembersDropDownListAsync();
         await PopulateTracksDropDownListAsync();
 
+        var viewModel = (await sprintService
+                .GetSprintRunFromTemplateAsync(template.TemplateText, template.PostUrl))
+            .ToEditSprintRunViewModel();
+
         var isAdmin = await authorizationService.AuthorizeAsync(User, "SprintAdminRole");
         ViewBag.IsAdmin = isAdmin.Succeeded;
-        return View("Create", (await sprintService
-                .GetSprintRunFromTemplateAsync(template.TemplateText, template.PostUrl))
-            .ToEditSprintRunViewModel());
+
+
+        if (!isAdmin.Succeeded || string.IsNullOrEmpty(template.MemberId))
+        {
+            var user = await userManager.GetUserAsync(User);
+            var member = await masterDataService.GetMemberAsync(user.MemberId);
+            viewModel.MemberId = member.Id;
+            viewModel.VipLevel = member.VipLevel;
+        }
+        else
+        {
+            var member = await masterDataService.GetMemberAsync(template.MemberId);
+            viewModel.MemberId = member.Id;
+            viewModel.VipLevel = member.VipLevel;
+        }
+
+            return View("Create", viewModel);
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.

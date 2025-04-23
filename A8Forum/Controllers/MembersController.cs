@@ -40,7 +40,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("MemberId,MemberName, MemberDisplayName, Guest")]
+        [Bind("MemberId,MemberName, MemberDisplayName, Guest, VipLevel")]
         MemberViewModel member)
     {
         if (ModelState.IsValid)
@@ -69,7 +69,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(string id, [Bind("MemberId,MemberName," +
-                                                           "MemberDisplayName, Guest")]
+                                                           "MemberDisplayName, Guest, VipLevel")]
         MemberViewModel member)
     {
         if (id != member.MemberId)
