@@ -383,7 +383,7 @@ The total leaderboard points are the sum of the points given in each track leade
                 }
             }
 
-            if (!mediaLinkSet && row.StartsWith("http"))
+            if (!mediaLinkSet && row.Contains("/") && row.Contains("."))
             {
                 r.MediaLink = row;
                 mediaLinkSet = true;
