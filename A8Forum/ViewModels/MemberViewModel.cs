@@ -16,5 +16,7 @@ public class MemberViewModel
 
     [Display(Name = "VIP Level")]
     public int? VipLevel { get; set; }
-    public IEnumerable<string> RacingNames { get; set; } = Enumerable.Empty<string>();
+
+    [Display(Name = "Racing names")]
+    public string? RacingNames { get; set; }
 }

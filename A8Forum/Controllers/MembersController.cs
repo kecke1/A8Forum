@@ -13,7 +13,8 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
     public async Task<IActionResult> Index()
     {
         var m = await masterDataService.GetMembersAsync();
-        return View(m.ToList().Select(x => x.ToMemberViewModel()));
+        return View(m.ToList().Select(x => x.ToMemberViewModel())
+            .OrderBy(x => x.MemberDisplayName));
     }
 
     public async Task<IActionResult> Details(string? id)
@@ -40,7 +41,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("MemberId,MemberName, MemberDisplayName, Guest, VipLevel")]
+        [Bind("MemberId,MemberName, MemberDisplayName, Guest, VipLevel, RacingNames")]
         MemberViewModel member)
     {
         if (ModelState.IsValid)
@@ -69,7 +70,7 @@ public class MembersController(IMasterDataService masterDataService) : Controlle
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(string id, [Bind("MemberId,MemberName," +
-                                                           "MemberDisplayName, Guest, VipLevel")]
+                                                           "MemberDisplayName, Guest, VipLevel,RacingNames")]
         MemberViewModel member)
     {
         if (id != member.MemberId)

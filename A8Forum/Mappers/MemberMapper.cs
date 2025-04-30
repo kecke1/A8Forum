@@ -14,7 +14,7 @@ internal static class MemberMapper
             MemberName = member.MemberName,
             Id = member.MemberId,
             VipLevel = member.VipLevel,
-            RacingNames = member.RacingNames
+            RacingNames = member.RacingNames?.Split(',').Select(x => x.Trim()) ?? []
         };
     }
 
@@ -26,7 +26,7 @@ internal static class MemberMapper
             MemberDisplayName = model.MemberDisplayName,
             MemberName = model.MemberName,
             VipLevel = model.VipLevel,
-            RacingNames = model.RacingNames
+            RacingNames = string.Join(", ", model.RacingNames)
         };
 
         if (model.Id != null)
