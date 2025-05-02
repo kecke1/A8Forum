@@ -47,9 +47,9 @@ public class MasterDataService(IRepository<Vehicle> vehicleRepository,
 
     public async Task DeleteMemberAsync(string memberId)
     {
-        // var m = await _memberRepository.GetAsync(memberId);
-
-        await memberRepository.DeleteAsync(memberId);
+        var m = await GetMemberAsync(memberId);
+        m.Deleted = true;
+        await UpdateMemberAsync(m);
     }
 
     public async Task<MemberDTO> GetMemberAsync(string memberId)

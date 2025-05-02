@@ -28,6 +28,17 @@
                     <input class="form-check-input" asp-for="Guest"/> @Html.DisplayNameFor(model => model.Guest)
                 </label>
             </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Deleted" /> @Html.DisplayNameFor(model => model.Deleted)
+                </label>
+            </div>            
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Hidden" /> @Html.DisplayNameFor(model => model.Hidden)
+                </label>
+            </div>
+
             <div class="form-group">
                 <label asp-for="VipLevel" class="control-label"></label>
                 <input asp-for="VipLevel" class="form-control"/>
@@ -38,6 +49,12 @@
                 <input asp-for="RacingNames" class="form-control" />
                 <span asp-validation-for="RacingNames" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="FormerRacingNames" class="control-label"></label>
+                <input asp-for="FormerRacingNames" class="form-control" />
+                <span asp-validation-for="FormerRacingNames" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary"/>
             </div>

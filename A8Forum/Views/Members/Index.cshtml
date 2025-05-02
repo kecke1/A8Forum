@@ -24,7 +24,7 @@
     <tbody>
     @foreach (var item in Model)
     {
-        <tr>
+            <tr class="@(item.Deleted ? "deleted" : "")">
             <td>
                 @Html.DisplayFor(modelItem => item.MemberName)
             </td>

@@ -14,7 +14,10 @@ internal static class MemberMapper
             MemberName = member.MemberName,
             Id = member.MemberId,
             VipLevel = member.VipLevel,
-            RacingNames = member.RacingNames?.Split(',').Select(x => x.Trim()) ?? []
+            Deleted = member.Deleted,
+            Hidden = member.Hidden,
+            RacingNames = member.RacingNames?.Split(',').Select(x => x.Trim()) ?? [],
+            FormerRacingNames = member.FormerRacingNames?.Split(',').Select(x => x.Trim()) ?? []
         };
     }
 
@@ -26,7 +29,10 @@ internal static class MemberMapper
             MemberDisplayName = model.MemberDisplayName,
             MemberName = model.MemberName,
             VipLevel = model.VipLevel,
-            RacingNames = string.Join(", ", model.RacingNames)
+            Deleted = model.Deleted,
+            Hidden = model.Hidden,
+            RacingNames = string.Join(", ", model.RacingNames),
+            FormerRacingNames = string.Join(", ", model.FormerRacingNames)
         };
 
         if (model.Id != null)

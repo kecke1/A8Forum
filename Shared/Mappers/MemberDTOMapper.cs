@@ -14,7 +14,10 @@ internal static class MemberDTOMapper
             MemberDisplayName = member.MemberDisplayName,
             Guest = member.Guest,
             RacingNames = member.RacingNames,
-            VipLevel = member.VipLevel
+            VipLevel = member.VipLevel,
+            Deleted = member.Deleted,
+            Hidden = member.Hidden,
+            FormerRacingNames = member.FormerRacingNames
         };
     }
 
@@ -27,6 +30,9 @@ internal static class MemberDTOMapper
             Guest = model.Guest,
             VipLevel = model.VipLevel,
             RacingNames = model.RacingNames,
+            FormerRacingNames = model.FormerRacingNames,
+            Deleted = model.Deleted,
+            Hidden = model.Hidden,
         };
         if (!string.IsNullOrEmpty(model.Id))
             m.Id = model.Id;
