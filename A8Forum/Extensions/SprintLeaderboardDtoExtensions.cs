@@ -20,7 +20,8 @@ public static class SprintLeaderboardRowDtoExtensions
                     Time = GetATag(x.TimeString, x.PostUrl),
                     Track = x.TrackName,
                     Vehicle = GetATag(x.VehicleName, x.VehicleUrl),
-                    Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink)
+                    Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink),
+                    VIP = x.Vip.HasValue && x.Vip > 11 ? x.Vip.ToString() : ""
                 })
                 .ToList();
         }
@@ -37,7 +38,8 @@ public static class SprintLeaderboardRowDtoExtensions
                 Time = GetATag(x.Time.ToTimeString(), x.PostUrl),
                 Track = x.Track.TrackName,
                 Vehicle = GetATag(x.Vehicle.Name, x.Vehicle.Url),
-                Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink)
+                Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink),
+                VIP = x.VipLevel.HasValue && x.VipLevel > 11 ? x.VipLevel.ToString() : ""
             })
             .ToList();
             
