@@ -16,13 +16,16 @@ public interface ISprintService
 
     public Task ImportSprintRunsAsync(SprintImportDTO runs);
 
-    public Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync();
+    public Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(bool excludeVipRuns=false);
 
     public Task<string> GetSprintLeaderboardByMemberAsync(IOrderedEnumerable<SprintLeaderboardRowDto> runs);
 
     public Task<string> GetSprintLeaderboardByTrackAsync(IOrderedEnumerable<SprintLeaderboardRowDto> runs);
 
     public Task<string> GetSprintTotalLeaderboardTableAsync(IEnumerable<SprintLeaderboardRowDto> runs);
+
+    public Task<string> GetSprintTotalLeaderboardPageAsync(IEnumerable<SprintLeaderboardRowDto> runs);
+
 
     public Task<SprintReportDTO> GetSprintReportAsync();
 

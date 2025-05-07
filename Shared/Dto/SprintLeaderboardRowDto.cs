@@ -13,6 +13,7 @@ public class SprintLeaderboardRowDto
     [JsonPropertyName("DisplayName")]
     public required string MemberDisplayName { get; set; }
 
+    public int? Vip { get; set; }
     public int Position { get; set; }
     public int PositionPoints { get; set; }
     public required string TimeString { get; set; }

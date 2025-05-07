@@ -19,6 +19,11 @@ public class SprintReportDTO
     [Display(Name = "Total Leaderboard BB Code")]
     public required string TotalLeaderBoard { get; set; }
 
+    [Display(Name = "Total Leaderboard no VIP BB Code")]
+    public required string TotalLeaderBoardNoVip { get; set; }
+
+    [Display(Name = "Total Leaderboard no VIP")]
+    public string TotalLeaderBoardNoVipHtml { get; set; }
     [Display(Name = "Total Leaderboard")]
     public string? TotalLeaderBoardHtml { get; set; }
 

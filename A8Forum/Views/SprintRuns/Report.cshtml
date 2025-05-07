@@ -15,8 +15,14 @@
 <h3>@Html.DisplayNameFor(model => model.LeaderBoardByMember)</h3>
 <textarea rows="20" readonly="readonly" style="width: 100%">@Html.DisplayFor(model => model.LeaderBoardByMember)</textarea>
 
+<h3>@Html.DisplayNameFor(model => model.TotalLeaderBoardNoVip)</h3>
+<textarea rows="20" readonly="readonly" style="width: 100%">@Html.DisplayFor(model => model.TotalLeaderBoardNoVip)</textarea>
+
 <h3>@Html.DisplayNameFor(model => model.TotalLeaderBoardHtml)</h3>
 @Html.Raw(Model.TotalLeaderBoardHtml)
+
+<h3>@Html.DisplayNameFor(model => model.TotalLeaderBoardNoVipHtml)</h3>
+@Html.Raw(Model.TotalLeaderBoardNoVipHtml)
 
 <h3>@Html.DisplayNameFor(model => model.LeaderBoardByTrackHtml)</h3>
 @Html.Raw(Model.LeaderBoardByTrackHtml)

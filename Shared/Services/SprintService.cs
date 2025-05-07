@@ -34,13 +34,15 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
         await sprintRunRepository.UpdateAsync(r.ToSprintRunEntity());
     }
 
-    public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync()
+    public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(bool excludeVipRuns = false)
     {
         var races = (await GetSprintRunsAsync())
             .Where(x => !x.Deleted);
 
-        var q = races
-            .GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
+        var runs = excludeVipRuns ? races.Where(x => !x.VipLevel.HasValue || x.VipLevel < 12) : races;
+
+
+          var q = runs.GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
             .Select(x =>
             {
                 var orderedRaces = x.OrderBy(y => y.Time);
@@ -53,6 +55,7 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
                     MemberDisplayName = bestRace.Member.MemberDisplayName,
                     PostUrl = bestRace.PostUrl ?? "",
                     MediaLink = bestRace.MediaLink ?? "",
+                    Vip = bestRace.VipLevel,
                     RunDate = bestRace.RunDate,
                     Time = bestRace.Time,
                     TimeString = bestRace.Time.ToTimeString(),
@@ -204,6 +207,28 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
             })
             .OrderBy(x => x.Position);
 
+        var table =
+            $@"[div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
+[thead style='background-color: black; color:white; font-weight:bold;']
+[tr]
+{"Pos.".GetTdHeaderCell()}
+{"Points".GetTdHeaderCell()}
+{"Name".GetTdHeaderCell()}
+{"No of tracks".GetTdHeaderCell()}
+{"Avg points/track".GetTdHeaderCell()}
+{"No of 1st pos.".GetTdHeaderCell()}
+[/tr]
+[/thead]
+{string.Join('\n', result.Select((x, i) => GetSprintTotalLeaderboardTableRow(x, x.Position, i)))}
+
+[/table][/div]";
+
+        return table;
+    }
+
+    public async Task<string> GetSprintTotalLeaderboardPageAsync(IEnumerable<SprintLeaderboardRowDto> races)
+    {
+
         var table = $@"This is the forum challenge for Sprint TLE, it will go on as long as there is Sprint TLE in A8.
 
 The purpose is, in addition to a friendly competition between forum members, to keep track of everyones best times.
@@ -226,21 +251,7 @@ I would also like you to specify VIP level if you are VIP 12 or above.
 
 [b]Total leaderboard[/b]
 The total leaderboard points are the sum of the points given in each track leaderboard. The formula for calculating points for each track is 21 - position. For example, position 1 will give 21 points - 1 = 20 points. Everyone on a track leaderboard will always receive at least 1 point.
-
-[div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
-[thead style='background-color: black; color:white; font-weight:bold;']
-[tr]
-{"Pos.".GetTdHeaderCell()}
-{"Points".GetTdHeaderCell()}
-{"Name".GetTdHeaderCell()}
-{"No of tracks".GetTdHeaderCell()}
-{"Avg points/track".GetTdHeaderCell()}
-{"No of 1st pos.".GetTdHeaderCell()}
-[/tr]
-[/thead]
-{string.Join('\n', result.Select((x, i) => GetSprintTotalLeaderboardTableRow(x, x.Position, i)))}
-
-[/table][/div]
+{await GetSprintTotalLeaderboardTableAsync(races)}
 ";
 
         return table;
@@ -298,6 +309,7 @@ The total leaderboard points are the sum of the points given in each track leade
     public async Task<SprintReportDTO> GetSprintReportAsync()
     {
         var races = await GetSprintLeaderboardRowsAsync();
+        var racesNoVip = await GetSprintLeaderboardRowsAsync(true);
         var byTrack = await GetSprintLeaderboardByTrackAsync(races);
         var byMember = await GetSprintLeaderboardByMemberAsync(races);
 
@@ -305,11 +317,13 @@ The total leaderboard points are the sum of the points given in each track leade
         {
             LeaderBoardByTrack = byTrack,
             LeaderBoardByMember = byMember,
-            TotalLeaderBoard = await GetSprintTotalLeaderboardTableAsync(races)
+            TotalLeaderBoard = await GetSprintTotalLeaderboardPageAsync(races),
+            TotalLeaderBoardNoVip = await GetSprintTotalLeaderboardTableAsync(racesNoVip)
         };
         report.LeaderBoardByMemberHtml = report.LeaderBoardByMember.ToHtml();
         report.LeaderBoardByTrackHtml = report.LeaderBoardByTrack.ToHtml();
         report.TotalLeaderBoardHtml = report.TotalLeaderBoard.ToHtml();
+        report.TotalLeaderBoardNoVipHtml = report.TotalLeaderBoardNoVip.ToHtml();
         report.LeaderBoardJson = JsonConvert.SerializeObject(races);
         return report;
     }
@@ -470,6 +484,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {"Date".GetTdHeaderCell()}
 {"Video".GetTdHeaderCell("", false)}
 {"Vehicle".GetTdHeaderCell()}
+{"VIP".GetTdHeaderCell()}
 [/tr]
 [/thead]
 {string.Join('\n', runs.Select((x, i) => GetSprintLeaderboardTableRowByMember(x, i)))}
@@ -489,6 +504,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {GetTdCellWithBorder(race.RunDate.HasValue ? race.RunDate.Value.ToString("dd.MM.yyyy") : "")}
 {GetTdCellWithBorder(!string.IsNullOrEmpty(race.MediaLink) ? GetLinkOrText(race.MediaLink, "🎦") : "", false)}
 {GetSprintTableVehicleCell(race.VehicleUrl, race.VehicleName, true)}
+{GetTdCellWithBorder(race.Vip.HasValue && race.Vip > 11 ? race.Vip.ToString() : "")}
 [/tr]";
     }
 
@@ -519,6 +535,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {GetTdCellWithBorder(race.RunDate.HasValue ? race.RunDate.Value.ToString("dd.MM.yyyy") : "", race.RunDate.HasValue)}
 {GetTdCellWithBorder(!string.IsNullOrEmpty(race.MediaLink) ? GetLinkOrText(race.MediaLink, "🎦") : "", false)}
 {GetSprintTableVehicleCell(race.VehicleUrl, race.VehicleName, true)}
+{GetTdCellWithBorder(race.Vip.HasValue && race.Vip > 11 ? race.Vip.ToString() : "")}
 [/tr]";
     }
 
@@ -534,6 +551,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {"Date".GetTdHeaderCell()}
 {"Video".GetTdHeaderCell()}
 {"Vehicle".GetTdHeaderCell()}
+{"VIP".GetTdHeaderCell()}
 [/tr]
 [/thead]
 {string.Join('\n', races.Select((x, i) => GetSprintLeaderboardTableRowByTrack(x, i)))}
