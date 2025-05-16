@@ -6,7 +6,8 @@
 
 @section Css {
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/datatables.min.css" rel="stylesheet" integrity="sha384-NLl/5P8E4QN2RNgJmc1ANpf3jyrh7bfI9pfOR11JHpkTOHoAeNrzaBPp7ogQZd4j" crossorigin="anonymous">
 }
 
 <form>
@@ -53,7 +54,7 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/datatables.min.js" integrity="sha384-EZbenqljWsOSyqzFMW5SjYYAMpZPN64Mswr1orhtoadhs9N/udQNhyJRcr+zJ6IP" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#namesDropdown").select2();
@@ -64,6 +65,20 @@
                 paging: false,
                 scrollY: '300px',
                 layout: {
+                  topStart: {
+                        buttons: [
+                            {
+                              extend: 'excelHtml5',
+                              text: '<i class="fa fa-file-excel-o"></i>',
+                              titleAttr: 'Excel'
+                            },
+                            {
+                              extend: 'copyHtml5',
+                              text: '<i class="fa fa-files-o"></i>',
+                              titleAttr: 'Copy'
+                            }
+                        ]
+                    },
                     topEnd: null
                 },
                 columnDefs: [
