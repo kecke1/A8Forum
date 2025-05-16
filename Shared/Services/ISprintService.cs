@@ -24,7 +24,7 @@ public interface ISprintService
 
     public Task<string> GetSprintTotalLeaderboardTableAsync(IEnumerable<SprintLeaderboardRowDto> runs);
 
-    public Task<string> GetSprintTotalLeaderboardPageAsync(IEnumerable<SprintLeaderboardRowDto> runs);
+    public Task<string> GetSprintTotalLeaderboardPageAsync(IEnumerable<SprintLeaderboardRowDto> runs, IEnumerable<SprintLeaderboardRowDto> runsNoVip);
 
 
     public Task<SprintReportDTO> GetSprintReportAsync();

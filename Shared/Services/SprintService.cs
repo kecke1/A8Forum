@@ -226,7 +226,7 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
         return table;
     }
 
-    public async Task<string> GetSprintTotalLeaderboardPageAsync(IEnumerable<SprintLeaderboardRowDto> races)
+    public async Task<string> GetSprintTotalLeaderboardPageAsync(IEnumerable<SprintLeaderboardRowDto> races, IEnumerable<SprintLeaderboardRowDto> racesNoVip)
     {
 
         var table = $@"This is the forum challenge for Sprint TLE, it will go on as long as there is Sprint TLE in A8.
@@ -251,7 +251,16 @@ I would also like you to specify VIP level if you are VIP 12 or above.
 
 [b]Total leaderboard[/b]
 The total leaderboard points are the sum of the points given in each track leaderboard. The formula for calculating points for each track is 21 - position. For example, position 1 will give 21 points - 1 = 20 points. Everyone on a track leaderboard will always receive at least 1 point.
+
+[b]Total leaderboard[/b]
+[spoiler]
 {await GetSprintTotalLeaderboardTableAsync(races)}
+[/spoiler]
+
+[b]Total leaderboard without VIP boosted runs[/b]
+[spoiler]
+{await GetSprintTotalLeaderboardTableAsync(racesNoVip)}
+[/spoiler]
 ";
 
         return table;
@@ -317,7 +326,7 @@ The total leaderboard points are the sum of the points given in each track leade
         {
             LeaderBoardByTrack = byTrack,
             LeaderBoardByMember = byMember,
-            TotalLeaderBoard = await GetSprintTotalLeaderboardPageAsync(races),
+            TotalLeaderBoard = await GetSprintTotalLeaderboardPageAsync(races, racesNoVip),
             TotalLeaderBoardNoVip = await GetSprintTotalLeaderboardTableAsync(racesNoVip)
         };
         report.LeaderBoardByMemberHtml = report.LeaderBoardByMember.ToHtml();
