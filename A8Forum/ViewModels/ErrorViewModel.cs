@@ -7,4 +7,6 @@ public class ErrorViewModel
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
     public string? ErrorMessage { get; set; }
+    public string? ErrorInnerException { get; set; }
+    public string? StackTrace { get; set; }
 }

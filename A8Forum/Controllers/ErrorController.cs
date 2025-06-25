@@ -17,7 +17,9 @@ public class ErrorController(ILogger<ErrorController> logger) : Controller
         return View(new ErrorViewModel
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-            ErrorMessage = exceptionHandlerPathFeature.Error.StackTrace
+            StackTrace = exceptionHandlerPathFeature.Error.StackTrace,
+            ErrorMessage = exceptionHandlerPathFeature.Error.Message,
+            ErrorInnerException = exceptionHandlerPathFeature.Error.InnerException?.Message
         });
     }
 }

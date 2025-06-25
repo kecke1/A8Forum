@@ -687,15 +687,17 @@ The total leaderboard points are the sum of the points given in each track leade
 
         foreach (var v in vehicles)
         {
-            var shortest = lcs.Distance(v.ShortName, s);
+            var shortest = lcs.Distance(v.ShortName.ToLower(), s.ToLower());
 
-            foreach (var d in v.Keyword.Split(';').Where(x => !string.IsNullOrEmpty(x)))
+            if (!string.IsNullOrEmpty(v.Keyword))
             {
-                var kwDistance = lcs.Distance(d.Trim(), s);
-                if (kwDistance < shortest)
-                    shortest = kwDistance;
+                foreach (var d in v.Keyword.Split(';').Where(x => !string.IsNullOrEmpty(x)))
+                {
+                    var kwDistance = lcs.Distance(d.Trim().ToLower(), s.ToLower());
+                    if (kwDistance < shortest)
+                        shortest = kwDistance;
+                }
             }
-
             // var d = Fastenshtein.Levenshtein.Distance(t, s);
             if (shortest < distance)
             {
