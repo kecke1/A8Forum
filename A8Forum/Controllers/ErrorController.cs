@@ -1,16 +1,23 @@
 using System.Diagnostics;
 using A8Forum.ViewModels;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace A8Forum.Controllers;
 
-public class ErrorController(ILogger<GauntletLeaderboardController> logger) : Controller
+public class ErrorController(ILogger<ErrorController> logger) : Controller
 {
-    private readonly ILogger<GauntletLeaderboardController> _logger = logger;
+    private readonly ILogger<ErrorController> _logger = logger;
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var exceptionHandlerPathFeature =
+            HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+        return View(new ErrorViewModel
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+            ErrorMessage = exceptionHandlerPathFeature.Error.StackTrace
+        });
     }
 }
