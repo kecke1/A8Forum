@@ -18,4 +18,5 @@ public class GauntletRunDTO
     public string? MediaLink { get; set; }
     public bool LapTimeVerified { get; set; }
     public bool A8Plus { get; set; }
+    public int? VipLevel { get; set; }
 }

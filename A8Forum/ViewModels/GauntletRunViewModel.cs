@@ -56,4 +56,6 @@ public class GauntletRunViewModel
 
     [Display(Name = "A8+")]
     public bool A8Plus { get; set; } = false;
+    [Display(Name = "VIP Level")]
+    public int? VipLevel { get; set; }
 }

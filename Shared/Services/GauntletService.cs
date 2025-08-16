@@ -51,6 +51,7 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
                     PostUrl = bestRace.PostUrl ?? "",
                     LapTimeVerified = bestRace.LapTimeVerified,
                     A8Plus = bestRace.A8Plus,
+                    VipLevel = bestRace.VipLevel,
                     MediaLink = bestRace.MediaLink ?? "",
                     RunDate = bestRace.RunDate,
                     Time = bestRace.Time,
@@ -280,6 +281,7 @@ The total leaderboard points are the sum of the points given in each track leade
                 PostUrl = races.PostUrl
             };
 
+            gd.VipLevel = gd.Member?.VipLevel;
 
             if (races.MediaLinkColumn != 0)
             {

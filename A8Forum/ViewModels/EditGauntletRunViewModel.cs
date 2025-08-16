@@ -58,4 +58,7 @@ public class EditGauntletRunViewModel
     public bool A8Plus { get; set; } = false;
 
     public bool Save { get; set; } = true;
+
+    [Display(Name = "VIP Level")]
+    public int? VipLevel { get; set; }
 }

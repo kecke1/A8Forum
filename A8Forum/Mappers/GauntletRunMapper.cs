@@ -20,6 +20,7 @@ internal static class GauntletRunMapper
             PostUrl = r.PostUrl.CheckAndFormatUrl(),
             RunDate = r.RunDate,
             Time = r.TimeString.FromTimestringToInt(),
+            VipLevel = r.VipLevel,
             Vehicle1 = r.Vehicle1.ToDto(),
             Vehicle2 = r.Vehicle2.ToDto(),
             Vehicle3 = r.Vehicle3.ToDto(),

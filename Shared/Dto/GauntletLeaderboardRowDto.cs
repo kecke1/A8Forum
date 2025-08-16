@@ -19,6 +19,7 @@ public class GauntletLeaderboardRowDto
     public int Time { get; set; }
     public bool LapTimeVerified { get; set; }
     public bool A8Plus { get; set; }
+    public int? VipLevel { get; set; }
     public required string PostUrl { get; set; }
     public required string MediaLink { get; set; }
     public DateTime? RunDate { get; set; }

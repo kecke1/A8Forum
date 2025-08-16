@@ -26,7 +26,8 @@ internal static class EditGauntletRunMapper
             Vehicle3Id = r.Vehicle3Id,
             Vehicle4Id = r.Vehicle4Id,
             Vehicle5Id = r.Vehicle5Id,
-            TrackId = r.TrackId
+            TrackId = r.TrackId,
+            VipLevel = r.VipLevel
         };
     }
 
@@ -45,6 +46,7 @@ internal static class EditGauntletRunMapper
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
             Time = model.Time,
+            VipLevel = model.VipLevel,
             TimeString = model.Time.ToTimeString(),
             Vehicle1Id = model.Vehicle1?.Id ?? "",
             Vehicle2Id = model.Vehicle2?.Id ?? "",

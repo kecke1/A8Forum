@@ -130,8 +130,11 @@ public class GauntletRunsController(IMasterDataService masterDataService,
         return View();
     }
 
-    public IActionResult CreateFromTemplate()
+    public async  Task<IActionResult> CreateFromTemplate()
     {
+        await PopulateMembersDropDownListAsync();
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
+        ViewBag.IsAdmin = isAdmin.Succeeded;
         return View();
     }
 
@@ -142,7 +145,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> CreateFromTemplate(
         [Bind(
-            "PostUrl,TemplateText")]
+            "PostUrl,TemplateText, MemberId")]
         CreateGauntletRunFromTemplateViewModel template)
     {
         await PopulateVehiclesDropDownListAsync();
@@ -151,9 +154,25 @@ public class GauntletRunsController(IMasterDataService masterDataService,
 
         var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
         ViewBag.IsAdmin = isAdmin.Succeeded;
-        return View("Create", (await gauntletService
-                .GetGauntletRunFromTemplateAsync(template.TemplateText, template.PostUrl))
-            .ToEditGauntletRunViewModel());
+
+        var viewModel = (await gauntletService
+                .GetGauntletRunFromTemplateAsync(template.TemplateText, template.PostUrl)).ToEditGauntletRunViewModel();
+
+        if (!isAdmin.Succeeded || string.IsNullOrEmpty(template.MemberId))
+        {
+            var user = await userManager.GetUserAsync(User);
+            var member = await masterDataService.GetMemberAsync(user.MemberId);
+            viewModel.MemberId = member.Id;
+            viewModel.VipLevel = member.VipLevel;
+        }
+        else
+        {
+            var member = await masterDataService.GetMemberAsync(template.MemberId);
+            viewModel.MemberId = member.Id;
+            viewModel.VipLevel = member.VipLevel;
+        }
+
+        return View("Create", viewModel);
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -163,7 +182,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> Create(
         [Bind(
-            "GauntletRunId,TimeString, LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink, Save")]
+            "GauntletRunId,TimeString, LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink, Save, VipLevel")]
         EditGauntletRunViewModel gauntletRun)
     {
         var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
@@ -213,7 +232,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletAdminRole")]
     public async Task<IActionResult> Edit(string id,
         [Bind(
-            "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink")]
+            "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink,VipLevel")]
         EditGauntletRunViewModel d)
     {
         if (id != d.GauntletRunId)

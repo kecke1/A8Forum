@@ -26,6 +26,13 @@ public class SprintLeaderboardController(ILogger<SprintLeaderboardController> lo
             IsHtmlEncodeMode = false
         };
 
+        if (model == null)
+        {
+            model = new SprintLeaderboardViewModel();
+        }
+
+        //model.TodaysTrack = (await sprintService.GetSprintScheduleAsync(DateTime.Now)).Schedule.Where(x => x.);
+
         ViewBag.Table = tableCols.ToHtmlTable(HTMLTableSetting: tableSetings,
             tableAttributes: new
                 { @class = "table table-bordered table-sm table-hover table-striped", id = "leaderboardTable" },
@@ -35,7 +42,7 @@ public class SprintLeaderboardController(ILogger<SprintLeaderboardController> lo
         PopulateTrackDropDownList(tableCols);
         if (!Response.Headers.ContainsKey("Cache-Control"))
             Response.Headers.Add("Cache-Control", "no-store");
-        return View();
+        return View(model);
     }
 
     public async Task<IActionResult> Schedule()

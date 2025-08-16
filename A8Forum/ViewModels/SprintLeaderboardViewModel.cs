@@ -9,4 +9,5 @@ public class SprintLeaderboardViewModel
 
     public string Names { get; set; } = "";
     public string Tracks { get; set; } = "";
+    public string TodaysTrack { get; set; }
 }

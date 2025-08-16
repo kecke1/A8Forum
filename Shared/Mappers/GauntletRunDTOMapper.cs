@@ -31,7 +31,8 @@ internal static class GauntletRunDTOMapper
             RunDate = gauntletrun.RunDate,
             MediaLink = gauntletrun.MediaLink,
             LapTimeVerified = gauntletrun.LapTimeVerified,
-            A8Plus = gauntletrun.A8Plus
+            A8Plus = gauntletrun.A8Plus,
+            VipLevel = gauntletrun.VipLevel,
         };
     }
 
@@ -53,7 +54,8 @@ internal static class GauntletRunDTOMapper
             RunDate = model.RunDate,
             MediaLink = model.MediaLink,
             LapTimeVerified = model.LapTimeVerified,
-            A8Plus = model.A8Plus
+            A8Plus = model.A8Plus,
+            VipLevel = model.VipLevel,
         };
 
         if (!string.IsNullOrEmpty(model.Id))
@@ -80,7 +82,8 @@ internal static class GauntletRunDTOMapper
             RunDate = model.RunDate,
             MediaLink = model.MediaLink,
             LapTimeVerified = model.LapTimeVerified,
-            A8Plus = model.A8Plus
+            A8Plus = model.A8Plus,
+            VipLevel = model.VipLevel
         };
 
         if (!string.IsNullOrEmpty(model.Id))
