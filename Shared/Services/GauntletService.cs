@@ -458,6 +458,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {"Vehicle 3".GetTdHeaderCell()}
 {(numberOfVehicles > 3 ? "Vehicle 4".GetTdHeaderCell() : "")}
 {(numberOfVehicles > 4 ? "Vehicle 5".GetTdHeaderCell() : "")}
+{"VIP".GetTdHeaderCell()}
 [/tr]
 [/thead]
 {string.Join('\n', races.Select((x, i) => GetGauntletLeaderboardTableRowByMember(x, i, numberOfVehicles)))}
@@ -488,6 +489,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {GetGauntletTableVehicleCell(race.VehicleUrl3, race.VehicleName3, true)}
 {GetGauntletTableVehicleCell(race.VehicleUrl4, race.VehicleName4, numberOfVehicles > 3)}
 {GetGauntletTableVehicleCell(race.VehicleUrl5, race.VehicleName5, numberOfVehicles > 4)}
+{GetTdCellWithBorder(race.VipLevel.HasValue && race.VipLevel > 11 ? race.VipLevel.ToString() : "")}
 [/tr]";
     }
 
@@ -523,6 +525,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {GetGauntletTableVehicleCell(race.VehicleUrl3, race.VehicleName3, true)}
 {GetGauntletTableVehicleCell(race.VehicleUrl4, race.VehicleName4, numberOfVehicles > 3)}
 {GetGauntletTableVehicleCell(race.VehicleUrl5, race.VehicleName5, numberOfVehicles > 4)}
+{GetTdCellWithBorder(race.VipLevel.HasValue && race.VipLevel > 11 ? race.VipLevel.ToString() : "")}
 [/tr]";
     }
 
@@ -545,6 +548,7 @@ The total leaderboard points are the sum of the points given in each track leade
 {"Vehicle 3".GetTdHeaderCell()}
 {(numberOfVehicles > 3 ? "Vehicle 4".GetTdHeaderCell() : "")}
 {(numberOfVehicles > 4 ? "Vehicle 5".GetTdHeaderCell() : "")}
+{"VIP".GetTdHeaderCell()}
 [/tr]
 [/thead]
 {string.Join('\n', races.Select((x, i) => GetGauntletLeaderboardTableRowByTrack(x, i, numberOfVehicles)))}

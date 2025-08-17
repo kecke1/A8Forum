@@ -25,8 +25,10 @@ public static class GauntletLeaderboardRowDtoExtensions
                     Vehicle4 = GetATag(x.VehicleName4, x.VehicleUrl4),
                     Vehicle5 = GetATag(x.VehicleName5, x.VehicleUrl5),
                     Verified = $"{(x.A8Plus ? "🍎" : "")}{(x.LapTimeVerified ? "✅" : "")}",
-                    Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink)
-                })
+                    Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink),
+                    VIP = x.VipLevel.HasValue && x.VipLevel > 11 ? x.VipLevel.ToString() : ""
+
+            })
                 .ToList();
         }
 
@@ -47,7 +49,8 @@ public static class GauntletLeaderboardRowDtoExtensions
                 Vehicle4 = x.Vehicle4 != null ? GetATag(x.Vehicle4.Name, x.Vehicle4.Url) : "",
                 Vehicle5 = x.Vehicle5 != null ? GetATag(x.Vehicle5.Name, x.Vehicle5.Url) : "",
                 Verified = $"{(x.A8Plus ? "🍎" : "")}{(x.LapTimeVerified ? "✅" : "")}",
-                Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink)
+                Video = string.IsNullOrEmpty(x.MediaLink) ? "" : GetATag("🎦", x.MediaLink),
+                VIP = x.VipLevel.HasValue && x.VipLevel > 11 ? x.VipLevel.ToString() : ""
             })
             .ToList();
             

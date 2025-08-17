@@ -14,4 +14,5 @@ public class GauntletLeaderboardTableColDto
     public required string Vehicle3 { get; set; }
     public required string Vehicle4 { get; set; }
     public required string Vehicle5 { get; set; }
+    public required string VIP { get; set; }
 }
