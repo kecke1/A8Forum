@@ -10,6 +10,6 @@ public class Member : Item
     public int? VipLevel { get; set; }
     public bool Deleted { get; set; }
     public bool Hidden { get; set; }
-    public IEnumerable<string> RacingNames { get; set; } = Enumerable.Empty<string>();
-    public IEnumerable<string> FormerRacingNames { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> RacingNames { get; set; } = [];
+    public IEnumerable<string> FormerRacingNames { get; set; } = [];
 }

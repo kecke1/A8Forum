@@ -5,6 +5,7 @@ using A8Forum.ViewModels;
 using HtmlTableHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Shared.Params;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
@@ -15,11 +16,12 @@ public class SprintLeaderboardController(ILogger<SprintLeaderboardController> lo
 {
     private readonly ILogger<SprintLeaderboardController> _logger = logger;
 
+
     [HttpPost]
     [HttpGet]
-    public async Task<IActionResult> Index(SprintLeaderboardViewModel? model)
+    public async Task<IActionResult> Index(SprintRunsViewModel? model)
     {
-        var lb = await sprintService.GetSprintLeaderboardRowsAsync();
+        var lb = await sprintService.GetSprintLeaderboardRowsAsync(new GetSprintLeaderboardRowsParams());
         var tableCols = lb.ToTableCols(model?.ShowAllRuns ?? false);
         var tableSetings = new HtmlTableSetting
         {
@@ -28,7 +30,38 @@ public class SprintLeaderboardController(ILogger<SprintLeaderboardController> lo
 
         if (model == null)
         {
-            model = new SprintLeaderboardViewModel();
+            model = new SprintRunsViewModel();
+        }
+
+        //model.TodaysTrack = (await sprintService.GetSprintScheduleAsync(DateTime.Now)).Schedule.Where(x => x.);
+
+        ViewBag.Table = tableCols.ToHtmlTable(HTMLTableSetting: tableSetings,
+            tableAttributes: new
+                { @class = "table table-bordered table-sm table-hover table-striped", id = "leaderboardTable" },
+            thAttributes: new { @class = "table-dark bg-dark" });
+
+        PopulateNameDropDownList(tableCols);
+        PopulateTrackDropDownList(tableCols);
+        if (!Response.Headers.ContainsKey("Cache-Control"))
+            Response.Headers.Add("Cache-Control", "no-store");
+        return View(model);
+    }
+
+
+    [HttpPost]
+    [HttpGet]
+    public async Task<IActionResult> Runs(SprintRunsViewModel? model)
+    {
+        var lb = await sprintService.GetSprintLeaderboardRowsAsync(new GetSprintLeaderboardRowsParams());
+        var tableCols = lb.ToTableCols(model?.ShowAllRuns ?? false);
+        var tableSetings = new HtmlTableSetting
+        {
+            IsHtmlEncodeMode = false
+        };
+
+        if (model == null)
+        {
+            model = new SprintRunsViewModel();
         }
 
         //model.TodaysTrack = (await sprintService.GetSprintScheduleAsync(DateTime.Now)).Schedule.Where(x => x.);

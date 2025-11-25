@@ -5,6 +5,7 @@ using A8Forum.ViewModels;
 using HtmlTableHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Shared.Params;
 using Shared.Services;
 
 namespace A8Forum.Controllers;
@@ -15,11 +16,21 @@ public class GauntletLeaderboardController(ILogger<GauntletLeaderboardController
 {
     private readonly ILogger<GauntletLeaderboardController> _logger = logger;
 
+
     [HttpPost]
     [HttpGet]
-    public async Task<IActionResult> Index(GauntletLeaderboardViewModel? model)
+    public async Task<IActionResult> Index(LeaderboardViewModel? model)
     {
-        var lb = await gauntletService.GetGauntletLeaderboardRowsAsync();
+
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [HttpGet]
+    public async Task<IActionResult> Runs(GauntletRunsViewModel? model)
+    {
+        var lb = await gauntletService.GetGauntletLeaderboardRowsAsync(new GetGauntletLeaderboardRowsParams());
         var tableCols = lb.ToTableCols(model?.ShowAllRuns ?? false);
         var tableSetings = new HtmlTableSetting
         {

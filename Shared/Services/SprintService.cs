@@ -11,6 +11,7 @@ using Shared.Extensions;
 using Shared.Mappers;
 using Shared.Models;
 using Shared.Options;
+using Shared.Params;
 
 namespace Shared.Services;
 
@@ -34,15 +35,22 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
         await sprintRunRepository.UpdateAsync(r.ToSprintRunEntity());
     }
 
-    public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(bool excludeVipRuns = false)
+    public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(GetSprintLeaderboardRowsParams param)
     {
         var races = (await GetSprintRunsAsync())
             .Where(x => !x.Deleted);
 
-        var runs = excludeVipRuns ? races.Where(x => !x.VipLevel.HasValue || x.VipLevel < 12) : races;
+        var runs = races
+            .Where(x => (x.VipLevel ?? 0) <= param.MaxVipLevel && (x.VipLevel ?? 0) >= param.MinVipLevel);
 
+        if (param.Date.HasValue)
+        {
+            runs = runs.Where(x =>
+                (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
+                (x.RunDate.HasValue && x.RunDate.Value <= param.Date));
+        }
 
-          var q = runs.GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
+        var q = runs.GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
             .Select(x =>
             {
                 var orderedRaces = x.OrderBy(y => y.Time);
@@ -239,6 +247,9 @@ I will maintain leaderboards for every track, and also a total leaderboard where
 
 If you want to know the next date for a specific sprint, [a href='https://a8forum.azurewebsites.net/SprintLeaderboard/Schedule']Here is a schedule of upcoming sprints[/a]
 
+The Sprint FC is currently divided in two Leagues, ""VIP League"" and ""Non VIP League"". Each league has it's own set of leaderboards. 
+When someone reaches VIP 13, all results from that person will be moved from ""Non VIP League"" to ""VIP League""
+
 [b]Posting lap times[/b]
 Everyone is welcome to post their lap times when they set a new personal record for at track.
 
@@ -252,14 +263,14 @@ I would also like you to specify VIP level if you are VIP 12 or above.
 [b]Total leaderboard[/b]
 The total leaderboard points are the sum of the points given in each track leaderboard. The formula for calculating points for each track is 21 - position. For example, position 1 will give 21 points - 1 = 20 points. Everyone on a track leaderboard will always receive at least 1 point.
 
-[b]Total leaderboard[/b]
-[spoiler]
-{await GetSprintTotalLeaderboardTableAsync(races)}
-[/spoiler]
-
-[b]Total leaderboard without VIP boosted runs[/b]
+[b]Total leaderboard Non VIP League[/b]
 [spoiler]
 {await GetSprintTotalLeaderboardTableAsync(racesNoVip)}
+[/spoiler]
+
+[b]Total leaderboard VIP League[/b]
+[spoiler]
+{await GetSprintTotalLeaderboardTableAsync(races)}
 [/spoiler]
 ";
 
@@ -317,23 +328,33 @@ The total leaderboard points are the sum of the points given in each track leade
 
     public async Task<SprintReportDTO> GetSprintReportAsync()
     {
-        var races = await GetSprintLeaderboardRowsAsync();
-        var racesNoVip = await GetSprintLeaderboardRowsAsync(true);
-        var byTrack = await GetSprintLeaderboardByTrackAsync(races);
-        var byMember = await GetSprintLeaderboardByMemberAsync(races);
+        var racesOnlyVIP = await GetSprintLeaderboardRowsAsync(new GetSprintLeaderboardRowsParams
+        {
+            MaxVipLevel = 15,
+            MinVipLevel = 13
+        });
+        var racesNoVip = await GetSprintLeaderboardRowsAsync(new GetSprintLeaderboardRowsParams
+        {
+            MaxVipLevel = 12,
+            MinVipLevel = 0
+        });
+
+        var allRaces = await GetSprintLeaderboardRowsAsync(new GetSprintLeaderboardRowsParams());
+        var byTrack = await GetSprintLeaderboardByTrackAsync(allRaces);
+        var byMember = await GetSprintLeaderboardByMemberAsync(allRaces);
 
         var report = new SprintReportDTO
         {
             LeaderBoardByTrack = byTrack,
             LeaderBoardByMember = byMember,
-            TotalLeaderBoard = await GetSprintTotalLeaderboardPageAsync(races, racesNoVip),
+            TotalLeaderBoard = await GetSprintTotalLeaderboardPageAsync(allRaces, racesNoVip),
             TotalLeaderBoardNoVip = await GetSprintTotalLeaderboardTableAsync(racesNoVip)
         };
         report.LeaderBoardByMemberHtml = report.LeaderBoardByMember.ToHtml();
         report.LeaderBoardByTrackHtml = report.LeaderBoardByTrack.ToHtml();
         report.TotalLeaderBoardHtml = report.TotalLeaderBoard.ToHtml();
         report.TotalLeaderBoardNoVipHtml = report.TotalLeaderBoardNoVip.ToHtml();
-        report.LeaderBoardJson = JsonConvert.SerializeObject(races);
+        report.LeaderBoardJson = JsonConvert.SerializeObject(allRaces);
         return report;
     }
 
@@ -591,11 +612,10 @@ The total leaderboard points are the sum of the points given in each track leade
     private (TrackDTO track, List<DateTime?> dates) GetTrackSchedule(TrackDTO t, DateTime startDate)
     {
         return (t,
-            new List<DateTime?>
-            {
-                startDate, startDate.AddDays(56), startDate.AddDays(56 * 2), startDate.AddDays(56 * 3),
-                startDate.AddDays(56 * 4), startDate.AddDays(56 * 5)
-            });
+        [
+            startDate, startDate.AddDays(56), startDate.AddDays(56 * 2), startDate.AddDays(56 * 3),
+            startDate.AddDays(56 * 4), startDate.AddDays(56 * 5)
+        ]);
     }
 
     public async Task<SprintScheduleDTO> GetSprintScheduleAsync(DateTime startDate)

@@ -2,12 +2,11 @@
 
 namespace A8Forum.ViewModels;
 
-public class SprintLeaderboardViewModel
+public class GauntletRunsViewModel
 {
     [Display(Name = "Show all runs")]
     public bool ShowAllRuns { get; set; } = false;
 
     public string Names { get; set; } = "";
     public string Tracks { get; set; } = "";
-    public string TodaysTrack { get; set; }
 }

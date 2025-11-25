@@ -1,19 +1,15 @@
-﻿@model A8Forum.ViewModels.SprintRunsViewModel
+﻿@model A8Forum.ViewModels.GauntletRunsViewModel
 
 @{
-    ViewData["Title"] = "Sprint Leaderboard";
+    ViewData["Title"] = "Gauntlet Runs";
 }
 
 @section Css {
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/datatables.min.css" rel="stylesheet" integrity="sha384-NLl/5P8E4QN2RNgJmc1ANpf3jyrh7bfI9pfOR11JHpkTOHoAeNrzaBPp7ogQZd4j" crossorigin="anonymous">
-    
-
-
 }
 
-<a href="/SprintLeaderboard/Schedule">Schedule of upcoming sprints</a>
 <form>
     <div class="row">
         <div class="col-md-4">
@@ -31,7 +27,7 @@
             </div>
         </div>
     </div>
-    </form>
+</form>
 <form asp-action="Index" method="get">
     <input type="hidden" asp-for="Names" id="selectedNames" />
     <input type="hidden" asp-for="Tracks" id="selectedTracks" />
@@ -69,14 +65,14 @@
                 paging: false,
                 scrollY: '300px',
                 layout: {
-                     topStart: {
+                  topStart: {
                         buttons: [
                             {
                               extend: 'excelHtml5',
                               text: '<i class="fa fa-file-excel-o"></i>',
                               titleAttr: 'Excel'
                             },
-                            {  
+                            {
                               extend: 'copyHtml5',
                               text: '<i class="fa fa-files-o"></i>',
                               titleAttr: 'Copy'
@@ -87,12 +83,36 @@
                 },
                 columnDefs: [
                     {
-                        title: 'Pos.',
-                        targets: 1
+                        title: '✅',
+                        targets: 0
                     },
                     {
-                        title: 'Vehicle',
-                        targets: 6
+                        title: 'Pos.',
+                        targets: 2
+                    },
+                    {
+                        title: 'Vehicle 1',
+                        targets: 7
+                    },
+                    {
+                        title: 'Vehicle 2',
+                        targets: 8
+                    },
+                    {
+                        title: 'Vehicle 3',
+                        targets: 9
+                    },
+                    {
+                        title: 'Vehicle 4',
+                        targets: 10
+                    },
+                    {
+                        title: 'Vehicle 5',
+                        targets: 11
+                    },
+                    {
+                        title: 'VIP',
+                        targets: 11
                     }
                 ]
             });
@@ -127,13 +147,13 @@
                  return '^' + x.id + '$';
              }).join('|');
 
-             table.column(0).search(tracks, true, false, false).draw(false);
+             table.column(1).search(tracks, true, false, false).draw(false);
 
              var names = jQuery.map(nameData, function (x) {
                  return '^' + x.id + '$';
              }).join('|');
 
-             table.column(2).search(names, true, false, false).draw(false);
+             table.column(3).search(names, true, false, false).draw(false);
 
              setQuerystringValue("Tracks", jQuery.map(trackData, function (x) {
                 return x.id;

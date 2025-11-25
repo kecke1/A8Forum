@@ -1,4 +1,5 @@
 ﻿using Shared.Dto;
+using Shared.Params;
 
 namespace Shared.Services;
 
@@ -16,7 +17,7 @@ public interface ISprintService
 
     public Task ImportSprintRunsAsync(SprintImportDTO runs);
 
-    public Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(bool excludeVipRuns=false);
+    public Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(GetSprintLeaderboardRowsParams p);
 
     public Task<string> GetSprintLeaderboardByMemberAsync(IOrderedEnumerable<SprintLeaderboardRowDto> runs);
 

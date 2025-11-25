@@ -1,5 +1,4 @@
-﻿using System.Text;
-using F23.StringSimilarity;
+﻿using F23.StringSimilarity;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.CosmosRepository;
 using Microsoft.Extensions.Options;
@@ -9,6 +8,8 @@ using Shared.Extensions;
 using Shared.Mappers;
 using Shared.Models;
 using Shared.Options;
+using Shared.Params;
+using System.Text;
 
 namespace Shared.Services;
 
@@ -31,10 +32,31 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
         await gauntletRunRepository.UpdateAsync(r.ToGauntletRunEntity());
     }
 
-    public async Task<IOrderedEnumerable<GauntletLeaderboardRowDto>> GetGauntletLeaderboardRowsAsync()
+    public async Task<IOrderedEnumerable<GauntletLeaderboardRowDto>> GetGauntletLeaderboardRowsAsync(GetGauntletLeaderboardRowsParams param)
     {
         var races = (await GetGauntletRunsAsync())
             .Where(x => !x.Deleted);
+
+         races = races
+            .Where(x => (x.VipLevel ?? 0) <= param.MaxVipLevel && (x.VipLevel ?? 0) >= param.MinVipLevel);
+
+        if (param.Date.HasValue)
+        {
+            races = races.Where(x =>
+                (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
+                (x.RunDate.HasValue && x.RunDate.Value <= param.Date));
+        }
+
+        if (!param.IncludeUnverified)
+        {
+            races = races.Where(x => x.LapTimeVerified);
+        }
+
+        if (!param.IncludeVerified)
+        {
+            races = races.Where(x => !x.LapTimeVerified);
+        }
+
 
         var q = races
             .GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
@@ -303,7 +325,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
     public async Task<GauntletReportDTO> GetGauntletReportAsync()
     {
-        var races = await GetGauntletLeaderboardRowsAsync();
+        var races = await GetGauntletLeaderboardRowsAsync(new GetGauntletLeaderboardRowsParams());
         var byTrack = await GetGauntletLeaderboardByTrackAsync(races);
         var byMember = await GetGauntletLeaderboardByMemberAsync(races);
 

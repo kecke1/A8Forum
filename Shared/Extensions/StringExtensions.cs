@@ -4,7 +4,7 @@ public static class StringExtensions
 {
     public static int FromTimestringToInt(this string t)
     {
-        var time = new string(t.Where(char.IsDigit).ToArray());
+        var time = new string([.. t.Where(char.IsDigit)]);
 
         // Special case with minute and second without leading 0 (ex: 1:5:564)
         if (time.Length == 5 && time.StartsWith("1"))

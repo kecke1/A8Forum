@@ -1,4 +1,5 @@
 ﻿using Shared.Dto;
+using Shared.Params;
 
 namespace Shared.Services;
 
@@ -16,7 +17,7 @@ public interface IGauntletService
 
     public Task ImportGauntletRunsAsync(GauntletImportDTO races);
 
-    public Task<IOrderedEnumerable<GauntletLeaderboardRowDto>> GetGauntletLeaderboardRowsAsync();
+    public Task<IOrderedEnumerable<GauntletLeaderboardRowDto>> GetGauntletLeaderboardRowsAsync(GetGauntletLeaderboardRowsParams param);
 
     public Task<string> GetGauntletLeaderboardByMemberAsync(IOrderedEnumerable<GauntletLeaderboardRowDto> races);
 

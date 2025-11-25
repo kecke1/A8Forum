@@ -8,5 +8,5 @@ namespace Shared.Dto;
 public class SprintScheduleDTO
 {
     public List<(TrackDTO track, List<DateTime?> dates)> Schedule { get; set; } =
-        new List<(TrackDTO track, List<DateTime?> dates)>();
+        [];
 }

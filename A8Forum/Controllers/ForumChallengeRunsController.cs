@@ -30,7 +30,7 @@ public class ForumChallengeRunsController(IMasterDataService masterDataService,
 
         var runs = !string.IsNullOrEmpty(cId)
             ? (await forumChallengeService.GetForumChallengeRunsAsync(cId)).OrderByDescending(x => x.Idate).ToArray()
-            : Array.Empty<ForumChallengeRunDTO>();
+            : [];
 
         try
         {

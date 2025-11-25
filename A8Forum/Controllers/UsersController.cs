@@ -243,7 +243,7 @@ public class UsersController(UserManager<A8ForumazurewebsitesnetUser> userManage
 
     private async Task<List<string>> GetUserRoles(A8ForumazurewebsitesnetUser user)
     {
-        return new List<string>(await userManager.GetRolesAsync(user));
+        return [..await userManager.GetRolesAsync(user)];
     }
 
     private async Task PopulateMembersDropDownListAsync(string? memberId = null)
