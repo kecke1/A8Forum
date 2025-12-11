@@ -1,194 +1,357 @@
-﻿@model A8Forum.ViewModels.SprintRunsViewModel
-
+﻿@model A8Forum.ViewModels.SprintLeaderboardViewModel
 @{
     ViewData["Title"] = "Sprint Leaderboard";
+    var active = (Model.Filter.ActiveTab ?? "total").ToLowerInvariant();
+    bool totalActive    = active == "total";
+    bool byTrackActive  = active == "bytrack";
+    bool bestLapsActive = active == "bestlaps";
 }
 
-@section Css {
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/datatables.min.css" rel="stylesheet" integrity="sha384-NLl/5P8E4QN2RNgJmc1ANpf3jyrh7bfI9pfOR11JHpkTOHoAeNrzaBPp7ogQZd4j" crossorigin="anonymous">
-    
+<h1 class="mb-3">@ViewData["Title"]</h1>
 
+<!-- noUiSlider CSS (CDN) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.css" id="Filter_ActiveTab" />
 
-}
+<form method="get" asp-action="Index" class="row g-3eTab" id="Filter_ActiveTab" >
+    <!-- VIP Level: noUiSlider dual handle (0–15) -->
+    <div class ="row">
+    <div class="col-12 col-md-6">
+        <label class="form-label d-flex align-items-center justify-content-between">
+            <span>VIP Levels</span>
+            <span>
+                <span class="badge bg-secondary" id="vipMinLabel">@Model.Filter.VipLevelMin?.ToString() ?? "0"</span>
+                <span class="mx-1">–</span>
+                <span class="badge bg-secondary" id="vipMaxLabel">@Model.Filter.VipLevelMax?.ToString() ?? "15"</span>
+            </span>
+        </label>
 
-<a href="/SprintLeaderboard/Schedule">Schedule of upcoming sprints</a>
-<form>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Filter on one or many names</label>
-                <select class="form-select form-select-lg" asp-items="ViewBag.Names" id="namesDropdown" name="names[]" multiple="multiple">
-                </select>
+        <!-- Slider container -->
+        <div id="vipSlider" class="vip-nouislider mb-2"></div>
+
+        <!-- Hidden fields bound to model -->
+        <input asp-for="Filter.VipLevelMin" type="hidden" id="Filter_VipLevelMin" />
+        <input asp-for="Filter.VipLevelMax" type="hidden" id="Filter_VipLevelMax" />
+
+        <!-- Optional numeric fallbacks (keyboard / SR users) -->
+        <div class="d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text">Min</span>
+                <input type="number" min="0" max="15" step="1" class="form-control" id="vipMinNumber"
+                       value="@(Model.Filter.VipLevelMin?.ToString() ?? "0")" />
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Max</span>
+                <input type="number" min="0" max="15" step="1" class="form-control" id="vipMaxNumber"
+                       value="@(Model.Filter.VipLevelMax?.ToString() ?? "15")" />
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Filter on one or many tracks</label>
-                <select class="form-select form-select-lg" asp-items="ViewBag.Tracks" id="tracksDropdown" name="tracks[]" multiple="multiple">
-                </select>
-            </div>
+
+        <span asp-validation-for="Filter.VipLevelMin" class="text-danger"></span>
+        <span asp-validation-for="Filter.VipLevelMax" class="text-danger"></span>
+    </div>
+    </div>
+
+    <div class="col-12 col-md-3">
+        <div class="form-check form-switch mt-4">
+            <label class="form-check-label" for="Filter_UseLeaderboardDate">Set Leaderboard Date</label>
+            <input asp-for="Filter.UseLeaderboardDate" class="form-check-input" id="Filter_UseLeaderboardDate"/>
+
+            <input asp-for="Filter.LeaderboardDate" type="date" class="form-control" id="Filter_LeaderboardDate"/>
         </div>
     </div>
-    </form>
-<form asp-action="Index" method="get">
-    <input type="hidden" asp-for="Names" id="selectedNames" />
-    <input type="hidden" asp-for="Tracks" id="selectedTracks" />
-    <div class="row">
-        <div class="form-group form-check mb-3">
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="ShowAllRuns" aria-describedby="showAllHelp" onchange="submitForm();this.form.submit()" /> @Html.DisplayNameFor(model => model.ShowAllRuns)
-                </label>
-                <small id="showAllHelp" class="form-text text-muted">
-                    Check this if you want to show all recorded runs
-                </small>
-            </div>
-        </div>
 
+
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            <span class="me-1">🔎</span> Apply filters
+        </button>
     </div>
 </form>
 
+@if (Model.Filter.UseLeaderboardDate && Model.Filter.LeaderboardDate.HasValue)
+{
+    <span class="badge bg-info-subtle text-dark">Leaderboard Date: @Model.Filter.LeaderboardDate.Value.ToString("dd.MM.yyyy")</span>
+}
 
-<div class="position-relative">
-    @Html.Raw(ViewBag.Table)
+<!-- TABS (added mt-3 for extra space above tabs) -->
+<ul class="nav nav-tabs mt-3" id="leaderboardTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(totalActive ? "active" : "")"
+                id="tab-total-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-total"
+                type="button"
+                role="tab"
+                aria-controls="tab-total"
+                aria-selected="@(totalActive ? "true" : "false")"
+                data-tab-key="total">
+            Total Leaderboard
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(byTrackActive ? "active" : "")"
+                id="tab-bytrack-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-bytrack"
+                type="button"
+                role="tab"
+                aria-controls="tab-bytrack"
+                aria-selected="@(byTrackActive ? "true" : "false")"
+                data-tab-key="byTrack">
+            Leaderboard By Track
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(bestLapsActive ? "active" : "")"
+                id="tab-bestlaps-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-bestlaps"
+                type="button"
+                role="tab"
+                aria-controls="tab-bestlaps"
+                aria-selected="@(bestLapsActive ? "true" : "false")"
+                data-tab-key="bestLaps">
+            Best Lap Times
+        </button>
+    </li>
+</ul>
+<div class="tab-content mt-3">
+    <!-- TOTAL TAB -->
+    <div class="tab-pane fade @(totalActive ? "show active" : "")" id="tab-total" role="tabpanel" aria-labelledby="tab-total-tab">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+
+        </div>
+
+        @* Columns: Position, Points, Name, NumberOfTracks, AvgPoints, NumberOfFirstPositions *@
+        @await Html.PartialAsync("~/Views/SprintLeaderboard/_TotalResultsTable.cshtml", Model.TotalResults)
+    </div>
+
+    <!-- BY TRACK TAB (dropdown + client-side show/hide) -->
+    <div class="tab-pane fade @(byTrackActive ? "show active" : "")" id="tab-bytrack" role="tabpanel" aria-labelledby="tab-bytrack-tab">
+        @if (!Model.ByTrackGroups.Any())
+        {
+            <div class="alert alert-info">No results for the current filters.</div>
+        }
+        else
+        {
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-md-6">
+                    <label for="byTrackSelect" class="form-label">Select Track</label>
+                    <select id="byTrackSelect" class="form-select">
+                        @for (var i = 0; i < Model.ByTrackGroups.Count(); i++)
+                        {
+                            var g = Model.ByTrackGroups.ElementAt(i);
+                            <option value="@i">@g.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            @for (var i = 0; i < Model.ByTrackGroups.Count(); i++)
+            {
+                var g = Model.ByTrackGroups.ElementAt(i);
+                var isFirst = i == 0; // fallback: first when no saved selection
+                <div class="track-group-table @(isFirst ? "" : "d-none")"
+                     data-tab="byTrack" data-index="@i" data-name="@g.Name">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong>@g.Rows.Count()</strong> row(s) for <span class="fw-semibold">@g.Name</span>
+                        </div>
+                    </div>
+
+                    @* Columns: Position, MemberName, TimeString, Run Date (dd.MM.yyyy), 🎦, Vehicle *@
+                    @await Html.PartialAsync("~/Views/SprintLeaderboard/_TrackRowsTable.cshtml", g.Rows)
+                </div>
+            }
+        }
+    </div>
+
+    <!-- BEST LAP TIMES TAB (dropdown + client-side show/hide) -->
+    <div class="tab-pane fade @(bestLapsActive ? "show active" : "")" id="tab-bestlaps" role="tabpanel" aria-labelledby="tab-bestlaps-tab">
+        @if (!Model.BestLapGroups.Any())
+        {
+            <div class="alert alert-info">No lap times for the current filters.</div>
+        }
+        else
+        {
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-md-6">
+                    <label for="byMemberSelect" class="form-label">Select Member</label>
+                    <select id="byMemberSelect" class="form-select">
+                        @for (var i = 0; i < Model.BestLapGroups.Count(); i++)
+                        {
+                            var g = Model.BestLapGroups.ElementAt(i);
+                            <option value="@i">@g.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            @for (var i = 0; i < Model.BestLapGroups.Count(); i++)
+            {
+                var g = Model.BestLapGroups.ElementAt(i);
+                var isFirst = i == 0; // fallback: first when no saved selection
+                <div class="member-group-table @(isFirst ? "" : "d-none")"
+                     data-tab="bestLaps" data-index="@i" data-name="@g.Name">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong>@g.Rows.Count()</strong> row(s) for <span class="fw-semibold">@g.Name</span>
+                        </div>
+                    </div>
+
+                    @* Columns: Track, Time, Run Date (dd.MM.yyyy), 🎦, Vehicle (linked), VIP blank if < 12 *@
+                    @await Html.PartialAsync("~/Views/SprintLeaderboard/_MemberRowsTable.cshtml", g.Rows)
+                </div>
+            }
+        }
+    </div>
 </div>
 
-
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-html5-3.2.3/datatables.min.js" integrity="sha384-EZbenqljWsOSyqzFMW5SjYYAMpZPN64Mswr1orhtoadhs9N/udQNhyJRcr+zJ6IP" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#namesDropdown").select2();
-            $("#tracksDropdown").select2();
-
-            $('#leaderboardTable').DataTable({
-                ordering: false,
-                paging: false,
-                scrollY: '300px',
-                layout: {
-                     topStart: {
-                        buttons: [
-                            {
-                              extend: 'excelHtml5',
-                              text: '<i class="fa fa-file-excel-o"></i>',
-                              titleAttr: 'Excel'
-                            },
-                            {  
-                              extend: 'copyHtml5',
-                              text: '<i class="fa fa-files-o"></i>',
-                              titleAttr: 'Copy'
-                            }
-                        ]
-                    },
-                    topEnd: null
-                },
-                columnDefs: [
-                    {
-                        title: 'Pos.',
-                        targets: 1
-                    },
-                    {
-                        title: 'Vehicle',
-                        targets: 6
-                    }
-                ]
-            });
-
-            $('#namesDropdown').on('change.select2', function (e) {
-                applyFilters();
-            });
-            $('#tracksDropdown').on('change.select2', function (e) {
-                applyFilters();
-            });
-
-            setFiltersFromQueryString();
-
-
-        });
-    </script>
+<!-- noUiSlider JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.js"></script>
 
     <script>
+        (function () {
 
-        function submitForm() {
-            $('#selectedNames').val(getQueryStringValue("Names"));
-            $('#selectedTracks').val(getQueryStringValue("Tracks"));
-        }
+            var format = {
+                to: function(value) {
+                    return sliderValues[Math.round(value)];
+                },
+                from: function(value) {
+                    return value; // sliderValues.indexOf(value);
+                }
 
-        function applyFilters() {
-
-             var table = $('#leaderboardTable').DataTable();
-             var nameData = $("#namesDropdown").select2('data');
-             var trackData = $("#tracksDropdown").select2('data');
-
-             var tracks = jQuery.map(trackData, function (x) {
-                 return '^' + x.id + '$';
-             }).join('|');
-
-             table.column(0).search(tracks, true, false, false).draw(false);
-
-             var names = jQuery.map(nameData, function (x) {
-                 return '^' + x.id + '$';
-             }).join('|');
-
-             table.column(2).search(names, true, false, false).draw(false);
-
-             setQuerystringValue("Tracks", jQuery.map(trackData, function (x) {
-                return x.id;
-            }).join(','));
-
-             setQuerystringValue("Names", jQuery.map(nameData, function (x) {
-                return x.id;
-            }).join(','));
-         }
-
-
-        function setFiltersFromQueryString() {
-
-            var names = getQueryStringValue("Names");
-            var tracks = getQueryStringValue("Tracks");
-
-            if(names){
-                $("#namesDropdown").val(names.split(','));
-                $("#namesDropdown").trigger('change');
             }
 
-            if(tracks){
-                $("#tracksDropdown").val(tracks.split(','));
-                $("#tracksDropdown").trigger('change');
+             MIN = 0, MAX = 15, STEP = 1;
+            const slider = document.getElementById('vipSlider');
+            const minHidden = document.getElementById('Filter_VipLevelMin');
+            const maxHidden = document.getElementById('Filter_VipLevelMax');
+            const minLbl = document.getElementById('vipMinLabel');
+            const maxLbl = document.getElementById('vipMaxLabel');
+            const minNum = document.getElementById('vipMinNumber');
+            const maxNum = document.getElementById('vipMaxNumber');
+
+            var sliderValues = [0, 13, 14, 15];
+
+
+
+
+            if (slider && minHidden && maxHidden) {
+                const startMin = Number.isFinite(parseInt(minHidden.value, 10)) ? parseInt(minHidden.value, 10) : MIN;
+                const startMax = Number.isFinite(parseInt(maxHidden.value, 10)) ? parseInt(maxHidden.value, 10) : MAX;
+
+                noUiSlider.create(slider, {
+                    start: [Math.min(startMin, startMax), Math.max(startMin, startMax)],
+                    step: STEP,
+                    connect: true,
+                    range: { 'min': 0,
+                             'max': sliderValues.length-1 },
+                             format: format,
+                    behaviour: 'tap-drag',
+                });
+
+                // live update labels + number inputs
+                slider.noUiSlider.on('update', function (values) {
+                    const vMin = Math.round(parseFloat(values[0]));
+                    const vMax = Math.round(parseFloat(values[1]));
+                    if (minLbl) minLbl.textContent = String(vMin);
+                    if (maxLbl) maxLbl.textContent = String(vMax);
+                    if (minNum && document.activeElement !== minNum) minNum.value = String(vMin);
+                    if (maxNum && document.activeElement !== maxNum) maxNum.value = String(vMax);
+                });
+
+                // commit to hidden fields (form submission)
+                function commit(values) {
+                    const vMin = Math.round(parseFloat(values[0]));
+                    const vMax = Math.round(parseFloat(values[1]));
+                    minHidden.value = String(vMin);
+                    maxHidden.value = String(vMax);
+                    // trigger change to cooperate with client validation if used
+                    minHidden.dispatchEvent(new Event('change', { bubbles: true }));
+                    maxHidden.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                slider.noUiSlider.on('set', commit);
+                slider.noUiSlider.on('change', commit);
+
+                // number inputs -> slider
+                function clamp(v) { return Math.min(Math.max(v, MIN), MAX); }
+                function syncFromNumbers() {
+                    if (!minNum || !maxNum) return;
+                    let vMin = clamp(parseInt(minNum.value, 10));
+                    let vMax = clamp(parseInt(maxNum.value, 10));
+                    if (!Number.isFinite(vMin)) vMin = MIN;
+                    if (!Number.isFinite(vMax)) vMax = MAX;
+                    if (vMin > vMax) {
+                        // if user typed min > max, snap max up to min
+                        vMax = vMin;
+                        maxNum.value = String(vMax);
+                    }
+                    slider.noUiSlider.set([vMin, vMax]);
+                }
+                if (minNum) ['input','change','blur'].forEach(ev => minNum.addEventListener(ev, syncFromNumbers));
+                if (maxNum) ['input','change','blur'].forEach(ev => maxNum.addEventListener(ev, syncFromNumbers));
             }
-        }
 
-        function filterTable(names, tracks)
-        {
-            var tracks = jQuery.map(trackData, function (x) {
-                return '^' + x.id + '$';
-            }).join('|');
+            // --- Client-side dropdowns: show/hide pre-rendered group tables; persist selection in localStorage ---
+            function setupDropdown(tabKey, selectId, itemSelector) {
+                var lsKey = 'sprintLb.' + tabKey + '.idx';
+                var select = document.getElementById(selectId);
+                var items = Array.from(document.querySelectorAll(itemSelector));
 
-            table.column(1).search(tracks, true, false, false).draw(false);
+                if (!select || items.length === 0) return;
 
-            var names = jQuery.map(nameData, function (x) {
-                return '^' + x.id + '$';
-            }).join('|');
+                // Restore selection; fallback to 0 (first item)
+                var saved = localStorage.getItem(lsKey);
+                var idx = parseInt(saved, 10);
+                if (isNaN(idx) || idx < 0 || idx >= items.length) idx = 0;
 
-            table.column(3).search(names, true, false, false).draw(false);
-        }
+                select.value = String(idx);
+                showIndex(idx);
 
-        function setQuerystringValue(key, value) {
-            var url = new URL(window.location.href);
-            url.searchParams.set(key, value);
-            window.history.pushState(null, document.title, url.href);
-        }
+                select.addEventListener('change', function () {
+                    var newIdx = parseInt(select.value, 10);
+                    if (isNaN(newIdx)) return;
+                    showIndex(newIdx);
+                    localStorage.setItem(lsKey, String(newIdx));
+                });
 
+                function showIndex(i) {
+                    items.forEach(function (el) {
+                        if (parseInt(el.getAttribute('data-index'), 10) === i) {
+                            el.classList.remove('d-none');
+                        } else {
+                            el.classList.add('d-none');
+                        }
+                    });
+                }
+            }
+            setupDropdown('byTrack', 'byTrackSelect', '.track-group-table[data-tab="byTrack"]');
+            setupDropdown('bestLaps', 'byMemberSelect', '.member-group-table[data-tab="bestLaps"]');
 
-        function getQueryStringValue(key){
-           var url = new URL(window.location.href);
-           var urlParams = new URLSearchParams(window.location.search);
-           return urlParams.get(key);
-        }
+            // Persist ActiveTab when switching tabs
+            var hidden = document.getElementById('Filter_ActiveTab');
+            document.querySelectorAll('#leaderboardTabs [data-bs-toggle="tab"]').forEach(function (btn) {
+                btn.addEventListener('shown.bs.tab', function (e) {
+                    hidden && (hidden.value = e.target.getAttribute('data-tab-key'));
+                });
+            });
 
+            // Leaderboard Date toggle UX
+            const use = document.getElementById('Filter_UseLeaderboardDate');
+            const date = document.getElementById('Filter_LeaderboardDate');
+            function syncDate() {
+                const on = use?.checked;
+                if (!date) return;
+                date.disabled = !on;
+                date.required = on;
+                if (!on) date.value = '';
+            }
+            syncDate();
+            use?.addEventListener('change', syncDate);
+        })();
     </script>
 
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -18,3 +18,46 @@ body { margin-bottom: 60px; }
 }
 
 .deleted { background-color: tomato }
+
+
+.vip-nouislider .noUi-target {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    height: 0.75rem;
+    position: relative;
+}
+
+.vip-nouislider .noUi-base {
+    height: 6px;
+    background: #dee2e6; /* BS gray-200 */
+    border-radius: 3px;
+}
+
+.vip-nouislider .noUi-connects {
+    border-radius: 3px;
+}
+
+.vip-nouislider .noUi-connect {
+    background: linear-gradient(90deg, #0d6efd, #20c997); /* primary -> teal */
+}
+
+.vip-nouislider .noUi-handle {
+    border: 2px solid #fff;
+    background: #0d6efd;
+    box-shadow: 0 0 0 1px rgba(13,110,253,.3);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    right: -9px !important; /* center handle on its value */
+    top: -6px; /* vertically align with track */
+    cursor: pointer;
+}
+
+    .vip-nouislider .noUi-handle:focus {
+        outline: none;
+    }
+
+    .vip-nouislider .noUi-handle:focus-visible {
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    }

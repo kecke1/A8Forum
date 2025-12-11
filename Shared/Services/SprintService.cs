@@ -37,17 +37,22 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
 
     public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(GetSprintLeaderboardRowsParams param)
     {
-        var races = (await GetSprintRunsAsync())
-            .Where(x => !x.Deleted);
+        var allRuns = (await GetSprintRunsAsync())
+            .Where(x => !x.Deleted && (!param.Date.HasValue || !x.RunDate.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
+                                       (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
+            .ToList();
 
-        var runs = races
+        var runs = allRuns
             .Where(x => (x.VipLevel ?? 0) <= param.MaxVipLevel && (x.VipLevel ?? 0) >= param.MinVipLevel);
 
-        if (param.Date.HasValue)
+        if (!param.IncludeFilteredOutVipMembers)
         {
-            runs = runs.Where(x =>
-                (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
-                (x.RunDate.HasValue && x.RunDate.Value <= param.Date));
+            var filteredVipMembers = allRuns.Where(x => (x.VipLevel ?? 0) > param.MaxVipLevel)
+                .Select(x => x.Member.Id)
+                .Distinct()
+                .ToArray();
+
+            runs = runs.Where(x => !filteredVipMembers.Contains(x.Member.Id));
         }
 
         var q = runs.GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
@@ -190,10 +195,12 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
         }
     }
 
-    public async Task<string> GetSprintTotalLeaderboardTableAsync(IEnumerable<SprintLeaderboardRowDto> races)
+    public async Task<IOrderedEnumerable<SprintLeaderboardResultDto>> GetSprintTotalLeaderboardAsync(GetSprintLeaderboardRowsParams param)
     {
+        var runs = await GetSprintLeaderboardRowsAsync(param);
+
         var p = 1;
-        var result = races.GroupBy(x => x.MemberId)
+        return runs.GroupBy(x => x.MemberId)
             .Select(x => new SprintLeaderboardResultDto
             {
                 Name = x.First().MemberName,
@@ -214,6 +221,12 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
                 return x;
             })
             .OrderBy(x => x.Position);
+    }
+
+    public async Task<string> GetSprintTotalLeaderboardTableAsync(IEnumerable<SprintLeaderboardRowDto> races)
+    {
+        var p = 1;
+        var result = await GetSprintTotalLeaderboardAsync(new GetSprintLeaderboardRowsParams());
 
         var table =
             $@"[div style=""overflow:auto;""][table style='border-collapse: collapse;font-family: arial, sans-serif;']
@@ -357,6 +370,30 @@ The total leaderboard points are the sum of the points given in each track leade
         report.LeaderBoardJson = JsonConvert.SerializeObject(allRaces);
         return report;
     }
+
+    public async Task<IOrderedEnumerable<GroupedSprintLeaderboardRowsDto>> GetSprintLeaderboardByTrack(GetSprintLeaderboardRowsParams p)
+    {
+        var runs = await GetSprintLeaderboardRowsAsync(p);
+        return runs.GroupBy(x => x.TrackName).Select(x => new GroupedSprintLeaderboardRowsDto
+        {
+            Name = x.Key,
+            Rows = x.OrderBy(y => y.Position)
+                .ThenByDescending(y => y.RunDate ?? DateTime.MinValue)
+        })
+        .OrderBy(x => x.Name);
+    }
+
+    public async Task<IOrderedEnumerable<GroupedSprintLeaderboardRowsDto>> GetSprintLeaderboardByMember(GetSprintLeaderboardRowsParams p)
+    {
+        var runs = await GetSprintLeaderboardRowsAsync(p);
+        return runs.GroupBy(x => x.MemberDisplayName).Select(x => new GroupedSprintLeaderboardRowsDto
+            {
+                Name = x.Key,
+                Rows = x.OrderBy(y => y.TrackName)
+            })
+            .OrderBy(x => x.Name);
+    }
+
 
     public async Task<SprintRunDTO> GetSprintRunFromTemplateAsync(string template, string postUrl)
     {
@@ -729,7 +766,7 @@ The total leaderboard points are the sum of the points given in each track leade
         return result;
     }
 
-    private class SprintLeaderboardResultDto
+    public class SprintLeaderboardResultDto
     {
         public required string Name { get; set; }
         public int Points { get; set; }

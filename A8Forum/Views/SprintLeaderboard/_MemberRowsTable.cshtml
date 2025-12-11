@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SprintLeaderboardRowDto>
+
+@{
+    var rows = Model?.ToList() ?? new List<SprintLeaderboardRowDto>();
+}
+
+@if (!rows.Any())
+{
+    <div class="alert alert-secondary mb-0">No data.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <!-- Track, Time, Run Date (dd.MM.yyyy), 🎦, Vehicle, VIP (blank if < 12) -->
+                    <th>Track</th>
+                    <th class="text-end" style="width: 140px;">Time</th>
+                    <th class="text-end" style="width: 160px;">Date</th>
+                    <th class="text-center" style="width: 100px;">Video</th>
+                    <th>Vehicle</th>
+                    <th class="text-end" style="width: 80px;">VIP</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in rows)
+            {
+
+                <tr>
+                    <td>@Html.DisplayFor(x => r.TrackName)</td>
+
+                        <td class="text-end"><a href="@r.PostUrl" target="_blank">@r.TimeString</a></td>
+
+                    <td class="text-end">
+                        @(r.RunDate.HasValue ? r.RunDate.Value.ToString("dd.MM.yyyy") : "")
+                    </td>
+
+                    <td class="text-center">
+                        @if (!string.IsNullOrWhiteSpace(r.MediaLink))
+                        {
+                                <a href="@r.MediaLink" target="_blank">🎦</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted"></span>
+                        }
+                    </td>
+
+                    <td>
+                        <a href ="@r.VehicleUrl" target="_blank">@r.VehicleName</a>
+                    </td>
+
+                    <td class="text-end">
+                        @if (r.Vip >= 12)
+                        {
+                            @r.Vip
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

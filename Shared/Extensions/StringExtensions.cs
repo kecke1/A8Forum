@@ -1,4 +1,7 @@
-﻿namespace Shared.Extensions;
+﻿using F23.StringSimilarity;
+using Shared.Params;
+
+namespace Shared.Extensions;
 
 public static class StringExtensions
 {
@@ -50,4 +53,27 @@ public static class StringExtensions
     {
         return bbCode.Replace("[", "<").Replace("]", ">");
     }
+
+    public static string Match(IEnumerable<string> items, string input, ClosestMatchParams p)
+    {
+        var distance = double.MaxValue;
+        var result = "";
+        var lcs = new LongestCommonSubsequence();
+
+        foreach (var t in items
+                     .Where(x => (!p.MatchFirstCharachter || x.StartsWith(input.First().ToString(), p.MatchCase ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase))
+                                 && (!p.MatchLastCharachter || x.EndsWith(input.Last().ToString(), p.MatchCase ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase))
+                                 && (!p.ContainsRev || input.Contains("rev", p.MatchCase ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase) == x.Contains("rev", p.MatchCase ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase))))
+        {
+            var d = lcs.Distance(p.MatchCase ? t : t.ToLower(), p.MatchCase ? input : input.ToLower());
+            if (d < distance)
+            {
+                distance = d;
+                result = t;
+            }
+        }
+
+        return result;
+    }
+
 }
