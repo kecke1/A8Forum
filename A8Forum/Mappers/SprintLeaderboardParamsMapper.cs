@@ -11,7 +11,8 @@ namespace A8Forum.Mappers
             {
                 MinVipLevel = f.VipLevelMin ?? 0,
                 MaxVipLevel = f.VipLevelMax ?? 15,
-                Date = f.UseLeaderboardDate ? f.LeaderboardDate : null
+                Date = f.UseLeaderboardDate ? f.LeaderboardDate : null,
+                IncludeFilteredOutVipMembers = f.IncludeFilteredVipRuns
             };
         }
     }

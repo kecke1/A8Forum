@@ -1,86 +1,220 @@
-﻿@model LeaderboardViewModel
-
+﻿@model A8Forum.ViewModels.GauntletLeaderboardViewModel
 @{
     ViewData["Title"] = "Gauntlet Leaderboard";
+    var active = (Model.Filter.ActiveTab ?? "total").ToLowerInvariant();
+    bool totalActive = active == "total";
+    bool byTrackActive = active == "bytrack";
+    bool bestLapsActive = active == "bestlaps";
 }
 
-<h1>Index</h1>
+<h2>Gauntlet Leaderboard</h2>
 
-<p>
-    <a asp-action="Runs">Gauntlet runs (former leaderboard)</a>
-</p>
+<div class="row">
+    <a href="/GauntletLeaderboard/Runs">All gauntlet runs table</a>
+</div>
 
+<!-- noUiSlider CSS (CDN) -->
+<link rel="stylesheet" href="/lib/nouislider/nouislider.min.css" />
 
-<form asp-action="Index" method="get">
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" asp-for="NonVip" onchange="this.form.submit(); "/>
-        <label class="form-check-label">@Html.DisplayNameFor(model => model.NonVip)</label>
-    </div>
-      
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" asp-for="Vip12" onchange="this.form.submit(); "/>
-        <label class="form-check-label">@Html.DisplayNameFor(model => model.Vip12)</label>
-    </div>
-    
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" asp-for="Vip13" onchange="this.form.submit(); "/>
-        <label class="form-check-label">@Html.DisplayNameFor(model => model.Vip13)</label>
-    </div>
-    
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" asp-for="Vip14" onchange="this.form.submit(); "/>
-        <label class="form-check-label">@Html.DisplayNameFor(model => model.Vip14)</label>
-    </div>
-    
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" asp-for="Vip15" onchange="this.form.submit(); "/>
-        <label class="form-check-label">@Html.DisplayNameFor(model => model.Vip15)</label>
+<form method="get" asp-action="Index" class="row g-3eTab" id="Filter_Form">
+    <!-- VIP Level: noUiSlider dual handle -->
+
+    <input asp-for="Filter.ActiveTab" type="hidden" id="Filter_ActiveTab" />
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <label class="form-label d-flex align-items-center justify-content-between">
+                <span>VIP Levels</span>
+            </label>
+
+            <!-- Slider container -->
+            <div id="vipSlider" class="vip-nouislider mb-2"></div>
+
+            <!-- Hidden fields bound to model (kept for server binding) -->
+            <input asp-for="Filter.VipLevelMin" type="hidden" id="Filter_VipLevelMin" />
+            <input asp-for="Filter.VipLevelMax" type="hidden" id="Filter_VipLevelMax" />
+
+            <!-- Removed elements as requested:
+            - span#vipMinLabel, span#vipMaxLabel
+            - input#vipMinNumber, input#vipMaxNumber
+            -->
+
+            <span asp-validation-for="Filter.VipLevelMin" class="text-danger"></span>
+            <span asp-validation-for="Filter.VipLevelMax" class="text-danger"></span>
+        </div>
     </div>
 
+    <div class="row">
+        <div class="col-12 col-md-3 mt-3">
+            <div class="form-check mt-4">
+                <input asp-for="Filter.IncludeFilteredVipRuns"
+                       class="form-check-input"
+                       id="Filter_IncludeFilteredVipRuns" />
+                <label class="form-check-label" for="Filter_IncludeFilteredVipRuns">
+                    Include runs from filtered out VIP members
+                </label>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 mt-3">
+            <div class="form-check mt-4">
+                <input asp-for="Filter.IncludeUnverifiedRuns"
+                       class="form-check-input"
+                       id="Filter_IncludeUnverifiedRuns" />
+                <label class="form-check-label" for="Filter_IncludeUnverifiedRuns">
+                    Include unverified runs
+                </label>
+            </div>
+        </div> 
+
+    </div>
+    <div class="col-12 col-md-3 mt-3">
+        <div class="form-check form-switch mt-4">
+
+            <input asp-for="Filter.UseLeaderboardDate" class="form-check-input" id="Filter_UseLeaderboardDate" />
+            <label class="form-check-label" for="Filter_UseLeaderboardDate">Set Leaderboard Date</label>
+            <input asp-for="Filter.LeaderboardDate" type="date" class="form-control" id="Filter_LeaderboardDate" />
+        </div>
+    </div>
+
+    <div class="col-12 d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+            <span class="me-1">🔎</span> Apply filters
+        </button>
+    </div>
 </form>
 
+<!-- TABS (added mt-3 for extra space above tabs) -->
+<ul class="nav nav-tabs mt-3" id="leaderboardTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(totalActive ? "active" : "")"
+                id="tab-total-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-total"
+                type="button"
+                role="tab"
+                aria-controls="tab-total"
+                aria-selected="@(totalActive ? "true" : "false")"
+                data-tab-key="total">
+            Total Leaderboard
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(byTrackActive ? "active" : "")"
+                id="tab-bytrack-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-bytrack"
+                type="button"
+                role="tab"
+                aria-controls="tab-bytrack"
+                aria-selected="@(byTrackActive ? "true" : "false")"
+                data-tab-key="byTrack">
+            Leaderboard By Track
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(bestLapsActive ? "active" : "")"
+                id="tab-bestlaps-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-bestlaps"
+                type="button"
+                role="tab"
+                aria-controls="tab-bestlaps"
+                aria-selected="@(bestLapsActive ? "true" : "false")"
+                data-tab-key="bestLaps">
+            Best Lap Times
+        </button>
+    </li>
+</ul>
+<div class="tab-content mt-3">
+    <!-- TOTAL TAB -->
+    <div class="tab-pane fade @(totalActive ? "show active" : "")" id="tab-total" role="tabpanel" aria-labelledby="tab-total-tab">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+        </div>
 
-<div class="accordion" id="leaderboardAccordion">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingTotalLeaderboard">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Total Leaderboard
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#leaderboardAccordion">
-            <div class="accordion-body">
-                This is the total leaderboard
-            </div>
-        </div>
+        @await Html.PartialAsync("~/Views/GauntletLeaderboard/_TotalResultsTable.cshtml", Model.TotalResults)
     </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingLeaderboardByTrack">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Leaderboards By Track
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#leaderboardAccordion">
-            <div class="accordion-body">
-                This is the leaderboards by tracks
+
+    <!-- BY TRACK TAB (dropdown + client-side show/hide) -->
+    <div class="tab-pane fade @(byTrackActive ? "show active" : "")" id="tab-bytrack" role="tabpanel" aria-labelledby="tab-bytrack-tab">
+        @if (!Model.ByTrackGroups.Any())
+        {
+            <div class="alert alert-info">No results for the current filters.</div>
+        }
+        else
+        {
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-md-6">
+                    <label for="byTrackSelect" class="form-label">Select Track</label>
+                    <select id="byTrackSelect" class="form-select">
+                        @for (var i = 0; i < Model.ByTrackGroups.Count(); i++)
+                        {
+                            var g = Model.ByTrackGroups.ElementAt(i);
+                            <option value="@i">@g.Name</option>
+                        }
+                    </select>
+                </div>
             </div>
-        </div>
+
+            @for (var i = 0; i < Model.ByTrackGroups.Count(); i++)
+            {
+                var g = Model.ByTrackGroups.ElementAt(i);
+                var isFirst = i == 0; // fallback: first when no saved selection
+                                      <div class="track-group-table @(isFirst ? "" : "d-none")"
+                                           data-tab="byTrack" data-index="@i" data-name="@g.Name">
+                                          <div class="d-flex justify-content-between align-items-center mb-2">
+                                          </div>
+
+                    @await Html.PartialAsync("~/Views/GauntletLeaderboard/_TrackRowsTable.cshtml", g.Rows)
+                </div>
+            }
+        }
     </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingThree">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Best Lap Times
-            </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#leaderboardAccordion">
-            <div class="accordion-body">
-                This is the best lap times
+
+    <!-- BEST LAP TIMES TAB (dropdown + client-side show/hide) -->
+    <div class="tab-pane fade @(bestLapsActive ? "show active" : "")" id="tab-bestlaps" role="tabpanel" aria-labelledby="tab-bestlaps-tab">
+        @if (!Model.BestLapGroups.Any())
+        {
+            <div class="alert alert-info">No lap times for the current filters.</div>
+        }
+        else
+        {
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-md-6">
+                    <label for="byMemberSelect" class="form-label">Select Member</label>
+                    <select id="byMemberSelect" class="form-select">
+                        @for (var i = 0; i < Model.BestLapGroups.Count(); i++)
+                        {
+                            var g = Model.BestLapGroups.ElementAt(i);
+                            <option value="@i">@g.Name</option>
+                        }
+                    </select>
+                </div>
             </div>
-        </div>
+
+            @for (var i = 0; i < Model.BestLapGroups.Count(); i++)
+            {
+                var g = Model.BestLapGroups.ElementAt(i);
+                var isFirst = i == 0; // fallback: first when no saved selection
+                                      <div class="member-group-table @(isFirst ? "" : "d-none")"
+                                           data-tab="bestLaps" data-index="@i" data-name="@g.Name">
+                                          <div class="d-flex justify-content-between align-items-center mb-2">
+                                          </div>
+
+                    @* Columns: Track, Time, Run Date (dd.MM.yyyy), 🎦, Vehicle (linked), VIP blank if < 12 *@
+                    @await Html.PartialAsync("~/Views/GauntletLeaderboard/_MemberRowsTable.cshtml", g.Rows)
+                </div>
+            }
+        }
     </div>
 </div>
 
 @section Scripts {
+    <!-- noUiSlider JS (CDN) -->
+    <script src="/lib/nouislider/nouislider.min.js"></script>
+    <script src="/js/leaderboard.js"></script>
+
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
 }

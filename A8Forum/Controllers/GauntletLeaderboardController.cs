@@ -1,12 +1,14 @@
-using System.Diagnostics;
 using A8Forum.Dto;
 using A8Forum.Extensions;
+using A8Forum.Mappers;
 using A8Forum.ViewModels;
 using HtmlTableHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Shared.Dto;
 using Shared.Params;
 using Shared.Services;
+using System.Diagnostics;
 
 namespace A8Forum.Controllers;
 
@@ -19,11 +21,37 @@ public class GauntletLeaderboardController(ILogger<GauntletLeaderboardController
 
     [HttpPost]
     [HttpGet]
-    public async Task<IActionResult> Index(LeaderboardViewModel? model)
+    public async Task<IActionResult> Index([FromQuery] GauntletLeaderboardFilterInput filter)
     {
+        var param = GauntletLeaderboardParamsMapper.ToParams(filter);
 
+        // TOTAL
+        var totalOrdered = await gauntletService.GetGauntletTotalLeaderboardAsync(param);
+        var total = totalOrdered?.ToList() ?? new List<GauntletService.GauntletLeaderboardResultDto>();
 
-        return View(model);
+        // BY TRACK
+        var byTrackOrdered = await gauntletService.GetGauntletLeaderboardByTrack(param);
+        var byTrackGroups = byTrackOrdered?.ToList() ?? new List<GroupedGauntletLeaderboardRowsDto>();
+
+        // BY MEMBER (Best Lap Times)
+        var byMemberOrdered = await gauntletService.GetGauntletLeaderboardByMember(param);
+        var bestLapGroups = byMemberOrdered?.ToList() ?? new List<GroupedGauntletLeaderboardRowsDto>();
+
+        var vm = new GauntletLeaderboardViewModel
+        {
+            Filter = filter,
+
+            TotalResults = total,
+            TotalCount = total.Count,
+
+            ByTrackGroups = byTrackGroups,
+            ByTrackCount = byTrackGroups.Sum(g => g.Rows.Count()),
+
+            BestLapGroups = bestLapGroups,
+            BestLapCount = bestLapGroups.Sum(g => g.Rows.Count())
+        };
+
+        return View(vm);
     }
 
     [HttpPost]

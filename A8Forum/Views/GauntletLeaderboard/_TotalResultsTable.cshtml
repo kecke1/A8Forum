@@ -1,0 +1,41 @@
+﻿@using Shared.Services
+@model IEnumerable<Shared.Services.GauntletService.GauntletLeaderboardResultDto>
+
+@{
+    var rows = Model?.ToList() ?? new List<GauntletService.GauntletLeaderboardResultDto>();
+}
+
+@if (!rows.Any())
+{
+    <div class="alert alert-secondary mb-0">No results for the current filters.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+                <th class="text-center" style="width: 90px;">Pos</th>
+                <th class="text-end" style="width: 120px;">Points</th>
+                <th>Name</th>
+                <th class="text-end" style="width: 160px;">No of Tracks</th>
+                <th class="text-end" style="width: 140px;">Avg Points/Track</th>
+                <th class="text-end" style="width: 160px;">#1 Pos.</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in rows)
+            {
+                <tr>
+                    <td class="text-center fw-semibold">@r.Position</td>
+                    <td class="text-end fw-semibold">@r.Points</td>
+                    <td>@r.Name</td>
+                    <td class="text-end">@r.NumberOfTracks</td>
+                    <td class="text-end">@r.AvgPoints.ToString("0.0")</td>
+                    <td class="text-end">@r.NumberOfFirstPositions</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

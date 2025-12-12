@@ -7,4 +7,5 @@ public class GetGauntletLeaderboardRowsParams
     public bool IncludeVerified { get; set; } = true;
     public bool IncludeUnverified { get; set; }
     public DateTime? Date { get; set; }
+    public bool IncludeFilteredOutVipMembers { get; set; } = false;
 }

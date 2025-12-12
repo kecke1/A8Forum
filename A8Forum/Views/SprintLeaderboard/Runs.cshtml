@@ -13,7 +13,12 @@
 
 }
 
+<div class="row">
+    <a href="/SprintLeaderboard/Index">Sprint leaderboard</a>
+</div>
+<div class="row">
 <a href="/SprintLeaderboard/Schedule">Schedule of upcoming sprints</a>
+</div>
 <form>
     <div class="row">
         <div class="col-md-4">
@@ -32,7 +37,7 @@
         </div>
     </div>
 </form>
-<form asp-action="Index" method="get">
+<form asp-action="Runs" method="get">
     <input type="hidden" asp-for="Names" id="selectedNames" />
     <input type="hidden" asp-for="Tracks" id="selectedTracks" />
     <div class="row">
@@ -87,12 +92,8 @@
                 },
                 columnDefs: [
                     {
-                        title: 'Pos.',
-                        targets: 1
-                    },
-                    {
                         title: 'Vehicle',
-                        targets: 6
+                        targets: 5
                     }
                 ]
             });
@@ -133,7 +134,7 @@
                  return '^' + x.id + '$';
              }).join('|');
 
-             table.column(2).search(names, true, false, false).draw(false);
+             table.column(1).search(names, true, false, false).draw(false);
 
              setQuerystringValue("Tracks", jQuery.map(trackData, function (x) {
                 return x.id;
@@ -173,7 +174,7 @@
                 return '^' + x.id + '$';
             }).join('|');
 
-            table.column(3).search(names, true, false, false).draw(false);
+            table.column(2).search(names, true, false, false).draw(false);
         }
 
         function setQuerystringValue(key, value) {

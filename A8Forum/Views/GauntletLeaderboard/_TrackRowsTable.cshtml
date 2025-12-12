@@ -1,0 +1,99 @@
+﻿@model IEnumerable<GauntletLeaderboardRowDto>
+
+@{
+    var rows = Model?.ToList() ?? new List<GauntletLeaderboardRowDto>();
+    var showVehicle4 = rows.Any(x => !string.IsNullOrEmpty(x.VehicleName4));
+    var showVehicle5 = rows.Any(x => !string.IsNullOrEmpty(x.VehicleName5));
+}
+
+@if (!rows.Any())
+{
+    <div class="alert alert-secondary mb-0">No data.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <!-- Position, MemberName, TimeString, Run Date (dd.MM.yyyy), 🎦, Vehicle -->
+                    <th>✅</th>
+                    <th class="text-center" style="width: 90px;">Pos.</th>
+                    <th>Name</th>
+                    <th class="text-end" style="width: 140px;">Time</th>
+                    <th class="text-end" style="width: 160px;">Date</th>
+                    <th class="text-center" style="width: 100px;">Video</th>
+                    <th>Vehicle 1</th>
+                    <th>Vehicle 2</th>
+                    <th>Vehicle 3</th>
+                    @if (showVehicle4)
+                    {
+                        <th>Vehicle 4</th>
+                    }
+                    @if (showVehicle5)
+                    {
+                        <th>Vehicle 5</th>
+                    }
+                    <th class="text-end" style="width: 80px;">VIP</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in rows)
+            {
+                <tr>
+                    <td> @(r.LapTimeVerified ? "✅" : "")</td>
+                    <td class="text-center fw-semibold">@r.Position</td>
+
+                    <td>@r.MemberDisplayName</td>
+
+                    <td class="text-end"><a href="@r.PostUrl" target="_blank">@r.TimeString</a></td>
+
+                    <td class="text-end">
+                        @(r.RunDate.HasValue ? r.RunDate.Value.ToString("dd.MM.yyyy") : "")
+                    </td>
+
+                    <td class="text-center">
+                        @if (!string.IsNullOrWhiteSpace(r.MediaLink))
+                        {
+                            <a href="@r.MediaLink" target="_blank">🎦</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted"></span>
+                        }
+                    </td>
+
+                    <td>
+                        <a href="@r.VehicleUrl1" target="_blank">@r.VehicleName1</a>
+                    </td>
+                    <td>
+                        <a href="@r.VehicleUrl2" target="_blank">@r.VehicleName2</a>
+                    </td>
+                    <td>
+                        <a href="@r.VehicleUrl3" target="_blank">@r.VehicleName3</a>
+                    </td>
+                    
+                    @if (showVehicle4)
+                    {
+                        <td>
+                            <a href="@r.VehicleUrl4" target="_blank">@r.VehicleName4</a>
+                        </td>
+                    }
+                    @if (showVehicle5)
+                    {
+                        <td>
+                            <a href="@r.VehicleUrl5" target="_blank">@r.VehicleName5</a>
+                        </td>
+                    }
+                    <td class="text-end">
+                        @if (r.VipLevel.HasValue && r.VipLevel >= 12)
+                        {
+                            @r.VipLevel
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

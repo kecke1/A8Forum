@@ -1,5 +1,6 @@
 ﻿using Shared.Dto;
 using Shared.Params;
+using static Shared.Services.GauntletService;
 
 namespace Shared.Services;
 
@@ -28,4 +29,13 @@ public interface IGauntletService
     public Task<GauntletReportDTO> GetGauntletReportAsync();
 
     public Task<GauntletRunDTO> GetGauntletRunFromTemplateAsync(string template, string postUrl);
+
+    public Task<IOrderedEnumerable<GroupedGauntletLeaderboardRowsDto>> GetGauntletLeaderboardByTrack(
+        GetGauntletLeaderboardRowsParams p);
+
+    public Task<IOrderedEnumerable<GroupedGauntletLeaderboardRowsDto>> GetGauntletLeaderboardByMember(
+        GetGauntletLeaderboardRowsParams p);
+
+    public Task<IOrderedEnumerable<GauntletLeaderboardResultDto>> GetGauntletTotalLeaderboardAsync(
+        GetGauntletLeaderboardRowsParams param);
 }

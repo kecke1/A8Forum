@@ -16,7 +16,6 @@ public static class SprintLeaderboardRowDtoExtensions
                 {
                     Date = x.RunDate?.ToString("dd.MM.yyyy") ?? "",
                     Name = x.MemberDisplayName,
-                    Pos = x.Position.ToString(),
                     Time = GetATag(x.TimeString, x.PostUrl),
                     Track = x.TrackName,
                     Vehicle = GetATag(x.VehicleName, x.VehicleUrl),
@@ -34,7 +33,6 @@ public static class SprintLeaderboardRowDtoExtensions
             {
                 Date = x.RunDate?.ToString("dd.MM.yyyy") ?? "",
                 Name = x.Member.MemberDisplayName,
-                Pos = "",
                 Time = GetATag(x.Time.ToTimeString(), x.PostUrl),
                 Track = x.Track.TrackName,
                 Vehicle = GetATag(x.Vehicle.Name, x.Vehicle.Url),

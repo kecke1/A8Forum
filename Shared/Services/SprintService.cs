@@ -38,7 +38,7 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
     public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(GetSprintLeaderboardRowsParams param)
     {
         var allRuns = (await GetSprintRunsAsync())
-            .Where(x => !x.Deleted && (!param.Date.HasValue || !x.RunDate.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
+            .Where(x => !x.Deleted && (!param.Date.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
                                        (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
             .ToList();
 
@@ -203,7 +203,7 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
         return runs.GroupBy(x => x.MemberId)
             .Select(x => new SprintLeaderboardResultDto
             {
-                Name = x.First().MemberName,
+                Name = x.First().MemberDisplayName,
                 Points = x.Sum(y => y.PositionPoints),
                 Position = 0,
                 NumberOfTracks = x.Count(),

@@ -10,6 +10,7 @@ using Shared.Models;
 using Shared.Options;
 using Shared.Params;
 using System.Text;
+using static Shared.Services.SprintService;
 
 namespace Shared.Services;
 
@@ -34,31 +35,28 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
 
     public async Task<IOrderedEnumerable<GauntletLeaderboardRowDto>> GetGauntletLeaderboardRowsAsync(GetGauntletLeaderboardRowsParams param)
     {
-        var races = (await GetGauntletRunsAsync())
-            .Where(x => !x.Deleted);
+        var allRuns = (await GetGauntletRunsAsync())
+            .Where(x => !x.Deleted   
+                        && (param.IncludeUnverified || x.LapTimeVerified)
+            && (!param.Date.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
+                                       (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
+            .ToList();
 
-         races = races
+        var runs = allRuns
             .Where(x => (x.VipLevel ?? 0) <= param.MaxVipLevel && (x.VipLevel ?? 0) >= param.MinVipLevel);
 
-        if (param.Date.HasValue)
+
+        if (!param.IncludeFilteredOutVipMembers)
         {
-            races = races.Where(x =>
-                (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
-                (x.RunDate.HasValue && x.RunDate.Value <= param.Date));
+            var filteredVipMembers = allRuns.Where(x => (x.VipLevel ?? 0) > param.MaxVipLevel)
+                .Select(x => x.Member.Id)
+                .Distinct()
+                .ToArray();
+
+            runs = runs.Where(x => !filteredVipMembers.Contains(x.Member.Id));
         }
 
-        if (!param.IncludeUnverified)
-        {
-            races = races.Where(x => x.LapTimeVerified);
-        }
-
-        if (!param.IncludeVerified)
-        {
-            races = races.Where(x => !x.LapTimeVerified);
-        }
-
-
-        var q = races
+        var q = runs
             .GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
             .Select(x =>
             {
@@ -431,6 +429,57 @@ The total leaderboard points are the sum of the points given in each track leade
         return r;
     }
 
+    public async Task<IOrderedEnumerable<GroupedGauntletLeaderboardRowsDto>> GetGauntletLeaderboardByTrack(GetGauntletLeaderboardRowsParams p)
+    {
+        var runs = await GetGauntletLeaderboardRowsAsync(p);
+        return runs.GroupBy(x => x.TrackName).Select(x => new GroupedGauntletLeaderboardRowsDto
+            {
+                Name = x.Key,
+                Rows = x.OrderBy(y => y.Position)
+                    .ThenByDescending(y => y.RunDate ?? DateTime.MinValue)
+            })
+            .OrderBy(x => x.Name);
+    }
+
+    public async Task<IOrderedEnumerable<GroupedGauntletLeaderboardRowsDto>> GetGauntletLeaderboardByMember(GetGauntletLeaderboardRowsParams p)
+    {
+        var runs = await GetGauntletLeaderboardRowsAsync(p);
+        return runs.GroupBy(x => x.MemberDisplayName).Select(x => new GroupedGauntletLeaderboardRowsDto()
+            {
+                Name = x.Key,
+                Rows = x.OrderBy(y => y.TrackName)
+            })
+            .OrderBy(x => x.Name);
+    }
+
+    public async Task<IOrderedEnumerable<GauntletLeaderboardResultDto>> GetGauntletTotalLeaderboardAsync(GetGauntletLeaderboardRowsParams param)
+    {
+        var runs = await GetGauntletLeaderboardRowsAsync(param);
+
+        var p = 1;
+        return runs.GroupBy(x => x.MemberId)
+            .Select(x => new GauntletLeaderboardResultDto
+            {
+                Name = x.First().MemberDisplayName,
+                Points = x.Sum(y => y.PositionPoints),
+                Position = 0,
+                NumberOfTracks = x.Count(),
+                AvgPoints = x.Any() ? x.Sum(y => y.PositionPoints) / Convert.ToDouble(x.Count()) : 0,
+                NumberOfFirstPositions = x.Count(y => y.Position == 1)
+            })
+            .GroupBy(x => x.Points, y => y)
+            .OrderByDescending(x => x.Key)
+            .SelectMany((x, i) =>
+            {
+                foreach (var r in x)
+                    r.Position = p;
+
+                p += x.Count();
+                return x;
+            })
+            .OrderBy(x => x.Position);
+    }
+
 
     private string? GetValueFromTemplate(string key, string template)
     {
@@ -631,7 +680,7 @@ The total leaderboard points are the sum of the points given in each track leade
         return result;
     }
 
-    private class GauntletLeaderboardResultDto
+    public class GauntletLeaderboardResultDto
     {
         public required string Name { get; set; }
         public int Points { get; set; }

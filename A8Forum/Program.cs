@@ -191,6 +191,6 @@ app.MapRazorPages();
 
 app.MapControllerRoute(
     "default",
-    "{controller=GauntletLeaderboard}/{action=Runs}/{id?}");
+    "{controller=GauntletLeaderboard}/{action=Index}/{id?}");
 
 app.Run();

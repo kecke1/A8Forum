@@ -53,7 +53,11 @@
                                 <li>
                                     <a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Runs">Gauntlet Table</a>
                                 </li>
-                            </ul>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Index">Gauntlet Leaderboard</a>
+                                    </li>
+
+                                </ul>
                         </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link text-dark dropdown-toggle" href="#" id="sprintFcDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Sprint FC</a>
@@ -126,7 +130,7 @@
                     }
                     else {
                     <li class="nav-item">
-                        <a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Runs">Gauntlet FC</a>
+                        <a class="dropdown-item text-dark" asp-area="" asp-controller="GauntletLeaderboard" asp-action="Index">Gauntlet FC</a>
                     </li>
                     <li class="nav-item">
                             <a class="dropdown-item text-dark" asp-area="" asp-controller="SprintLeaderboard" asp-action="Index">Sprint FC</a>

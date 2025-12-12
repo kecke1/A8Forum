@@ -16,7 +16,6 @@ public static class GauntletLeaderboardRowDtoExtensions
                 {
                     Date = x.RunDate?.ToString("dd.MM.yyyy") ?? "",
                     Name = x.MemberDisplayName,
-                    Pos = x.Position.ToString(),
                     Time = GetATag(x.TimeString, x.PostUrl),
                     Track = x.TrackName,
                     Vehicle1 = GetATag(x.VehicleName1, x.VehicleUrl1),
@@ -40,7 +39,6 @@ public static class GauntletLeaderboardRowDtoExtensions
             {
                 Date = x.RunDate?.ToString("dd.MM.yyyy") ?? "",
                 Name = x.Member.MemberDisplayName,
-                Pos = "",
                 Time = GetATag(x.Time.ToTimeString(), x.PostUrl),
                 Track = x.Track.TrackName,
                 Vehicle1 = GetATag(x.Vehicle1.Name, x.Vehicle1.Url),

@@ -61,3 +61,28 @@ body { margin-bottom: 60px; }
     .vip-nouislider .noUi-handle:focus-visible {
         box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
     }
+
+
+/* Ensure the slider reserves space for its pips and doesn't overlap the next control */
+#vipSlider {
+    /* Increase bottom margin to make room for pips (adjust to taste) */
+    margin-bottom: 2.25rem; /* ~36px; enough to clear pips */
+    position: relative; /* ensure pips are positioned relative to the slider */
+}
+
+    /* Size hint for pips (horizontal); helps layout consistency */
+    #vipSlider .noUi-pips {
+        height: 32px; /* typical pip height */
+    }
+
+    /* Prevent pips/markers/labels from stealing clicks */
+    #vipSlider .noUi-pips,
+    #vipSlider .noUi-marker,
+    #vipSlider .noUi-value {
+        pointer-events: none;
+    }
+
+    /* Optional: slightly smaller pip labels to reduce vertical footprint */
+    #vipSlider .noUi-value {
+        font-size: 0.85rem;
+    }

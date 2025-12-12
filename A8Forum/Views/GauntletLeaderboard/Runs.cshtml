@@ -87,28 +87,24 @@
                         targets: 0
                     },
                     {
-                        title: 'Pos.',
-                        targets: 2
-                    },
-                    {
                         title: 'Vehicle 1',
-                        targets: 7
+                        targets: 6
                     },
                     {
                         title: 'Vehicle 2',
-                        targets: 8
+                        targets: 7
                     },
                     {
                         title: 'Vehicle 3',
-                        targets: 9
+                        targets: 8
                     },
                     {
                         title: 'Vehicle 4',
-                        targets: 10
+                        targets: 9
                     },
                     {
                         title: 'Vehicle 5',
-                        targets: 11
+                        targets: 10
                     },
                     {
                         title: 'VIP',
@@ -153,7 +149,7 @@
                  return '^' + x.id + '$';
              }).join('|');
 
-             table.column(3).search(names, true, false, false).draw(false);
+             table.column(2).search(names, true, false, false).draw(false);
 
              setQuerystringValue("Tracks", jQuery.map(trackData, function (x) {
                 return x.id;
@@ -187,7 +183,7 @@
                 return '^' + x.id + '$';
             }).join('|');
 
-            table.column(1).search(tracks, true, false, false).draw(false);
+            table.column(2).search(tracks, true, false, false).draw(false);
 
             var names = jQuery.map(nameData, function (x) {
                 return '^' + x.id + '$';
