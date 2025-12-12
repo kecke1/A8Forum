@@ -1,4 +1,5 @@
-﻿using F23.StringSimilarity;
+﻿using System.Security.Cryptography.X509Certificates;
+using F23.StringSimilarity;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Azure.CosmosRepository;
 using Microsoft.Extensions.Options;
@@ -42,13 +43,15 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
                                        (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
             .ToList();
 
+        var maxVip = param.MaxVipLevel < 13 ? 12 : param.MaxVipLevel;
+
         var runs = allRuns
-            .Where(x => (x.VipLevel ?? 0) <= param.MaxVipLevel && (x.VipLevel ?? 0) >= param.MinVipLevel);
+            .Where(x => (x.VipLevel ?? 0) <= maxVip && (x.VipLevel ?? 0) >= param.MinVipLevel);
 
 
         if (!param.IncludeFilteredOutVipMembers)
         {
-            var filteredVipMembers = allRuns.Where(x => (x.VipLevel ?? 0) > param.MaxVipLevel)
+            var filteredVipMembers = allRuns.Where(x => (x.VipLevel ?? 0) > maxVip)
                 .Select(x => x.Member.Id)
                 .Distinct()
                 .ToArray();
