@@ -7,13 +7,14 @@
     bool bestLapsActive = active == "bestlaps";
 }
 
-<h2>Gauntlet Leaderboard</h2>
+<div class="container-fluid px-3">
+    <h2>Gauntlet Leaderboard</h2>
 
-<div class="row">
-    <a href="/GauntletLeaderboard/Runs">All gauntlet runs table</a>
-</div>
+    <div class="row">
+        <a href="/GauntletLeaderboard/Runs">All gauntlet runs table</a>
+    </div>
 
-<!-- noUiSlider CSS (CDN) -->
+    <!-- noUiSlider CSS (CDN) -->
 <link rel="stylesheet" href="/lib/nouislider/nouislider.min.css" />
 
 <form method="get" asp-action="Index" class="row g-3eTab" id="Filter_Form">
@@ -206,7 +207,7 @@
         }
     </div>
 </div>
-
+</div>
 @section Scripts {
     <!-- noUiSlider JS (CDN) -->
     <script src="/lib/nouislider/nouislider.min.js"></script>

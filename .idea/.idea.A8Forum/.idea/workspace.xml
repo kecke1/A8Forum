@@ -9,12 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19823197-b037-4409-ad56-920848af6eb8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/A8Forum/A8Forum.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/A8Forum.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/A8Forum/Migrations/20250414091251_InitIdentityDb.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/A8Forum/Migrations/20250414091251_InitIdentityDb.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/A8Forum/Migrations/A8ForumazurewebsitesnetContexModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/Migrations/A8ForumazurewebsitesnetContexModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/A8Forum/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.A8Forum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.A8Forum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/A8Forum/Views/GauntletLeaderboard/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/Views/GauntletLeaderboard/Index.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/A8Forum/Views/SprintLeaderboard/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/Views/SprintLeaderboard/Index.cshtml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +49,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2daf28f444a931539170211ca2938c578379fc27224b311defb481946de691d/SqliteException.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/46715d02725baedea5556e85aa740d0e02ce64d8a5d49955a9233cde9ec9e3d/Interop.IOErrors.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f9d2f95d72fa884d8b6ddefc717c56da3657fbb2d5fb683656c3589eb6587/Debugger.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/johan/RiderProjects/A8Forum/A8Forum/Views/GauntletLeaderboard/Index.cshtml" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -65,27 +63,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.A8Forum: http.executor": "Debug",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.language",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.A8Forum: http.executor&quot;: &quot;Debug&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.language&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.A8Forum: http">
     <configuration name="A8Forum: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/A8Forum/A8Forum.csproj" />
@@ -132,7 +130,8 @@
       <workItem from="1765823856924" duration="826000" />
       <workItem from="1765826148459" duration="2955000" />
       <workItem from="1765959658693" duration="4610000" />
-      <workItem from="1765966302379" duration="1401000" />
+      <workItem from="1765966302379" duration="2727000" />
+      <workItem from="1765980363119" duration="245000" />
     </task>
     <task id="LOCAL−00001" summary="Update packages&#10;mssql =&gt; sqlite">
       <option name="closed" value="true" />
@@ -148,7 +147,14 @@
       <option name="presentableId" value="LOCAL−00002" />
       <updated>1765960066316</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL−00003" summary="mssql -&gt; sqlite">
+      <option name="closed" value="true" />
+      <created>1765968580388</created>
+      <option name="number" value="LOCAL−00003" />
+      <option name="presentableId" value="LOCAL−00003" />
+      <updated>1765968580388</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,7 +189,8 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Update packages&#10;mssql =&gt; sqlite" />
     <MESSAGE value="commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="commit" />
+    <MESSAGE value="mssql -&gt; sqlite" />
+    <option name="LAST_COMMIT_MESSAGE" value="mssql -&gt; sqlite" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
