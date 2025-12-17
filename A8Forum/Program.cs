@@ -13,6 +13,10 @@ using Shared.Services;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+       builder.Configuration.AddJsonFile(
+            "appsettings.Local.json",
+             optional: true,
+             reloadOnChange: true);
 
 builder.Services.Configure<A8Options>(builder.Configuration);
 var options = builder.Configuration.Get<A8Options>();
@@ -21,7 +25,7 @@ bool.TryParse(options.SetupCosmosDb, out var setup);
 #if DEBUG
 
 builder.Services.AddDbContext<A8ForumazurewebsitesnetContex>(o =>
-    o.UseSqlServer(options.CosmosConnection));
+    o.UseSqlite(options.CosmosConnection));
 
 builder.Services.AddIdentity<A8ForumazurewebsitesnetUser, IdentityRole>(o => o.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<A8ForumazurewebsitesnetContex>()
