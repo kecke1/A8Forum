@@ -22,6 +22,14 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
 {
     private readonly string _vehiclesBaseUrl = options.Value.VehiclesBaseUrl;
 
+    private readonly ClosestMatchParams _closestMatchParams = new ClosestMatchParams
+    {
+        MatchFirstCharachter = true,
+        MatchLastCharachter = false,
+        MatchCase = false,
+        ContainsRev = true
+    };
+
     public async Task AddGauntletRunAsync(EditGauntletRunDTO r)
     {
         await gauntletRunRepository.CreateAsync(r.ToGauntletRunEntity());
@@ -290,12 +298,12 @@ The total leaderboard points are the sum of the points given in each track leade
                 A8Plus = false,
                 Time = cols[races.TimeColumn - 1].FromTimestringToInt(),
                 Track = tracks.First(x =>
-                    x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), cols[races.TrackColumn - 1])),
-                Vehicle1 = ClosestMatch(vehicles, v[0]),
-                Vehicle2 = ClosestMatch(vehicles, v[1]),
-                Vehicle3 = ClosestMatch(vehicles, v[2]),
-                Vehicle4 = v.Length > 3 ? ClosestMatch(vehicles, v[3]) : null,
-                Vehicle5 = v.Length > 4 ? ClosestMatch(vehicles, v[4]) : null,
+                    x.TrackName == cols[races.TrackColumn - 1].Match(tracks.Select(x => x.TrackName), _closestMatchParams)),
+                Vehicle1 = v[0].Match(vehicles),
+                Vehicle2 = v[1].Match(vehicles),
+                Vehicle3 = v[2].Match(vehicles),
+                Vehicle4 = v.Length > 3 ? v[3].Match(vehicles) : null,
+                Vehicle5 = v.Length > 4 ? v[4].Match(vehicles) : null,
                 RunDate = races.RunDateColumn != 0
                     ? DateTime.ParseExact(cols[races.RunDateColumn - 1].Trim(), races.RunDateFormat, null)
                     : null,
@@ -356,13 +364,12 @@ The total leaderboard points are the sum of the points given in each track leade
                 Time = GetValueFromTemplate("time", template)?.FromTimestringToInt() ?? 0,
                 Idate = DateTime.Now,
                 Track = tracks.FirstOrDefault(x =>
-                    x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName),
-                        GetValueFromTemplate("track", template))),
-                Vehicle1 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 1", template)),
-                Vehicle2 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 2", template)),
-                Vehicle3 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 3", template)),
-                Vehicle4 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 4", template)),
-                Vehicle5 = ClosestMatch(vehicles, GetValueFromTemplate("vehicle 5", template)),
+                    x.TrackName == GetValueFromTemplate("track", template)?.Match(tracks.Select(x => x.TrackName), _closestMatchParams)),
+                Vehicle1 = GetValueFromTemplate("vehicle 1", template)?.Match(vehicles),
+                Vehicle2 = GetValueFromTemplate("vehicle 2", template)?.Match(vehicles),
+                Vehicle3 = GetValueFromTemplate("vehicle 3", template)?.Match(vehicles),
+                Vehicle4 = GetValueFromTemplate("vehicle 4", template)?.Match(vehicles),
+                Vehicle5 = GetValueFromTemplate("vehicle 5", template)?.Match(vehicles),
                 Member = null,
                 PostUrl = postUrl,
                 RunDate = null,
@@ -402,7 +409,7 @@ The total leaderboard points are the sum of the points given in each track leade
 
         r.Time = templateRows[timeIndex].Trim().FromTimestringToInt();
         r.Track = tracks.FirstOrDefault(x =>
-            x.TrackName == ClosestMatch(tracks.Select(x => x.TrackName), templateRows[trackIndex]));
+            x.TrackName == templateRows[trackIndex].Match(tracks.Select(x => x.TrackName), _closestMatchParams));
 
         templateRows.RemoveRange(0,2);
 
@@ -413,20 +420,20 @@ The total leaderboard points are the sum of the points given in each track leade
             templateRows.RemoveAt(videoLinkIndex);
         }
 
-        r.Vehicle1 = ClosestMatch(vehicles, templateRows[0]);
-        r.Vehicle2 = ClosestMatch(vehicles, templateRows[1]);
-        r.Vehicle3 = ClosestMatch(vehicles, templateRows[2]);
+        r.Vehicle1 = templateRows[0].Match(vehicles);
+        r.Vehicle2 = templateRows[1].Match(vehicles);
+        r.Vehicle3 = templateRows[2].Match(vehicles);
 
         templateRows.RemoveRange(0,3);
 
         if (templateRows.Any())
         {
-            r.Vehicle4 = ClosestMatch(vehicles, templateRows[0]);
+            r.Vehicle4 = templateRows[0].Match(vehicles);
         }
 
         if (templateRows.Any() && templateRows.Count > 1)
         {
-            r.Vehicle5 = ClosestMatch(vehicles, templateRows[1]);
+            r.Vehicle5 = templateRows[1].Match(vehicles);
         }
 
         return r;
@@ -629,58 +636,6 @@ The total leaderboard points are the sum of the points given in each track leade
 
 [/table][/div]
 [/spoiler]";
-    }
-
-    private string ClosestMatch(IEnumerable<string> m, string s)
-    {
-        //var distance = int.MaxValue;//
-        var distance = double.MaxValue;
-        var result = "";
-        var lcs = new LongestCommonSubsequence();
-
-        foreach (var t in m)
-        {
-            var d = lcs.Distance(t.ToLower(), s.ToLower());
-            // var d = Fastenshtein.Levenshtein.Distance(t, s);
-            if (d < distance)
-            {
-                distance = d;
-                result = t;
-            }
-        }
-
-        return result;
-    }
-
-    private VehicleDTO? ClosestMatch(IEnumerable<VehicleDTO> vehicles, string? s)
-    {
-        if (s == null)
-            return null;
-        //var distance = int.MaxValue;//
-        var distance = double.MaxValue;
-        var result = vehicles.First();
-        var lcs = new LongestCommonSubsequence();
-
-        foreach (var v in vehicles)
-        {
-            var shortest = lcs.Distance(v.ShortName.ToLower(), s.ToLower());
-
-            foreach (var d in v.Keyword.Split(';').Where(x => !string.IsNullOrEmpty(x)))
-            {
-                var kwDistance = lcs.Distance(d.Trim(), s);
-                if (kwDistance < shortest)
-                    shortest = kwDistance;
-            }
-
-            // var d = Fastenshtein.Levenshtein.Distance(t, s);
-            if (shortest < distance)
-            {
-                distance = shortest;
-                result = v;
-            }
-        }
-
-        return result;
     }
 
     public class GauntletLeaderboardResultDto

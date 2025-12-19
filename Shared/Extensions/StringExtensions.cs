@@ -1,4 +1,6 @@
 ﻿using F23.StringSimilarity;
+using Shared.Dto;
+using Shared.Models;
 using Shared.Params;
 
 namespace Shared.Extensions;
@@ -54,7 +56,7 @@ public static class StringExtensions
         return bbCode.Replace("[", "<").Replace("]", ">");
     }
 
-    public static string Match(IEnumerable<string> items, string input, ClosestMatchParams p)
+    public static string Match(this string input, IEnumerable<string> items, ClosestMatchParams p)
     {
         var distance = double.MaxValue;
         var result = "";
@@ -75,5 +77,51 @@ public static class StringExtensions
 
         return result;
     }
+
+    public static VehicleDTO Match(this string s, IEnumerable<VehicleDTO> vehicles)
+    {
+
+        if (s == null)
+            return null;
+
+        var sportline = false;
+        var normalized = s.ToLower();
+        if (s.Contains("sportline"))
+        {
+            sportline = true;
+            s = s.Replace("sportline", "");
+        }
+
+        //var distance = int.MaxValue;//
+        var distance = double.MaxValue;
+        var result = vehicles.First();
+        var lcs = new LongestCommonSubsequence();
+
+
+        foreach (var v in vehicles.Where(x => !sportline || x.Name.ToLower().Contains("sportline")))
+        {
+            var shortest = lcs.Distance( v.ShortName.ToLower(), s.ToLower());
+
+            if (!string.IsNullOrEmpty(v.Keyword))
+            {
+                foreach (var d in v.Keyword.Split(';').Where(x => !string.IsNullOrEmpty(x)))
+                {
+                    var kwDistance = lcs.Distance(d.Trim(), s);
+                    if (kwDistance < shortest)
+                        shortest = kwDistance;
+                }
+            }
+
+            // var d = Fastenshtein.Levenshtein.Distance(t, s);
+            if (shortest < distance)
+            {
+                distance = shortest;
+                result = v;
+            }
+        }
+
+        return result;
+    }
+
 
 }
