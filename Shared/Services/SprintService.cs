@@ -67,7 +67,7 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
         var q = runs.GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
             .Select(x =>
             {
-                var orderedRaces = x.OrderBy(y => y.Time);
+                var orderedRaces = x.OrderBy(y => y.Time).ThenByDescending(y => y.Idate);
                 var bestRace = orderedRaces.First();
 
                 var c = new SprintLeaderboardRowDto
