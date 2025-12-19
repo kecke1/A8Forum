@@ -13,4 +13,6 @@ public class EditSprintRunDTO
     public DateTime? RunDate { get; set; }
     public string? MediaLink { get; set; }
     public int? VipLevel { get; set; }
+    public bool Shortcut { get; set; }
+    public bool Glitch { get; set; }
 }

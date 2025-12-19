@@ -19,4 +19,6 @@ public class EditGauntletRunDTO
     public bool LapTimeVerified { get; set; }
     public bool A8Plus { get; set; }
     public int? VipLevel { get; set; }
+    public bool Shortcut { get; set; }
+    public bool Glitch { get; set; }
 }

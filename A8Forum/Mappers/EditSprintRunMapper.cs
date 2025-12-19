@@ -21,7 +21,9 @@ internal static class EditSprintRunMapper
             Time = r.TimeString.FromTimestringToInt(),
             VehicleId = r.VehicleId,
             TrackId = r.TrackId,
-            VipLevel = r.VipLevel
+            VipLevel = r.VipLevel,
+            Glitch = r.Glitch,
+            Shortcut = r.Shortcut
         };
     }
 
@@ -40,7 +42,9 @@ internal static class EditSprintRunMapper
             Time = model.Time,
             TimeString = model.Time.ToTimeString(),
             VehicleId = model.Vehicle?.Id ?? "",
-            VipLevel = model.VipLevel
+            VipLevel = model.VipLevel,
+            Shortcut = model.Shortcut,
+            Glitch = model.Glitch
         };
     }
 }

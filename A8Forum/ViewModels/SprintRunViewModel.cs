@@ -41,4 +41,9 @@ public class SprintRunViewModel
 
     [Display(Name = "VIP Level")]
     public int? VipLevel { get; set; }
+
+    [Display(Name = "Shortcut")]
+    public bool Shortcut { get; set; }
+    [Display(Name = "Glitch")]
+    public bool Glitch { get; set; }
 }

@@ -27,7 +27,9 @@ internal static class EditGauntletRunMapper
             Vehicle4Id = r.Vehicle4Id,
             Vehicle5Id = r.Vehicle5Id,
             TrackId = r.TrackId,
-            VipLevel = r.VipLevel
+            VipLevel = r.VipLevel,
+            Shortcut = r.Shortcut,
+            Glitch = r.Glitch
         };
     }
 
@@ -52,7 +54,9 @@ internal static class EditGauntletRunMapper
             Vehicle2Id = model.Vehicle2?.Id ?? "",
             Vehicle3Id = model.Vehicle3?.Id ?? "",
             Vehicle4Id = model.Vehicle4?.Id,
-            Vehicle5Id = model.Vehicle5?.Id
+            Vehicle5Id = model.Vehicle5?.Id,
+            Glitch = model.Glitch,
+            Shortcut = model.Shortcut
         };
     }
 }

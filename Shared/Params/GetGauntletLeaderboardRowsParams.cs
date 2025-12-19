@@ -8,4 +8,6 @@ public class GetGauntletLeaderboardRowsParams
     public bool IncludeUnverified { get; set; }
     public DateTime? Date { get; set; }
     public bool IncludeFilteredOutVipMembers { get; set; } = false;
+    public bool IncludeRunsWithGlitch { get; set; } = true;
+    public bool IncludeRunsWithShortcut { get; set; } = true;
 }

@@ -20,6 +20,9 @@ namespace A8Forum.ViewModels
 
         public bool IncludeFilteredVipRuns { get; set; } = false;
 
+        public bool IncludeRunsWithGlitch { get; set; } = true;
+        public bool IncludeRunsWithShortcut { get; set; } = true;
+
         // Persist which tab is active across GET submits (total | byTrack | bestLaps)
         public string ActiveTab { get; set; } = "total";
 

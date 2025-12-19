@@ -5,24 +5,26 @@ namespace Shared.Mappers;
 
 internal static class SprintRunDTOMapper
 {
-    public static SprintRunDTO ToDto(this SprintRun Sprintrun,
+    public static SprintRunDTO ToDto(this SprintRun sprintrun,
         TrackDTO t,
         VehicleDTO v,
         MemberDTO m)
     {
         return new SprintRunDTO
         {
-            Id = Sprintrun.Id,
-            Time = Sprintrun.Time,
-            Idate = Sprintrun.Idate,
-            Deleted = Sprintrun.Deleted,
+            Id = sprintrun.Id,
+            Time = sprintrun.Time,
+            Idate = sprintrun.Idate,
+            Deleted = sprintrun.Deleted,
             Track = t,
             Vehicle = v,
             Member = m,
-            PostUrl = Sprintrun.PostUrl,
-            RunDate = Sprintrun.RunDate,
-            MediaLink = Sprintrun.MediaLink,
-            VipLevel = Sprintrun.VipLevel
+            PostUrl = sprintrun.PostUrl,
+            RunDate = sprintrun.RunDate,
+            MediaLink = sprintrun.MediaLink,
+            VipLevel = sprintrun.VipLevel,
+            Glitch = sprintrun.Glitch,
+            Shortcut = sprintrun.Shortcut
         };
     }
 
@@ -39,7 +41,9 @@ internal static class SprintRunDTOMapper
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
             MediaLink = model.MediaLink,
-            VipLevel = model.VipLevel
+            VipLevel = model.VipLevel,
+            Glitch = model.Glitch,
+            Shortcut = model.Shortcut
         };
 
         if (!string.IsNullOrEmpty(model.Id))
@@ -61,7 +65,9 @@ internal static class SprintRunDTOMapper
             PostUrl = model.PostUrl,
             RunDate = model.RunDate,
             MediaLink = model.MediaLink,
-            VipLevel = model.VipLevel
+            VipLevel = model.VipLevel,
+            Glitch = model.Glitch,
+            Shortcut = model.Shortcut
         };
 
         if (!string.IsNullOrEmpty(model.Id))

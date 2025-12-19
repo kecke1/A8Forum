@@ -6,4 +6,7 @@ public class GetSprintLeaderboardRowsParams
     public int MaxVipLevel { get; set; } = 15;
     public DateTime? Date { get; set; }
     public bool IncludeFilteredOutVipMembers { get; set; } = false;
+    public bool IncludeRunsWithGlitch { get; set; } = true;
+    public bool IncludeRunsWithShortcut { get; set; } = true;
+
 }

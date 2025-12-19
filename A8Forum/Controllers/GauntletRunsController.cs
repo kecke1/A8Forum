@@ -182,7 +182,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletUserRole")]
     public async Task<IActionResult> Create(
         [Bind(
-            "GauntletRunId,TimeString, LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink, Save, VipLevel")]
+            "GauntletRunId,TimeString, LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink, Save, VipLevel, Glitch, Shortcut")]
         EditGauntletRunViewModel gauntletRun)
     {
         var isAdmin = await authorizationService.AuthorizeAsync(User, "GauntletAdminRole");
@@ -232,7 +232,7 @@ public class GauntletRunsController(IMasterDataService masterDataService,
     [Authorize(Policy = "GauntletAdminRole")]
     public async Task<IActionResult> Edit(string id,
         [Bind(
-            "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink,VipLevel")]
+            "GauntletRunId,TimeString,Idate,Deleted,LapTimeVerified,A8Plus,TrackId,Vehicle1Id,Vehicle2Id,Vehicle3Id,Vehicle4Id,Vehicle5Id, MemberId, PostUrl, RunDate, MediaLink,VipLevel, Glitch, Shortcut")]
         EditGauntletRunViewModel d)
     {
         if (id != d.GauntletRunId)

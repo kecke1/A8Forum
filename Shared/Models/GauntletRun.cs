@@ -20,4 +20,6 @@ public class GauntletRun : Item
     public bool LapTimeVerified { get; set; } = false;
     public bool A8Plus { get; set; } = false;
     public int? VipLevel { get; set; }
+    public bool Shortcut { get; set; } = false;
+    public bool Glitch { get; set; } = false;
 }

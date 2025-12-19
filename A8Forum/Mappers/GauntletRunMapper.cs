@@ -26,7 +26,9 @@ internal static class GauntletRunMapper
             Vehicle3 = r.Vehicle3.ToDto(),
             Vehicle4 = r.Vehicle4.VehicleId != null ? r.Vehicle4?.ToDto() : null,
             Vehicle5 = r.Vehicle5.VehicleId != null ? r.Vehicle5?.ToDto() : null,
-            Track = r.Track.ToDto()
+            Track = r.Track.ToDto(),
+            Glitch = r.Glitch,
+            Shortcut = r.Shortcut
         };
     }
 
@@ -50,7 +52,9 @@ internal static class GauntletRunMapper
             Vehicle2 = model.Vehicle2.ToVehicleViewModel(),
             Vehicle3 = model.Vehicle3.ToVehicleViewModel(),
             Vehicle4 = model.Vehicle4?.ToVehicleViewModel(),
-            Vehicle5 = model.Vehicle5?.ToVehicleViewModel()
+            Vehicle5 = model.Vehicle5?.ToVehicleViewModel(),
+            Glitch = model.Glitch,
+            Shortcut = model.Shortcut
         };
     }
 }

@@ -13,7 +13,9 @@ namespace A8Forum.Mappers
                 MaxVipLevel = f.VipLevelMax ?? 15,
                 Date = f.UseLeaderboardDate ? f.LeaderboardDate : null,
                 IncludeFilteredOutVipMembers = f.IncludeFilteredVipRuns,
-                IncludeUnverified = f.IncludeUnverifiedRuns
+                IncludeUnverified = f.IncludeUnverifiedRuns,
+                IncludeRunsWithGlitch = f.IncludeRunsWithGlitch,
+                IncludeRunsWithShortcut = f.IncludeRunsWithShortcut
             };
         }
     }
