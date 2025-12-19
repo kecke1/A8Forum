@@ -19,12 +19,15 @@
 
 
 
-<form method="get" asp-action="Index" class="row g-3eTab" id="Filter_Form" >
-    <!-- VIP Level: noUiSlider dual handle -->
+    <form method="get" asp-action="Index" class="row g-3eTab" id="Filter_Form" >
+        <!-- VIP Level: noUiSlider dual handle -->
    
-    <input asp-for="Filter.ActiveTab" type="hidden" id="Filter_ActiveTab" />
-    <div class="row">
-        <div class="col-12 col-md-4">
+        <input asp-for="Filter.ActiveTab" type="hidden" id="Filter_ActiveTab" />
+        <input type="hidden" name="track" id="Filter_Track" />
+        <input type="hidden" name="member" id="Filter_Member" />
+
+        <div class="row">
+            <div class="col-12 col-md-4">
             <label class="form-label d-flex align-items-center justify-content-between">
                 <span>VIP Levels</span>
             </label>
@@ -48,7 +51,7 @@
     
     <div class="row">
     <div class="col-12 col-md-3 mt-3">
-        <div class="form-check mt-4">
+        <div class="form-check form-switch mt-4">
             <input asp-for="Filter.IncludeFilteredVipRuns"
                    class="form-check-input"
                    id="Filter_IncludeFilteredVipRuns" />

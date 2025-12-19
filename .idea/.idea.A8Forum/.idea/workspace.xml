@@ -12,6 +12,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.A8Forum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.A8Forum/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/A8Forum/Views/GauntletLeaderboard/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/Views/GauntletLeaderboard/Index.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/A8Forum/Views/SprintLeaderboard/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/Views/SprintLeaderboard/Index.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/A8Forum/wwwroot/js/leaderboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/A8Forum/wwwroot/js/leaderboard.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +51,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/46715d02725baedea5556e85aa740d0e02ce64d8a5d49955a9233cde9ec9e3d/Interop.IOErrors.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f9d2f95d72fa884d8b6ddefc717c56da3657fbb2d5fb683656c3589eb6587/Debugger.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock:///home/johan/RiderProjects/A8Forum/A8Forum/Views/GauntletLeaderboard/Index.cshtml" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/johan/RiderProjects/A8Forum/A8Forum/Views/GauntletLeaderboard/Index.cshtml" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -79,7 +81,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.language&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMConfigurable&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -131,7 +133,11 @@
       <workItem from="1765826148459" duration="2955000" />
       <workItem from="1765959658693" duration="4610000" />
       <workItem from="1765966302379" duration="2727000" />
-      <workItem from="1765980363119" duration="245000" />
+      <workItem from="1765980363119" duration="1017000" />
+      <workItem from="1765994115904" duration="2256000" />
+      <workItem from="1765997728163" duration="134000" />
+      <workItem from="1766073668035" duration="551000" />
+      <workItem from="1766173810606" duration="793000" />
     </task>
     <task id="LOCAL−00001" summary="Update packages&#10;mssql =&gt; sqlite">
       <option name="closed" value="true" />
@@ -154,7 +160,14 @@
       <option name="presentableId" value="LOCAL−00003" />
       <updated>1765968580388</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL−00004" summary="Add container with padding">
+      <option name="closed" value="true" />
+      <created>1765980745318</created>
+      <option name="number" value="LOCAL−00004" />
+      <option name="presentableId" value="LOCAL−00004" />
+      <updated>1765980745326</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,7 +203,8 @@
     <MESSAGE value="Update packages&#10;mssql =&gt; sqlite" />
     <MESSAGE value="commit" />
     <MESSAGE value="mssql -&gt; sqlite" />
-    <option name="LAST_COMMIT_MESSAGE" value="mssql -&gt; sqlite" />
+    <MESSAGE value="Add container with padding" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add container with padding" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
