@@ -144,43 +144,51 @@
         }
 
         // --- Client-side dropdowns: show/hide pre-rendered group tables; persist selection in localStorage; support URL param ---
+
         function setupDropdown(tabKey, selectId, itemSelector, queryParamName) {
             var pageKey = getPageKey();
             var lsKey = pageKey + '.' + tabKey + '.idx';
-
             var select = document.getElementById(selectId);
             var items = Array.from(document.querySelectorAll(itemSelector));
             if (!select || items.length === 0) return;
 
-            // Find the hidden input in the form to sync with
+            // Hidden input to sync with the form (?track / ?member)
             var hiddenInputId = 'Filter_' + queryParamName.charAt(0).toUpperCase() + queryParamName.slice(1);
             var hiddenInput = document.getElementById(hiddenInputId);
-
             var params = getParams();
 
+            // Helper: get name for a given index
+            function getNameForIndex(i) {
+                // Prefer data-name on the table container; fallback to option text/value
+                var dn = (items[i]?.getAttribute('data-name') || '').trim();
+                if (dn) return dn;
+                var opt = select.options[i];
+                return (opt?.value || opt?.text || '').trim();
+            }
+
+            // Try to derive the initial index from the URL (index or name)
             function findIndexFromQuery() {
                 var raw = (params.get(queryParamName) || '').trim();
                 if (!raw) return null;
 
-                // numeric => index
+                // numeric -> index
                 var asInt = parseInt(raw, 10);
                 if (!Number.isNaN(asInt) && String(asInt) === raw) {
                     if (asInt >= 0 && asInt < items.length) return asInt;
                 }
 
-                // otherwise treat as name: match data-name OR option text
+                // name -> match data-name OR option text/value (case-insensitive)
                 var lower = raw.toLowerCase();
                 for (var i = 0; i < items.length; i++) {
                     var dn = (items[i].getAttribute('data-name') || '').trim().toLowerCase();
                     if (dn && dn === lower) return i;
                 }
-
-                // fallback: match option label
                 for (var j = 0; j < select.options.length; j++) {
-                    var t = (select.options[j].text || '').trim().toLowerCase();
-                    if (t && t === lower) return j;
+                    var opt = select.options[j];
+                    var text = (opt.text || '').trim().toLowerCase();
+                    var val = (opt.value || '').trim().toLowerCase();
+                    if (text === lower || val === lower) return j;
                 }
-
                 return null;
             }
 
@@ -188,41 +196,41 @@
                 // 1) URL param wins
                 var qIdx = findIndexFromQuery();
                 if (qIdx !== null) return qIdx;
-
+                return 0;
                 // 2) localStorage fallback
-                var saved = localStorage.getItem(lsKey);
-                var idx = parseInt(saved, 10);
-                if (Number.isNaN(idx) || idx < 0 || idx >= items.length) idx = 0;
-                return idx;
+              //  var saved = localStorage.getItem(lsKey);
+              //  var idx = parseInt(saved, 10);
+              //  if (Number.isNaN(idx) || idx < 0 || idx >= items.length) idx = 0;
+              //  return idx;
             }
 
             function showIndex(i) {
                 items.forEach(function (el) {
-                    if (parseInt(el.getAttribute('data-index'), 10) === i) {
-                        el.classList.remove('d-none');
-                    } else {
-                        el.classList.add('d-none');
-                    }
+                    var match = parseInt(el.getAttribute('data-index'), 10) === i;
+                    el.classList.toggle('d-none', !match);
                 });
             }
 
-            // initial selection
+            // Initial selection
             var idx = readIndexWithPriority();
-            select.value = String(idx);
+            select.selectedIndex = idx;                  // use selectedIndex (we now store names in value)
             showIndex(idx);
-            if (hiddenInput) hiddenInput.value = String(idx);
+            var initialName = getNameForIndex(idx);
+            if (hiddenInput) hiddenInput.value = initialName;
 
-            // keep localStorage + URL updated on change
+            // Keep localStorage + URL + hidden input updated on change
             select.addEventListener('change', function () {
-                var newIdx = parseInt(select.value, 10);
+                var newIdx = select.selectedIndex;
                 if (Number.isNaN(newIdx)) return;
 
                 showIndex(newIdx);
-                localStorage.setItem(lsKey, String(newIdx));
+               // localStorage.setItem(lsKey, String(newIdx));
 
-                // Update URL so the selection is shareable/bookmarkable
+                var selectedName = getNameForIndex(newIdx);
+
+                // Update URL with the NAME (not the index)
                 replaceUrlKeepingHash(function (url) {
-                    setOrDeleteParam(url, queryParamName, String(newIdx));
+                    setOrDeleteParam(url, queryParamName, selectedName);
 
                     // also keep the currently active tab in the URL if possible
                     var hidden = document.getElementById('Filter_ActiveTab');
@@ -232,9 +240,11 @@
                         setOrDeleteParam(url, 'tab', null); // avoid duplicates
                     }
                 });
+
+                // Keep the form field in sync so a GET submit preserves selection
+                if (hiddenInput) hiddenInput.value = selectedName;
             });
         }
-
         // Use your existing calls, but now with URL param names:
         // ?track=... controls By Track dropdown
         // ?member=... controls Best Laps dropdown

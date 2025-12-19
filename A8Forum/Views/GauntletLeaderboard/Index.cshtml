@@ -48,7 +48,7 @@
 
     <div class="row">
         <div class="col-12 col-md-3 mt-3">
-            <div class="form-check mt-4">
+                <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeFilteredVipRuns"
                        class="form-check-input"
                        id="Filter_IncludeFilteredVipRuns" />
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col-12 col-md-3 mt-3">
-            <div class="form-check mt-4">
+                <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeUnverifiedRuns"
                        class="form-check-input"
                        id="Filter_IncludeUnverifiedRuns" />
@@ -147,13 +147,15 @@
             <div class="row g-2 align-items-end mb-3">
                 <div class="col-12 col-md-6">
                     <label for="byTrackSelect" class="form-label">Select Track</label>
+
                     <select id="byTrackSelect" class="form-select">
                         @for (var i = 0; i < Model.ByTrackGroups.Count(); i++)
                         {
                             var g = Model.ByTrackGroups.ElementAt(i);
-                            <option value="@i">@g.Name</option>
+                            <option value="@g.Name" data-index="@i">@g.Name</option>
                         }
                     </select>
+
                 </div>
             </div>
 
@@ -183,13 +185,15 @@
             <div class="row g-2 align-items-end mb-3">
                 <div class="col-12 col-md-6">
                     <label for="byMemberSelect" class="form-label">Select Member</label>
+
                     <select id="byMemberSelect" class="form-select">
                         @for (var i = 0; i < Model.BestLapGroups.Count(); i++)
                         {
                             var g = Model.BestLapGroups.ElementAt(i);
-                            <option value="@i">@g.Name</option>
+                            <option value="@g.Name" data-index="@i">@g.Name</option>
                         }
                     </select>
+
                 </div>
             </div>
 
