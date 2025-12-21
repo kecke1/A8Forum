@@ -62,6 +62,9 @@ body { margin-bottom: 60px; }
         box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
     }
 
+.sliderContainer {
+    padding-left: 16px;
+}
 
 /* Ensure the slider reserves space for its pips and doesn't overlap the next control */
 #vipSlider {
@@ -73,6 +76,7 @@ body { margin-bottom: 60px; }
     /* Size hint for pips (horizontal); helps layout consistency */
     #vipSlider .noUi-pips {
         height: 32px; /* typical pip height */
+
     }
 
     /* Prevent pips/markers/labels from stealing clicks */

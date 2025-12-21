@@ -31,10 +31,10 @@
             <label class="form-label d-flex align-items-center justify-content-between">
                 <span>VIP Levels</span>
             </label>
-
+            <div class="sliderContainer">
             <!-- Slider container -->
             <div id="vipSlider" class="vip-nouislider mb-2"></div>
-
+                </div>
             <!-- Hidden fields bound to model (kept for server binding) -->
             <input asp-for="Filter.VipLevelMin" type="hidden" id="Filter_VipLevelMin" />
             <input asp-for="Filter.VipLevelMax" type="hidden" id="Filter_VipLevelMax" />
