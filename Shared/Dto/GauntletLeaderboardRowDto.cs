@@ -35,6 +35,9 @@ public class GauntletLeaderboardRowDto
     public required string VehicleName5 { get; set; }
     public required string VehicleUrl5 { get; set; }
 
+    public bool Glitch { get; set; }
+    public bool Shortcut { get; set; }
+
     [JsonIgnore]
     public required string TrackId { get; set; }
 

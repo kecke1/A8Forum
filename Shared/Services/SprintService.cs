@@ -45,7 +45,10 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
     public async Task<IOrderedEnumerable<SprintLeaderboardRowDto>> GetSprintLeaderboardRowsAsync(GetSprintLeaderboardRowsParams param)
     {
         var allRuns = (await GetSprintRunsAsync())
-            .Where(x => !x.Deleted && (!param.Date.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
+            .Where(x => !x.Deleted && 
+                        (param.IncludeRunsWithGlitch || !x.Glitch) &&
+                        (param.IncludeRunsWithShortcut || !x.Shortcut) &&
+                        (!param.Date.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
                                        (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
             .ToList();
 
@@ -87,6 +90,8 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
                     VehicleUrl = string.IsNullOrEmpty(bestRace.Vehicle.Url)
                         ? ""
                         : _vehiclesBaseUrl + bestRace.Vehicle.Url,
+                    Glitch = bestRace.Glitch,
+                    Shortcut = bestRace.Shortcut,
                     Runs = orderedRaces
                 };
 

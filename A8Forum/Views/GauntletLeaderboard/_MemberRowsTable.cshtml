@@ -34,6 +34,8 @@ else
                         <th>Vehicle 5</th>
                     }
                     <th class="text-end" style="width: 80px;">VIP</th>
+                    <th>Glitch</th>
+                    <th>Shortcut</th>
                 </tr>
             </thead>
             <tbody>
@@ -89,6 +91,9 @@ else
                             @r.VipLevel
                         }
                     </td>
+                        <td> @(r.Glitch ? "✓" : "")</td>
+                        <td> @(r.Shortcut ? "✓" : "")</td>
+
                 </tr>
             }
             </tbody>

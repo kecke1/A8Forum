@@ -21,6 +21,8 @@ else
                     <th class="text-center" style="width: 100px;">Video</th>
                     <th>Vehicle</th>
                     <th class="text-end" style="width: 80px;">VIP</th>
+                    <th>Glitch</th>
+                    <th>Shortcut</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,6 +59,8 @@ else
                             @r.Vip
                         }
                     </td>
+                    <td> @(r.Glitch ? "✓" : "")</td>
+                    <td> @(r.Shortcut ? "✓" : "")</td>
                 </tr>
             }
             </tbody>

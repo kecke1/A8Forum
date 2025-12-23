@@ -115,4 +115,29 @@ public class TracksController(IMasterDataService masterDataService) : Controller
         masterDataService.DeleteTrackAsync(id);
         return RedirectToAction(nameof(Index));
     }
+
+
+    [HttpGet("Find")]
+        public async Task<IActionResult> Find([FromQuery] string? term, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        {
+          /*  var results = 
+            // Select2 expects { results: [{id,text}], pagination: { more: bool } }
+            return Ok(new
+            {
+                results = results.Items.Select(t => new { id = t.Id, text = t.Name }),
+                pagination = new { more = results.HasMore }
+            });
+          */
+          return Ok();
+        }
+
+
+    [HttpGet("Byids")]
+    public async Task<IActionResult> GetByIds([FromQuery] List<int> ids)
+    {
+     //   var tracks = await _service.GetByIdsAsync(ids);
+      //  return Ok(tracks.Select(t => new { id = t.Id, text = t.Name }));
+      return Ok();
+    }
+
 }

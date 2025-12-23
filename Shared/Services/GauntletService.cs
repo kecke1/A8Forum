@@ -47,6 +47,8 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
         var allRuns = (await GetGauntletRunsAsync())
             .Where(x => !x.Deleted   
                         && (param.IncludeUnverified || x.LapTimeVerified)
+                        && (param.IncludeRunsWithGlitch || !x.Glitch)
+                        && (param.IncludeRunsWithShortcut || !x.Shortcut)
             && (!param.Date.HasValue || (!x.RunDate.HasValue && x.Idate <= param.Date.Value) ||
                                        (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
             .ToList();
@@ -109,6 +111,8 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
                     VehicleUrl5 = string.IsNullOrEmpty(bestRace.Vehicle5?.Url)
                         ? ""
                         : _vehiclesBaseUrl + bestRace.Vehicle5.Url,
+                    Glitch = bestRace.Glitch,
+                    Shortcut = bestRace.Shortcut,
                     Runs = orderedRaces
                 };
 

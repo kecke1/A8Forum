@@ -67,6 +67,29 @@
                 </label>
             </div>
         </div> 
+        
+        <div class="col-12 col-md-3 mt-3">
+            <div class="form-check form-switch mt-4">
+                <input asp-for="Filter.IncludeRunsWithGlitch"
+                       class="form-check-input"
+                           id="Filter_IncludeRunsWithGlitch" />
+                    <label class="form-check-label" for="Filter_IncludeRunsWithGlitch">
+                    Include runs that use glitch
+                </label>
+            </div>
+        </div>  
+        
+        <div class="col-12 col-md-3 mt-3">
+            <div class="form-check form-switch mt-4">
+                <input asp-for="Filter.IncludeRunsWithShortcut"
+                       class="form-check-input"
+                       id="Filter_IncludeRunsWithShortcut" />
+                <label class="form-check-label" for="Filter_IncludeRunsWithShortcut">
+                    Include runs that use shortcut
+                </label>
+            </div>
+        </div>  
+
 
     </div>
     <div class="col-12 col-md-3 mt-3">

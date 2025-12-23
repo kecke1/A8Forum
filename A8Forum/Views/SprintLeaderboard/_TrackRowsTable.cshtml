@@ -22,6 +22,8 @@ else
                     <th class="text-center" style="width: 100px;">Video</th>
                     <th>Vehicle</th>
                     <th class="text-end" style="width: 80px;">VIP</th>
+                    <th>Glitch</th>
+                    <th>Shortcut</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,11 +55,13 @@ else
                         <a href="@r.VehicleUrl" target="_blank">@r.VehicleName</a>
                     </td>
                     <td class="text-end">
-                            @if (r.Vip >= 12)
-                            {
-                                @r.Vip
-                            }
-                   </td>
+                        @if (r.Vip >= 12)
+                        {
+                            @r.Vip
+                        }
+                    </td>
+                    <td> @(r.Glitch ? "✓" : "")</td>
+                    <td> @(r.Shortcut ? "✓" : "")</td>
                 </tr>
             }
             </tbody>

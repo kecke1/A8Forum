@@ -86,10 +86,10 @@ public static class StringExtensions
 
         var sportline = false;
         var normalized = s.ToLower();
-        if (s.Contains("sportline"))
+        if (s.Contains("sportline") || s.Contains(" sl"))
         {
             sportline = true;
-            s = s.Replace("sportline", "");
+            s = s.Replace(" sl", " sportline");
         }
 
         //var distance = int.MaxValue;//
