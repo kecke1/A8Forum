@@ -62,11 +62,12 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
         if (!param.IncludeFilteredOutVipMembers)
         {
             var filteredVipMembers = allRuns.Where(x => (x.VipLevel ?? 0) > maxVip)
-                .Select(x => x.Member.Id)
+                .GroupBy(x =>  new { Track = x.Track.Id, Member = x.Member.Id})
+                .Select(x => x.Key)
                 .Distinct()
                 .ToArray();
 
-            runs = runs.Where(x => !filteredVipMembers.Contains(x.Member.Id));
+            runs = runs.Where(x => !filteredVipMembers.Any(y => y.Track == x.Track.Id && y.Member == x.Member.Id));
         }
 
         var q = runs
