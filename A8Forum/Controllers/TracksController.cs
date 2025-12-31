@@ -6,9 +6,9 @@ using Shared.Services;
 
 namespace A8Forum.Controllers;
 
-[Authorize]
 public class TracksController(IMasterDataService masterDataService) : Controller
 {
+    [Authorize]
     // GET: Tracks
     public async Task<IActionResult> Index()
     {
@@ -16,6 +16,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
         return View(t.Select(x => x.ToTrackViewModel()));
     }
 
+    [Authorize]
     // GET: Tracks/Details/5
     public async Task<IActionResult> Details(string? id)
     {
@@ -29,6 +30,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
         return View(track.ToTrackViewModel());
     }
 
+    [Authorize]
     // GET: Tracks/Create
     public IActionResult Create()
     {
@@ -52,6 +54,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
         return View(track);
     }
 
+    [Authorize]
     // GET: Tracks/Edit/5
     public async Task<IActionResult> Edit(string? id)
     {
@@ -93,6 +96,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
     }
 
     // GET: Tracks/Delete/5
+    [Authorize]
     public async Task<IActionResult> Delete(string? id)
     {
         if (id == null)
@@ -116,7 +120,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
         return RedirectToAction(nameof(Index));
     }
 
-
+    [Authorize]
     [HttpGet("Find")]
         public async Task<IActionResult> Find([FromQuery] string? term, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
@@ -131,7 +135,7 @@ public class TracksController(IMasterDataService masterDataService) : Controller
           return Ok();
         }
 
-
+    [Authorize]
     [HttpGet("Byids")]
     public async Task<IActionResult> GetByIds([FromQuery] List<int> ids)
     {
@@ -140,4 +144,39 @@ public class TracksController(IMasterDataService masterDataService) : Controller
       return Ok();
     }
 
+
+    /// <summary>
+    /// Select2-friendly endpoint: GET /Tracks/Select2?term=foo
+    /// Returns [{ id: TrackId, text: TrackName }, ...]
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> Select2(string? term = null)
+    {
+        var allTracks = (await masterDataService
+                .GetTracksAsync())
+            .Select(y => y.ToTrackViewModel())
+            .OrderBy(x => x.TrackName)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(term))
+        {
+            var low = term.ToLowerInvariant();
+            allTracks = allTracks
+                .Where(t => (t.TrackName ?? string.Empty)
+                    .ToLowerInvariant()
+                    .Contains(low))
+                .ToList();
+        }
+
+        var results = allTracks.Select(t => new
+        {
+            id = t.TrackId,
+            text = t.TrackName
+        });
+
+        return Json(results);
+    }
+
 }
+
+

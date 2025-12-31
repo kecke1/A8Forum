@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Gauntlet Opponents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-3">
+    <h3 class="mb-3">Gauntlet opponents</h3>
+
+    <!-- Single set of fields handles search + add + edit -->
+    <!-- All inputs are in one row on large screens; stack on smaller screens -->
+    <form id="opponent-form" class="row g-3 align-items-end" autocomplete="off">
+        <!-- NAME (Select2 with local suggestions + tagging) -->
+        <div class="col-12 col-lg-3">
+            <label for="op-name" class="form-label">Name <span class="text-danger">*</span></label>
+            <select id="op-name" name="name" class="form-select w-100" data-placeholder="Search or add a name">
+                <option></option>
+            </select>
+            <div class="form-text">
+                Start typing to get suggestions from saved opponents. If the name doesn’t exist, press <b>Enter</b> to add it.
+            </div>
+        </div>
+
+        <!-- RATING (required) -->
+        <div class="col-12 col-lg-3">
+            <label for="op-rating" class="form-label">Rating <span class="text-danger">*</span></label>
+            <select id="op-rating" name="rating" class="form-select" required>
+                <option value="">-- Choose rating --</option>
+                <option value="beatable">Beatable</option>
+                <option value="difficult">Difficult</option>
+                <option value="impossible">Impossible</option>
+            </select>
+        </div>
+
+        <!-- TIME (optional) -->
+        <div class="col-12 col-lg-3">
+            <label for="op-time" class="form-label">Time</label>
+            <input id="op-time" name="time" type="text" class="form-control" placeholder="e.g. 1:23.456" />
+        </div>
+
+        <!-- TRACK (Select2 via AJAX to /Tracks/Select2) -->
+        <div class="col-12 col-lg-3">
+            <label for="op-track" class="form-label">Track</label>
+            <select id="op-track" name="track" class="form-select w-100" data-placeholder="Select a track">
+                <option></option>
+            </select>
+            <div class="form-text">Track is optional and fetched from the server (read-only).</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-12 d-flex gap-2">
+            <button type="button" id="save-btn" class="btn btn-primary">Save</button>
+            <button type="button" id="clear-btn" class="btn btn-outline-secondary">Clear</button>
+
+            <button type="button" id="reset-db-btn" class="btn btn-outline-danger ms-auto">
+                Reset database
+            </button>
+        </div>
+    </form>
+
+    <!-- List -->
+    <div class="mt-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <h5 class="mb-0">Saved opponents</h5>
+            <span id="op-count" class="badge bg-secondary">0</span>
+        </div>
+        <ul id="op-list" class="list-group"></ul>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <!-- The SPA logic -->
+    <script src="~/js/gauntlet-opponents.js"></script>
+}
