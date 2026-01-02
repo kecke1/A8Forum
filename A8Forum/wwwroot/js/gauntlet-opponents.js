@@ -232,7 +232,7 @@
                 $time.val(op.time || '');
                 setTrackById(op.trackId, op.trackName);
                 $save.text('Update');
-                $name.select2('open');
+                //$name.select2('open');
             });
             li.find('.delete-btn').on('click', () => {
                 if (confirm(`Delete opponent "${op.name}"?`)) {
