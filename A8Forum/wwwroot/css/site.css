@@ -91,6 +91,10 @@ body { margin-bottom: 60px; }
         font-size: 0.85rem;
     }
 
+
+
+    /* Rating radio buttons  */
+
 .btn-group[aria-label="Rating"] .btn {
     min-width: 7.25rem;
 }
@@ -145,3 +149,38 @@ body { margin-bottom: 60px; }
 .rating-group .btn:hover {
     filter: brightness(.95);
 }
+
+/*  */
+
+/* Make Select2 take the full line like a normal form-control */
+.select2-container {
+    display: block !important;
+    width: 100% !important; /* already set by JS, but safe to enforce */
+}
+
+/* A little space under the Select2 control so help text never overlaps */
+#op-name.select2-hidden-accessible + .select2-container {
+    margin-bottom: .25rem; /* separates control from .form-text */
+}
+
+/* Ensure the single-selection area has a comfortable vertical size */
+.select2-container .select2-selection--single {
+    min-height: calc(1.5rem + .5rem + 2px); /* roughly Bootstrap input height */
+    padding-top: .375rem;
+    padding-bottom: .375rem;
+    display: flex; /* vertically center the text */
+    align-items: center;
+}
+
+/* Keep the rendered text aligned and not clipped */
+.select2-container .select2-selection__rendered {
+    line-height: 1.4; /* avoid clipping */
+    padding-right: .5rem; /* some breathing room before the arrow */
+}
+
+/* The help text should always sit below the input with a bit of space */
+#opponent-form .form-text {
+    margin-top: .25rem;
+    display: block;
+}
+
