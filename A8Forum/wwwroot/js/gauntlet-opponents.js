@@ -1,8 +1,8 @@
 ﻿
 // Gauntlet Opponents SPA (Local Storage only)
 // - Name: Select2 with local suggestions + tagging
+// - Rating: button-styled radios (Bootstrap 5 btn-check)
 // - Track: Select2 via AJAX to /Tracks/Select2 (service-backed)
-// - Rating: required (badge color-coded in list)
 // - Time: optional
 // - Reset database: clears Local Storage only
 
@@ -11,7 +11,6 @@
 
     // Cache DOM elements
     const $name = $('#op-name');
-    const $rating = $('#op-rating');
     const $time = $('#op-time');
     const $track = $('#op-track');
     const $save = $('#save-btn');
@@ -48,15 +47,13 @@
             allowClear: true,
             minimumInputLength: 0,
             ajax: {
-                url: '/Tracks/Select2',     // TracksController.Select2 endpoint (uses IMasterDataService)
+                url: '/Tracks/Select2',
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
-                    // server-side filtering by term (recommended for remote data)
                     return { term: params.term };
                 },
                 processResults: function (data) {
-                    // data is already [{ id, text }, ...]
                     return { results: data };
                 },
                 cache: true
@@ -73,16 +70,14 @@
             width: '100%',
             placeholder: $name.data('placeholder') || 'Search or add a name',
             allowClear: true,
-            tags: true,                 // allow adding new names
-            data: data,                 // preload existing names
-            // Case-insensitive contains matcher
+            tags: true,
+            data: data,
             matcher: function (params, dataItem) {
                 const term = (params.term || '').trim().toLowerCase();
                 if (term === '') return dataItem;
                 const text = (dataItem.text || '').toLowerCase();
                 return text.indexOf(term) > -1 ? dataItem : null;
             },
-            // Prevent duplicates that differ only by case
             createTag: function (params) {
                 const term = (params.term || '').trim();
                 if (!term) return null;
@@ -96,7 +91,7 @@
             const selectedName = ($name.val() || '').trim();
 
             if (!selectedName) {
-                $rating.val('');
+                clearRatingRadios(); // [rating radio change]
                 $time.val('');
                 $track.val(null).trigger('change');
                 $save.text('Save');
@@ -106,13 +101,13 @@
             const match = loadOpponents().find(x => equalsIgnoreCase(x.name, selectedName));
             if (match) {
                 // populate for edit
-                $rating.val(match.rating);
+                setRatingRadio(match.rating);   // [rating radio change]
                 $time.val(match.time || '');
                 setTrackById(match.trackId, match.trackName);
                 $save.text('Update');
             } else {
                 // new name → clear other fields
-                $rating.val('');
+                clearRatingRadios();            // [rating radio change]
                 $time.val('');
                 $track.val(null).trigger('change');
                 $save.text('Save');
@@ -135,18 +130,29 @@
         const current = $name.val(); // keep current selection
         const newData = buildNameDataFromLocal();
 
-        // Rebuild <option> list (Select2 uses <option> elements as source)
         $name.find('option').not(':first').remove();
         newData.forEach(d => $name.append(new Option(d.text, d.id, false, false)));
-
-        // Notify Select2 to rebuild its internal data
         $name.trigger('change.select2');
 
-        // Restore selection if still present
         if (current) {
             const exists = newData.some(d => d.id.toLowerCase() === current.toLowerCase());
             if (exists) $name.val(current).trigger('change');
         }
+    }
+
+    // --- Rating radio helpers ---  [rating radio change]
+    function getSelectedRating() {
+        return $('input[name="rating"]:checked').val() || '';
+    }
+    function setRatingRadio(value) {
+        const val = (value || '').toLowerCase();
+        $('input[name="rating"]').prop('checked', false);
+        if (val === 'beatable') $('#rating-beatable').prop('checked', true);
+        else if (val === 'difficult') $('#rating-difficult').prop('checked', true);
+        else if (val === 'impossible') $('#rating-impossible').prop('checked', true);
+    }
+    function clearRatingRadios() {
+        $('input[name="rating"]').prop('checked', false);
     }
 
     // --- Utilities ---
@@ -154,17 +160,17 @@
 
     function validate() {
         const name = ($name.val() || '').trim();
-        const rating = $rating.val();
+        const rating = getSelectedRating();     // [rating radio change]
         if (!name) { alert('Name is required.'); $name.select2('open'); return false; }
-        if (!rating) { alert('Rating is required.'); $rating.focus(); return false; }
+        if (!rating) { alert('Rating is required.'); $('#rating-beatable').focus(); return false; }
         return true;
     }
 
     function clearForm() {
-        $name.val(null).trigger('change');   // clears Select2 selection (Name)
-        $rating.val('');
+        $name.val(null).trigger('change');
+        clearRatingRadios();                    // [rating radio change]
         $time.val('');
-        $track.val(null).trigger('change');  // clears Select2 selection (Track)
+        $track.val(null).trigger('change');
         $save.text('Save');
     }
 
@@ -184,7 +190,7 @@
         if (idx >= 0) { items[idx] = op; } else { items.push(op); }
         saveOpponents(items);
         render();
-        refreshNameSelect2Data(); // keep suggestions up to date
+        refreshNameSelect2Data();
     }
 
     function removeOpponent(name) {
@@ -221,9 +227,8 @@
     </div>
 </li>`);
             li.find('.edit-btn').on('click', () => {
-                // Load into the single form for edit
                 $name.val(op.name).trigger('change');
-                $rating.val(op.rating);
+                setRatingRadio(op.rating);      // [rating radio change]
                 $time.val(op.time || '');
                 setTrackById(op.trackId, op.trackName);
                 $save.text('Update');
@@ -263,16 +268,15 @@
 
             const opponent = {
                 name: ($name.val() || '').trim(),
-                rating: $rating.val(),
+                rating: getSelectedRating(),    // [rating radio change]
                 time: ($time.val() || '').trim(),
-                trackId: $track.val(),                               // store track id
-                trackName: $track.find(':selected').text() || ''     // optional snapshot for display
+                trackId: $track.val(),
+                trackName: $track.find(':selected').text() || ''
             };
 
             const exists = loadOpponents().some(x => equalsIgnoreCase(x.name, opponent.name));
             upsertOpponent(opponent);
             if (!exists) {
-                // New add → clear for next
                 clearForm();
             } else {
                 $save.text('Update');

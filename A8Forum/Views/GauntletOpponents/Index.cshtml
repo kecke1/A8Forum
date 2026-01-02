@@ -11,7 +11,7 @@
     <!-- All inputs are in one row on large screens; stack on smaller screens -->
     <form id="opponent-form" class="row g-3 align-items-end" autocomplete="off">
         <!-- NAME (Select2 with local suggestions + tagging) -->
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-md-6 col-xl-3">
             <label for="op-name" class="form-label">Name <span class="text-danger">*</span></label>
             <select id="op-name" name="name" class="form-select w-100" data-placeholder="Search or add a name">
                 <option></option>
@@ -21,25 +21,40 @@
             </div>
         </div>
 
-        <!-- RATING (required) -->
-        <div class="col-12 col-lg-3">
-            <label for="op-rating" class="form-label">Rating <span class="text-danger">*</span></label>
-            <select id="op-rating" name="rating" class="form-select" required>
-                <option value="">-- Choose rating --</option>
-                <option value="beatable">Beatable</option>
-                <option value="difficult">Difficult</option>
-                <option value="impossible">Impossible</option>
-            </select>
+
+
+        
+        <!-- RATING (button-styled radios; no .btn-group) -->
+        <div class="col-12 col-md-6 col-xl-3">
+            <fieldset class="form-group">
+                <legend class="form-label mb-2">Rating <span class="text-danger">*</span></legend>
+
+                <!-- flexible, wrapping container -->
+                <div class="rating-group d-flex flex-wrap" role="radiogroup" aria-label="Rating">
+                    <input type="radio" class="btn-check" name="rating" id="rating-beatable" value="beatable" autocomplete="off" />
+                    <label class="btn btn-success btn-sm btn-tight" for="rating-beatable" title="Beatable">Beatable</label>
+
+                    <input type="radio" class="btn-check" name="rating" id="rating-difficult" value="difficult" autocomplete="off" />
+                    <label class="btn btn-warning text-dark btn-sm btn-tight" for="rating-difficult" title="Difficult">Difficult</label>
+
+                    <input type="radio" class="btn-check" name="rating" id="rating-impossible" value="impossible" autocomplete="off" />
+                    <label class="btn btn-danger btn-sm btn-tight" for="rating-impossible" title="Impossible">Impossible</label>
+                </div>
+
+                <div class="form-text">Click a button to set the rating.</div>
+            </fieldset>
         </div>
 
+
+
         <!-- TIME (optional) -->
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-md-6 col-xl-3">
             <label for="op-time" class="form-label">Time</label>
             <input id="op-time" name="time" type="text" class="form-control" placeholder="e.g. 1:23.456" />
         </div>
 
         <!-- TRACK (Select2 via AJAX to /Tracks/Select2) -->
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-md-6 col-xl-3">
             <label for="op-track" class="form-label">Track</label>
             <select id="op-track" name="track" class="form-select w-100" data-placeholder="Select a track">
                 <option></option>
