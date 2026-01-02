@@ -26,8 +26,12 @@
         
         <!-- RATING (button-styled radios; no .btn-group) -->
         <div class="col-12 col-md-6 col-xl-3">
+            
             <fieldset class="form-group">
-                <legend class="form-label mb-2">Rating <span class="text-danger">*</span></legend>
+                     <label class="form-label mb-2" for="rating-beatable">
+                             Rating <span class="text-danger">*</span>
+                         </label>
+
 
                 <!-- flexible, wrapping container -->
                 <div class="rating-group d-flex flex-wrap" role="radiogroup" aria-label="Rating">
@@ -49,17 +53,17 @@
 
         <!-- TIME (optional) -->
         <div class="col-12 col-md-6 col-xl-3">
-            <label for="op-time" class="form-label">Time</label>
-            <input id="op-time" name="time" type="text" class="form-control" placeholder="e.g. 1:23.456" />
+            <label for="op-time" class="form-label">Time (Optional)</label>
+            <input id="op-time" name="time" type="text" class="form-control" placeholder="e.g. 1:23.456 (Optional)" />
         </div>
 
         <!-- TRACK (Select2 via AJAX to /Tracks/Select2) -->
         <div class="col-12 col-md-6 col-xl-3">
-            <label for="op-track" class="form-label">Track</label>
+            <label for="op-track" class="form-label">Track (Optional)</label>
             <select id="op-track" name="track" class="form-select w-100" data-placeholder="Select a track">
                 <option></option>
             </select>
-            <div class="form-text">Track is optional and fetched from the server (read-only).</div>
+            <div class="form-text">Track is optional.</div>
         </div>
 
         <!-- Actions -->

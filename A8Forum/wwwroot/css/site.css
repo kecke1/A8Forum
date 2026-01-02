@@ -184,3 +184,28 @@ body { margin-bottom: 60px; }
     display: block;
 }
 
+
+
+/* Make ALL labels in the row align perfectly */
+#opponent-form .form-label {
+    margin-bottom: .5rem !important; /* same for all labels */
+    display: block;
+}
+
+/* Reduce Select2's default padding above the selection */
+.select2-container--bootstrap-5 .select2-selection--single,
+.select2-container .select2-selection--single {
+    padding-top: .375rem !important; /* match Bootstrap input */
+    padding-bottom: .375rem !important;
+}
+
+/* Fix vertical offset: force Select2 to align with other inputs */
+#op-name + .select2-container .select2-selection--single {
+    margin-top: 0 !important;
+}
+
+/* Ensure rendered text sits vertically centered */
+.select2-container .select2-selection__rendered {
+    line-height: 1.5 !important;
+}
+

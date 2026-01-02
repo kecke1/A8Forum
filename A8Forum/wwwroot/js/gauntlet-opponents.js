@@ -1,8 +1,8 @@
 ﻿
 // Gauntlet Opponents SPA (Local Storage only)
-// - Name: Select2 with local suggestions + tagging
+// - Name: Select2 with local suggestions + tagging (+ robust auto-focus search on open)
 // - Rating: button-styled radios (Bootstrap 5 btn-check)
-// - Track: Select2 via AJAX to /Tracks/Select2 (service-backed)
+// - Track: Select2 via AJAX to /Tracks/Select2 (+ robust auto-focus search on open)
 // - Time: optional
 // - Reset database: clears Local Storage only
 
@@ -38,7 +38,29 @@
         refreshNameSelect2Data(); // keep Name suggestions in sync
     }
 
-    // --- Select2: Track via AJAX (/Tracks/Select2) ---
+    // --- Robust focus helper: auto-focus (and click) Select2's search field on open ---
+    function focusSelect2SearchRobust() {
+        // Try a few times in case the dropdown builds asynchronously
+        let attempts = 0;
+        const maxAttempts = 5;
+        const tryFocus = () => {
+            const input = document.querySelector('.select2-container--open .select2-search__field');
+            if (input) {
+                // Click first (some browsers prioritize click for caret placement)
+                input.click();
+                input.focus();
+                // Optional: select current text for quick overwrite
+                if (typeof input.select === 'function') input.select();
+                return;
+            }
+            if (++attempts < maxAttempts) {
+                setTimeout(tryFocus, 40); // retry shortly
+            }
+        };
+        setTimeout(tryFocus, 0);
+    }
+
+    // --- Select2: Track via AJAX (/Tracks/Select2) + robust auto-focus on open ---
     function initTrackSelect2() {
         $track.select2({
             theme: 'bootstrap-5',
@@ -46,22 +68,26 @@
             placeholder: $track.data('placeholder') || 'Select a track',
             allowClear: true,
             minimumInputLength: 0,
+            dropdownParent: document.body,    // render dropdown at top level (avoid z-index/overflow issues)
             ajax: {
                 url: '/Tracks/Select2',
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
-                    return { term: params.term };
+                    return { term: params.term }; // server-side filtering
                 },
                 processResults: function (data) {
-                    return { results: data };
+                    return { results: data }; // [{ id, text }, ...]
                 },
                 cache: true
             }
         });
+
+        // Auto-focus the search box when Track dropdown opens
+        $track.on('select2:open', focusSelect2SearchRobust);
     }
 
-    // --- Select2: Name with local suggestions + tagging ---
+    // --- Select2: Name with local suggestions + tagging + robust auto-focus on open ---
     function initNameSelect2() {
         const data = buildNameDataFromLocal();
 
@@ -70,14 +96,17 @@
             width: '100%',
             placeholder: $name.data('placeholder') || 'Search or add a name',
             allowClear: true,
-            tags: true,
-            data: data,
+            tags: true,                 // allow adding new names
+            data: data,                 // preload existing names
+            dropdownParent: document.body, // render dropdown at top level
+            // Case-insensitive contains matcher
             matcher: function (params, dataItem) {
                 const term = (params.term || '').trim().toLowerCase();
                 if (term === '') return dataItem;
                 const text = (dataItem.text || '').toLowerCase();
                 return text.indexOf(term) > -1 ? dataItem : null;
             },
+            // Prevent duplicates differing only by case
             createTag: function (params) {
                 const term = (params.term || '').trim();
                 if (!term) return null;
@@ -86,12 +115,15 @@
             }
         });
 
+        // Auto-focus the search box when Name dropdown opens
+        $name.on('select2:open', focusSelect2SearchRobust);
+
         // When a name is selected (existing/new), load the opponent if it exists
         $name.on('change', function () {
             const selectedName = ($name.val() || '').trim();
 
             if (!selectedName) {
-                clearRatingRadios(); // [rating radio change]
+                clearRatingRadios();
                 $time.val('');
                 $track.val(null).trigger('change');
                 $save.text('Save');
@@ -101,13 +133,13 @@
             const match = loadOpponents().find(x => equalsIgnoreCase(x.name, selectedName));
             if (match) {
                 // populate for edit
-                setRatingRadio(match.rating);   // [rating radio change]
+                setRatingRadio(match.rating);
                 $time.val(match.time || '');
                 setTrackById(match.trackId, match.trackName);
                 $save.text('Update');
             } else {
                 // new name → clear other fields
-                clearRatingRadios();            // [rating radio change]
+                clearRatingRadios();
                 $time.val('');
                 $track.val(null).trigger('change');
                 $save.text('Save');
@@ -130,26 +162,32 @@
         const current = $name.val(); // keep current selection
         const newData = buildNameDataFromLocal();
 
+        // Rebuild <option> list (Select2 uses <option> elements as source)
         $name.find('option').not(':first').remove();
         newData.forEach(d => $name.append(new Option(d.text, d.id, false, false)));
+
+        // Notify Select2 to rebuild its internal data
         $name.trigger('change.select2');
 
+        // Restore selection if still present
         if (current) {
             const exists = newData.some(d => d.id.toLowerCase() === current.toLowerCase());
             if (exists) $name.val(current).trigger('change');
         }
     }
 
-    // --- Rating radio helpers ---  [rating radio change]
+    // --- Rating radio helpers ---
     function getSelectedRating() {
         return $('input[name="rating"]:checked').val() || '';
     }
     function setRatingRadio(value) {
         const val = (value || '').toLowerCase();
-        $('input[name="rating"]').prop('checked', false);
-        if (val === 'beatable') $('#rating-beatable').prop('checked', true);
-        else if (val === 'difficult') $('#rating-difficult').prop('checked', true);
-        else if (val === 'impossible') $('#rating-impossible').prop('checked', true);
+        const $all = $('input[name="rating"]');
+        $all.prop('checked', false);
+
+        if (val === 'beatable') $('#rating-beatable').prop('checked', true).trigger('change');
+        else if (val === 'difficult') $('#rating-difficult').prop('checked', true).trigger('change');
+        else if (val === 'impossible') $('#rating-impossible').prop('checked', true).trigger('change');
     }
     function clearRatingRadios() {
         $('input[name="rating"]').prop('checked', false);
@@ -160,17 +198,17 @@
 
     function validate() {
         const name = ($name.val() || '').trim();
-        const rating = getSelectedRating();     // [rating radio change]
+        const rating = getSelectedRating();
         if (!name) { alert('Name is required.'); $name.select2('open'); return false; }
         if (!rating) { alert('Rating is required.'); $('#rating-beatable').focus(); return false; }
         return true;
     }
 
     function clearForm() {
-        $name.val(null).trigger('change');
-        clearRatingRadios();                    // [rating radio change]
+        $name.val(null).trigger('change');   // clears Select2 selection (Name)
+        clearRatingRadios();
         $time.val('');
-        $track.val(null).trigger('change');
+        $track.val(null).trigger('change');  // clears Select2 selection (Track)
         $save.text('Save');
     }
 
@@ -190,7 +228,7 @@
         if (idx >= 0) { items[idx] = op; } else { items.push(op); }
         saveOpponents(items);
         render();
-        refreshNameSelect2Data();
+        refreshNameSelect2Data(); // keep suggestions up to date
     }
 
     function removeOpponent(name) {
@@ -227,12 +265,12 @@
     </div>
 </li>`);
             li.find('.edit-btn').on('click', () => {
+                // Load into the single form for edit (without opening Name dropdown)
                 $name.val(op.name).trigger('change');
-                setRatingRadio(op.rating);      // [rating radio change]
+                setRatingRadio(op.rating);
                 $time.val(op.time || '');
                 setTrackById(op.trackId, op.trackName);
                 $save.text('Update');
-                //$name.select2('open');
             });
             li.find('.delete-btn').on('click', () => {
                 if (confirm(`Delete opponent "${op.name}"?`)) {
@@ -268,7 +306,7 @@
 
             const opponent = {
                 name: ($name.val() || '').trim(),
-                rating: getSelectedRating(),    // [rating radio change]
+                rating: getSelectedRating(),
                 time: ($time.val() || '').trim(),
                 trackId: $track.val(),
                 trackName: $track.find(':selected').text() || ''
