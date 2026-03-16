@@ -4,6 +4,8 @@ public class GetGauntletLeaderboardRowsParams
 {
     public int MinVipLevel { get; set; } = 0;
     public int MaxVipLevel { get; set; } = 15;
+    public int? MaxCarRank { get; set; }
+    public int? MaxAvgCarRank { get; set; }
     public bool IncludeVerified { get; set; } = true;
     public bool IncludeUnverified { get; set; }
     public DateTime? Date { get; set; }

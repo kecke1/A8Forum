@@ -14,6 +14,13 @@ namespace A8Forum.ViewModels
         [Range(0, 15)]
         public int? VipLevelMax { get; set; }
 
+        [Display(Name = "Max Car Rank")]
+        [Range(1858, 1865)]
+        public int? MaxCarRank { get; set; }
+        [Display(Name = "Max Average Car Rank")]
+        [Range(1858, 1865)]
+        public int? MaxAvgCarRank { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime? LeaderboardDate { get; set; }
         public bool UseLeaderboardDate { get; set; } = false;

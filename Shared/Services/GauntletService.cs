@@ -53,11 +53,10 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
                                        (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
             .ToList();
 
-        var maxVip = param.MaxVipLevel < 13 ? 12 : param.MaxVipLevel;
+        var maxVip = param.MaxVipLevel < 12 ? 11 : param.MaxVipLevel;
 
         var runs = allRuns
             .Where(x => (x.VipLevel ?? 0) <= maxVip && (x.VipLevel ?? 0) >= param.MinVipLevel);
-
 
         if (!param.IncludeFilteredOutVipMembers)
         {
@@ -68,6 +67,43 @@ public class GauntletService(IRepository<GauntletRun> gauntletRunRepository,
                 .ToArray();
 
             runs = runs.Where(x => !filteredVipMembers.Any(y => y.Track == x.Track.Id && y.Member == x.Member.Id));
+        }
+
+        if (param.MaxCarRank.HasValue)
+        {
+            runs = runs.Where(x => x.Vehicle1.MaxRank <= param.MaxCarRank
+                                   && x.Vehicle2.MaxRank <= param.MaxCarRank
+                                   && x.Vehicle3.MaxRank <= param.MaxCarRank
+                                   && (x.Vehicle4 == null || x.Vehicle4.MaxRank <= param.MaxCarRank)
+                                   && (x.Vehicle5 == null || x.Vehicle5.MaxRank <= param.MaxCarRank));
+        }
+
+        if (param.MaxAvgCarRank.HasValue)
+        {
+            runs = runs.Where(x =>
+            {
+                var c = 3;
+                var totalRank = x.Vehicle1.MaxRank.Value + x.Vehicle2.MaxRank.Value + x.Vehicle3.MaxRank.Value;
+                if (x.Vehicle4 != null)
+                {
+                    c++;
+                    totalRank += x.Vehicle4.MaxRank.Value;
+                }
+
+                if (x.Vehicle5 != null)
+                {
+                    c++;
+                    totalRank += x.Vehicle5.MaxRank.Value;
+                }
+
+                if (totalRank / c <= param.MaxAvgCarRank)
+                {
+                    return true;
+                }
+
+                return false;
+
+            });
         }
 
         var q = runs

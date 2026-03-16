@@ -52,7 +52,7 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
                                        (x.RunDate.HasValue && x.RunDate.Value <= param.Date)))
             .ToList();
 
-        var maxVip = param.MaxVipLevel < 13 ? 12 : param.MaxVipLevel;
+        var maxVip = param.MaxVipLevel < 12 ? 11 : param.MaxVipLevel;
 
         var runs = allRuns
             .Where(x => (x.VipLevel ?? 0) <= maxVip && (x.VipLevel ?? 0) >= param.MinVipLevel);
@@ -66,6 +66,11 @@ public class SprintService(IRepository<SprintRun> sprintRunRepository,
                 .ToArray();
 
             runs = runs.Where(x => !filteredVipMembers.Any(y => y.Track == x.Track.Id && y.Member == x.Member.Id));
+        }
+
+        if (param.MaxCarRank.HasValue)
+        {
+            runs = runs.Where(x => x.Vehicle.MaxRank <= param.MaxCarRank);
         }
 
         var q = runs.GroupBy(x => new { MemberId = x.Member.Id, TrackId = x.Track.Id }, y => y)
