@@ -1,43 +1,42 @@
-﻿@model A8Forum.ViewModels.SprintLeaderboardViewModel
+﻿@model SprintLeaderboardViewModel
 @{
     ViewData["Title"] = "Sprint Leaderboard";
     var active = (Model.Filter.ActiveTab ?? "total").ToLowerInvariant();
-    bool totalActive    = active == "total";
-    bool byTrackActive  = active == "bytrack";
-    bool bestLapsActive = active == "bestlaps";
+    var totalActive = active == "total";
+    var byTrackActive = active == "bytrack";
+    var bestLapsActive = active == "bestlaps";
 }
 <div class="container-fluid px-3">
 <h2>Sprint Leaderboard</h2>
 
 <div class="row">
-<a href="/SprintLeaderboard/Runs">All sprint runs table</a>
+    <a href="/SprintLeaderboard/Runs">All sprint runs table</a>
 </div>
 <a href="/SprintLeaderboard/Schedule">Schedule of upcoming sprints</a>
 
 <!-- noUiSlider CSS (CDN) -->
-<link rel="stylesheet" href="/lib/nouislider/nouislider.min.css" />
+<link rel="stylesheet" href="/lib/nouislider/nouislider.min.css"/>
 
 
+<form method="get" asp-action="Index" class="row g-3eTab" id="Filter_Form">
+    <!-- VIP Level: noUiSlider dual handle -->
 
-    <form method="get" asp-action="Index" class="row g-3eTab" id="Filter_Form" >
-        <!-- VIP Level: noUiSlider dual handle -->
-   
-        <input asp-for="Filter.ActiveTab" type="hidden" id="Filter_ActiveTab" />
-        <input type="hidden" name="track" id="Filter_Track" />
-        <input type="hidden" name="member" id="Filter_Member" />
+    <input asp-for="Filter.ActiveTab" type="hidden" id="Filter_ActiveTab"/>
+    <input type="hidden" name="track" id="Filter_Track"/>
+    <input type="hidden" name="member" id="Filter_Member"/>
 
-        <div class="row">
-            <div class="col-12 col-md-4">
+    <div class="row">
+        <div class="col-12 col-md-4">
             <label class="form-label d-flex align-items-center justify-content-between">
                 <span>VIP Levels</span>
             </label>
             <div class="sliderContainer">
-            <!-- Slider container -->
-            <div id="vipSlider" class="vip-nouislider mb-2"></div>
-                </div>
+                <!-- Slider container -->
+                <div id="vipSlider" class="vip-nouislider mb-2"></div>
+            </div>
             <!-- Hidden fields bound to model (kept for server binding) -->
-            <input asp-for="Filter.VipLevelMin" type="hidden" id="Filter_VipLevelMin" />
-            <input asp-for="Filter.VipLevelMax" type="hidden" id="Filter_VipLevelMax" />
+            <input asp-for="Filter.VipLevelMin" type="hidden" id="Filter_VipLevelMin"/>
+            <input asp-for="Filter.VipLevelMax" type="hidden" id="Filter_VipLevelMax"/>
 
             <!-- Removed elements as requested:
             - span#vipMinLabel, span#vipMaxLabel
@@ -48,44 +47,81 @@
             <span asp-validation-for="Filter.VipLevelMax" class="text-danger"></span>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-12 col-md-3 mt-3">
             <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeFilteredVipRuns"
                        class="form-check-input"
-                       id="Filter_IncludeFilteredVipRuns" />
+                       id="Filter_IncludeFilteredVipRuns"/>
                 <label class="form-check-label" for="Filter_IncludeFilteredVipRuns">
                     Include runs from filtered out VIP members
                 </label>
             </div>
         </div>
+
+
+        <div class="row g-3 align-items-center mt-2">
+            <div class="col-auto">
+                <label for="MaxCarRank" class="col-form-label fw-semibold">Max Car Rank</label>
+            </div>
+            <div class="col-6 col-md-4">
+                <input type="range"
+                       class="form-range"
+                       id="MaxCarRank"
+                       name="Filter.MaxCarRank"
+                       min="1858"
+                       max="1865"
+                       step="1"
+                       value="@(Model?.Filter?.MaxCarRank ?? 1865)"
+                       list="car-rank-ticks"
+                       aria-describedby="MaxCarRankValue"/>
+            </div>
+            <div class="col-auto">
+                <span id="MaxCarRankValue" class="badge bg-secondary">
+                    @(Model?.Filter?.MaxCarRank ?? 1865)
+                </span>
+            </div>
+        </div>
+
+        <datalist id="car-rank-ticks">
+            <option value="1858" label="1858"></option>
+            <option value="1859" label="1859"></option>
+            <option value="1860" label="1860"></option>
+            <option value="1861" label="1861"></option>
+            <option value="1862" label="1862"></option>
+            <option value="1863" label="1863"></option>
+            <option value="1864" label="1864"></option>
+            <option value="1865" label="1865"></option>
+        </datalist>
+
+
         <div class="col-12 col-md-3 mt-3">
             <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeRunsWithGlitch"
                        class="form-check-input"
-                       id="Filter_IncludeRunsWithGlitch" />
+                       id="Filter_IncludeRunsWithGlitch"/>
                 <label class="form-check-label" for="Filter_IncludeRunsWithGlitch">
                     Include runs that use glitch
                 </label>
             </div>
-        </div>  
-        
+        </div>
+
         <div class="col-12 col-md-3 mt-3">
             <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeRunsWithShortcut"
                        class="form-check-input"
-                       id="Filter_IncludeRunsWithShortcut" />
+                       id="Filter_IncludeRunsWithShortcut"/>
                 <label class="form-check-label" for="Filter_IncludeRunsWithShortcut">
                     Include runs that use shortcut
                 </label>
             </div>
-        </div>   
+        </div>
 
     </div>
     <div class="col-12 col-md-3 mt-3">
         <div class="form-check form-switch mt-4">
-            
+
             <input asp-for="Filter.UseLeaderboardDate" class="form-check-input" id="Filter_UseLeaderboardDate"/>
             <label class="form-check-label" for="Filter_UseLeaderboardDate">Set Leaderboard Date</label>
             <input asp-for="Filter.LeaderboardDate" type="date" class="form-control" id="Filter_LeaderboardDate"/>
@@ -231,11 +267,12 @@
     </div>
 </div>
 </div>
+
 @section Scripts {
     <!-- noUiSlider JS (CDN) -->
     <script src="/lib/nouislider/nouislider.min.js"></script>
     <script src="/js/leaderboard.js"></script>
- 
+
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

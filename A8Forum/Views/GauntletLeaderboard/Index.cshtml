@@ -25,12 +25,12 @@
     <input type="hidden" name="member" id="Filter_Member" />
     <div class="row">
         <div class="col-12 col-md-4">
-            <label class="form-label d-flex align-items-center justify-content-between">
+                <label class="form-label d-flex align-items-center justify-content-between fw-semibold">
                 <span>VIP Levels</span>
             </label>
 
-                <div class="sliderContainer">
-            <div id="vipSlider" class="vip-nouislider mb-2"></div>
+            <div class="sliderContainer">
+                <div id="vipSlider" class="vip-nouislider mb-2"></div>
             </div>
             <!-- Hidden fields bound to model (kept for server binding) -->
             <input asp-for="Filter.VipLevelMin" type="hidden" id="Filter_VipLevelMin" />
@@ -45,10 +45,9 @@
             <span asp-validation-for="Filter.VipLevelMax" class="text-danger"></span>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-12 col-md-3 mt-3">
-                <div class="form-check form-switch mt-4">
+        <div class="col-12 col-md-4 mt-4">
+            <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeFilteredVipRuns"
                        class="form-check-input"
                        id="Filter_IncludeFilteredVipRuns" />
@@ -56,7 +55,24 @@
                     Include runs from filtered out VIP members
                 </label>
             </div>
-        </div>
+        </div>        
+
+    </div>
+    
+    <div class="row">
+        <div class="col-12 col-md-4">
+                <label class="form-label d-flex align-items-center justify-content-between fw-semibold">
+                            <span>Max Car Rank</span>
+                    </label>
+                    <div class="sliderContainer">
+                        <div id="MaxCarRankSlider"></div>
+                        <input asp-for="Filter.MaxCarRank" type="hidden" id="Filter_MaxCarRank" />
+                        </div>
+            </div>
+    </div>
+
+    <div class="row">
+
         <div class="col-12 col-md-3 mt-3">
                 <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeUnverifiedRuns"

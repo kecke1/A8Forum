@@ -16,7 +16,7 @@ namespace A8Forum.ViewModels
 
         [Display(Name = "Max Car Rank")]
         [Range(1858, 1865)]
-        public int? MaxCarRank { get; set; }
+        public int? MaxCarRank { get; set; } = 1865;
 
         [DataType(DataType.Date)]
         public DateTime? LeaderboardDate { get; set; }

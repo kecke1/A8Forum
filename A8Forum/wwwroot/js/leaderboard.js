@@ -1,7 +1,40 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
     (function () {
         // Allowed VIP values
-        var sliderValues = [0, 13, 14, 15];
+        var sliderValues = [0, 12, 13, 14, 15];
+
+
+        var maxRankSlider = document.getElementById('MaxCarRankSlider');
+        var maxRankHidden = document.getElementById('Filter_MaxCarRank');
+
+        if (maxRankSlider && maxRankHidden) {
+            var startValue = parseInt(maxRankHidden.value || "1865", 10);
+
+            noUiSlider.create(maxRankSlider, {
+                start: [startValue],
+                step: 1,
+                range: { min: 1858, max: 1865 },
+                tooltips: false,
+                behaviour: 'tap-drag',
+                connect: [true, false],
+                pips: {
+                    mode: 'values',
+                    values: [1858, 1859, 1860, 1861, 1862, 1863, 1864, 1865],
+                    density: 100,
+                    format: {
+                        to: function (pos) {                   
+                            return String(pos);
+                        }
+                    }
+                }
+            });
+
+            maxRankSlider.noUiSlider.on('update', function (values) {
+                maxRankHidden.value = Math.round(values[0]);
+                //document.getElementById("MaxCarRankValue").textContent = maxRankHidden.value;
+            });
+        }
+
 
         // Map position (0..3) -> VIP value
         function positionToValue(pos) {
@@ -10,11 +43,11 @@
         }
 
         // Map VIP value -> nearest position (0..3)
-        function nearestPositionFor(value) {
+        function nearestPositionFor(value, values) {
             var n = Number(value);
             var bestIdx = 0, bestDiff = Infinity;
-            for (var i = 0; i < sliderValues.length; i++) {
-                var d = Math.abs(sliderValues[i] - n);
+            for (var i = 0; i < values.length; i++) {
+                var d = Math.abs(values[i] - n);
                 if (d < bestDiff) { bestDiff = d; bestIdx = i; }
             }
             return bestIdx;
@@ -40,8 +73,8 @@
             if (!Number.isFinite(startMinValue)) startMinValue = 0;
             if (!Number.isFinite(startMaxValue)) startMaxValue = 15;
 
-            var startMinPos = nearestPositionFor(startMinValue);
-            var startMaxPos = nearestPositionFor(startMaxValue);
+            var startMinPos = nearestPositionFor(startMinValue, sliderValues);
+            var startMaxPos = nearestPositionFor(startMaxValue, sliderValues);
             var startA = Math.min(startMinPos, startMaxPos);
             var startB = Math.max(startMinPos, startMaxPos);
 
@@ -59,7 +92,7 @@
                 // Pips labeled "No VIP, 13, 14, 15"
                 pips: {
                     mode: 'values',
-                    values: [0, 1, 2, 3],
+                    values: [0, 1, 2, 3, 4, 5],
                     density: 100,
                     format: {
                         to: function (pos) {
