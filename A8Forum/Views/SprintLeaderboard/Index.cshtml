@@ -61,40 +61,17 @@
         </div>
 
 
-        <div class="row g-3 align-items-center mt-2">
-            <div class="col-auto">
-                <label for="MaxCarRank" class="col-form-label fw-semibold">Max Car Rank</label>
-            </div>
-            <div class="col-6 col-md-4">
-                <input type="range"
-                       class="form-range"
-                       id="MaxCarRank"
-                       name="Filter.MaxCarRank"
-                       min="1858"
-                       max="1865"
-                       step="1"
-                       value="@(Model?.Filter?.MaxCarRank ?? 1865)"
-                       list="car-rank-ticks"
-                       aria-describedby="MaxCarRankValue"/>
-            </div>
-            <div class="col-auto">
-                <span id="MaxCarRankValue" class="badge bg-secondary">
-                    @(Model?.Filter?.MaxCarRank ?? 1865)
-                </span>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <label class="form-label d-flex align-items-center justify-content-between fw-semibold">
+                    <span>Max Car Rank</span>
+                </label>
+                <div class="sliderContainer">
+                    <div id="MaxCarRankSlider" class="vip-nouislider mb-2"></div>
+                    <input asp-for="Filter.MaxCarRank" type="hidden" id="Filter_MaxCarRank" />
+                </div>
             </div>
         </div>
-
-        <datalist id="car-rank-ticks">
-            <option value="1858" label="1858"></option>
-            <option value="1859" label="1859"></option>
-            <option value="1860" label="1860"></option>
-            <option value="1861" label="1861"></option>
-            <option value="1862" label="1862"></option>
-            <option value="1863" label="1863"></option>
-            <option value="1864" label="1864"></option>
-            <option value="1865" label="1865"></option>
-        </datalist>
-
 
         <div class="col-12 col-md-3 mt-3">
             <div class="form-check form-switch mt-4">
