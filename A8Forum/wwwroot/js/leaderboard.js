@@ -4,8 +4,9 @@
         var sliderValues = [0, 12, 13, 14, 15];
 
 
-        var maxRankSlider = document.getElementById('MaxCarRankSlider');
-        var maxRankHidden = document.getElementById('Filter_MaxCarRank');
+        function createRankSlider(slider, sliderHidden) { 
+            var maxRankSlider = document.getElementById(slider);
+            var maxRankHidden = document.getElementById(sliderHidden);
 
         if (maxRankSlider && maxRankHidden) {
             var startValue = parseInt(maxRankHidden.value || "1865", 10);
@@ -22,8 +23,14 @@
                     values: [1858, 1859, 1860, 1861, 1862, 1863, 1864, 1865],
                     density: 100,
                     format: {
-                        to: function (pos) {                   
-                            return String(pos);
+                        to: function (pos) {
+                            if (pos == 1858 || pos == 1865) {
+                                return String(pos);
+                            }
+                            if (pos % 2 == 1) {
+                                return "";
+                            }
+                            return String(pos - 1800)
                         }
                     }
                 }
@@ -33,8 +40,11 @@
                 maxRankHidden.value = Math.round(values[0]);
                 //document.getElementById("MaxCarRankValue").textContent = maxRankHidden.value;
             });
+            }
         }
 
+        createRankSlider('MaxCarRankSlider', 'Filter_MaxCarRank');
+        createRankSlider('MaxAvgCarRankSlider', 'Filter_MaxAvgCarRank');
 
         // Map position (0..3) -> VIP value
         function positionToValue(pos) {

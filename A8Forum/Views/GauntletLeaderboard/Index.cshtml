@@ -25,8 +25,8 @@
     <input type="hidden" name="member" id="Filter_Member" />
     <div class="row">
         <div class="col-12 col-md-4">
-                <label class="form-label d-flex align-items-center justify-content-between fw-semibold">
-                <span>VIP Levels</span>
+                <label class="form-label d-flex align-items-center justify-content-between fw-bold">
+                VIP Levels
             </label>
 
             <div class="sliderContainer">
@@ -45,7 +45,7 @@
             <span asp-validation-for="Filter.VipLevelMax" class="text-danger"></span>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-12 col-md-4 mt-4">
             <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeFilteredVipRuns"
@@ -58,18 +58,30 @@
         </div>        
 
     </div>
-    
-    <div class="row">
-        <div class="col-12 col-md-4">
-                <label class="form-label d-flex align-items-center justify-content-between fw-semibold">
-                            <span>Max Car Rank</span>
-                    </label>
-                    <div class="sliderContainer">
+        <div class="row mb-5">
+            <div class="col-12 col-md-4">
+                
+                <label class="form-label d-flex align-items-center justify-content-between fw-bold">
+                    Max Car Rank
+                </label>                
+                <div class="sliderContainer">
                     <div id="MaxCarRankSlider" class="vip-nouislider mb-2"></div>
-                        <input asp-for="Filter.MaxCarRank" type="hidden" id="Filter_MaxCarRank" />
-                        </div>
+                    <input asp-for="Filter.MaxCarRank" type="hidden" id="Filter_MaxCarRank"/>
+                </div>
             </div>
     </div>
+        <div class="row mb-4">
+        <div class="col-12 col-md-4">
+            <label class="form-label d-flex align-items-center justify-content-between fw-bold">
+                Max Average Car Rank
+            </label> 
+            <div class="sliderContainer">
+                <div id="MaxAvgCarRankSlider" class="vip-nouislider mb-2"></div>
+                <input asp-for="Filter.MaxAvgCarRank" type="hidden" id="Filter_MaxAvgCarRank" />
+            </div>
+        </div>
+    </div>
+
 
     <div class="row">
 
@@ -256,7 +268,7 @@
 @section Scripts {
     <!-- noUiSlider JS (CDN) -->
     <script src="/lib/nouislider/nouislider.min.js"></script>
-    <script src="/js/leaderboard.js"></script>
+    <script src="/js/leaderboard.js?20260325"></script>
 
 
     @{

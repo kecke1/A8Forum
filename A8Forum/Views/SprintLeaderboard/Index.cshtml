@@ -27,8 +27,8 @@
 
     <div class="row">
         <div class="col-12 col-md-4">
-            <label class="form-label d-flex align-items-center justify-content-between">
-                <span>VIP Levels</span>
+            <label class="form-label d-flex align-items-center justify-content-between fw-bold">
+                VIP Levels
             </label>
             <div class="sliderContainer">
                 <!-- Slider container -->
@@ -49,7 +49,7 @@
     </div>
 
     <div class="row">
-        <div class="col-12 col-md-3 mt-3">
+        <div class="col-12 col-md-4 mt-3">
             <div class="form-check form-switch mt-4">
                 <input asp-for="Filter.IncludeFilteredVipRuns"
                        class="form-check-input"
@@ -61,12 +61,12 @@
         </div>
 
 
-        <div class="row">
+        <div class="row mb-5">
             <div class="col-12 col-md-4">
-                <label class="form-label d-flex align-items-center justify-content-between fw-semibold">
-                    <span>Max Car Rank</span>
-                </label>
-                <div class="sliderContainer">
+                    <label class="form-label d-flex align-items-center justify-content-between fw-bold">
+                        Max Car Rank
+                    </label>
+                    <div class="sliderContainer">
                     <div id="MaxCarRankSlider" class="vip-nouislider mb-2"></div>
                     <input asp-for="Filter.MaxCarRank" type="hidden" id="Filter_MaxCarRank" />
                 </div>
@@ -248,7 +248,7 @@
 @section Scripts {
     <!-- noUiSlider JS (CDN) -->
     <script src="/lib/nouislider/nouislider.min.js"></script>
-    <script src="/js/leaderboard.js"></script>
+    <script src="/js/leaderboard.js?20260325"></script>
 
 
     @{
